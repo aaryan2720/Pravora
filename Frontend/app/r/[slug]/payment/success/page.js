@@ -1,11 +1,13 @@
 'use client';
+import { use } from 'react';
 import { CheckCircle2, ChevronRight, Share2, Receipt } from 'lucide-react';
 import Link from 'next/link';
 import { Button, Card } from '@/components/ui';
 import toast from 'react-hot-toast';
 
 export default function PaymentSuccessPage({ params }) {
-  const slug = params?.slug || 'spice-garden';
+  const unwrappedParams = use(params);
+  const slug = unwrappedParams?.slug || 'spice-garden';
 
   const shareReceipt = () => {
     toast.success('Receipt link copied!');

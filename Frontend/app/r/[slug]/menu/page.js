@@ -1,5 +1,5 @@
 'use client';
-import { useState, useContext, createContext } from 'react';
+import { useState, useContext, createContext, use } from 'react';
 import Link from 'next/link';
 import { ShoppingCart, ChevronRight, Leaf } from 'lucide-react';
 import { mockMenuItems, mockMenuCategories } from '@/lib/mockData';
@@ -65,13 +65,13 @@ function MenuItemCard({ item }) {
   );
 }
 
-function CartSummary({ tableSlug, params }) {
+function CartSummary({ slug, tableId }) {
   const { cart, total, count, remove } = useContext(CartContext);
   if (count === 0) return null;
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-slate-950/95 border-t border-slate-800 backdrop-blur-sm">
       <div className="max-w-lg mx-auto">
-        <Link href={`/r/${params?.slug || 'spice-garden'}/table/${params?.tableId || 'tbl_1'}/cart`}>
+        <Link href={`/r/${slug}/table/${tableId}/cart`}>
           <button className="w-full py-4 rounded-2xl font-bold text-slate-900 flex items-center justify-between px-5 text-sm"
             style={{ background: 'linear-gradient(135deg, #f59e0b, #fbbf24)', boxShadow: '0 0 20px rgba(245,158,11,0.4)' }}>
             <div className="flex items-center gap-2">
@@ -90,6 +90,9 @@ function CartSummary({ tableSlug, params }) {
 }
 
 export default function MenuPage({ params }) {
+  const unwrappedParams = use(params);
+  const slug = unwrappedParams?.slug || 'spice-garden';
+  const tableId = unwrappedParams?.tableId || 'tbl_1';
   const [activeCategory, setActiveCategory] = useState('all');
 
   return (
@@ -109,21 +112,20 @@ export default function MenuPage({ params }) {
           </div>
         </div>
 
-        {/* Category tabs */}
-        <div className="sticky top-[57px] z-20 bg-slate-950/95 backdrop-blur-sm border-b border-slate-800 px-4 py-3">
-          <div className="max-w-lg mx-auto flex gap-2 overflow-x-auto pb-0 scrollbar-hide">
-            <button onClick={() => setActiveCategory('all')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap flex-shrink-0 transition-all ${activeCategory === 'all' ? 'bg-amber-500 text-slate-900' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}>
-              All
+        {/* Categories slider */}
+        <div className="sticky top-[57px] z-20 bg-slate-950/95 backdrop-blur-sm border-b border-slate-800/60 px-4 py-3 overflow-x-auto flex gap-2 scrollbar-hide">
+          <button onClick={() => setActiveCategory('all')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${activeCategory === 'all' ? 'bg-amber-500 text-slate-900 font-bold' : 'bg-slate-900 text-slate-400 border border-slate-800'}`}>
+            All Items
+          </button>
+          {mockMenuCategories.map(cat => (
+            <button key={cat.id} onClick={() => setActiveCategory(cat.id)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${activeCategory === cat.id ? 'bg-amber-500 text-slate-900 font-bold' : 'bg-slate-900 text-slate-400 border border-slate-800'}`}>
+              <span>{cat.icon}</span>
+              {cat.name}
             </button>
-            {mockMenuCategories.map(cat => (
-              <button key={cat.id} onClick={() => setActiveCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap flex-shrink-0 transition-all flex items-center gap-1.5 ${activeCategory === cat.id ? 'bg-amber-500 text-slate-900' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}>
-                {cat.icon} {cat.name}
-              </button>
             ))}
           </div>
-        </div>
 
         {/* Menu items */}
         <div className="max-w-lg mx-auto px-4 py-4">
@@ -155,7 +157,7 @@ export default function MenuPage({ params }) {
           })}
         </div>
 
-        <CartSummary params={params} />
+        <CartSummary slug={slug} tableId={tableId} />
       </div>
     </CartProvider>
   );

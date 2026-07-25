@@ -1,10 +1,13 @@
 'use client';
+import { use } from 'react';
 import Link from 'next/link';
 import { Star, MapPin, Clock, Phone, QrCode, CalendarDays, ChevronRight, Zap, Leaf } from 'lucide-react';
 import { mockRestaurant, mockMenuItems, mockMenuCategories } from '@/lib/mockData';
 import { Button, Badge } from '@/components/ui';
 
 export default function RestaurantLandingPage({ params }) {
+  const unwrappedParams = use(params);
+  const slug = unwrappedParams?.slug || 'spice-garden';
   const restaurant = mockRestaurant;
   const specials = mockMenuItems.filter(i => i.isSpecial && i.availability === 'available').slice(0, 3);
   const availableItems = mockMenuItems.filter(i => i.availability === 'available').slice(0, 6);
@@ -62,7 +65,7 @@ export default function RestaurantLandingPage({ params }) {
               Scan Table QR
             </Button>
           </Link>
-          <Link href={`/r/${params?.slug || 'spice-garden'}/reserve`}>
+          <Link href={`/r/${slug}/reserve`}>
             <Button variant="secondary" size="lg" className="w-full gap-3">
               <CalendarDays size={18} />
               Make Reservation
@@ -77,7 +80,7 @@ export default function RestaurantLandingPage({ params }) {
               <h2 className="text-lg font-bold text-white flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 <span>⭐</span> Today's Specials
               </h2>
-              <Link href={`/r/${params?.slug || 'spice-garden'}/menu`} className="text-xs text-amber-400 flex items-center gap-1">
+              <Link href={`/r/${slug}/menu`} className="text-xs text-amber-400 flex items-center gap-1">
                 Full menu <ChevronRight size={12} />
               </Link>
             </div>
@@ -108,7 +111,7 @@ export default function RestaurantLandingPage({ params }) {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>Menu Preview</h2>
-            <Link href={`/r/${params?.slug || 'spice-garden'}/menu`} className="text-xs text-amber-400 flex items-center gap-1">
+            <Link href={`/r/${slug}/menu`} className="text-xs text-amber-400 flex items-center gap-1">
               See full menu <ChevronRight size={12} />
             </Link>
           </div>

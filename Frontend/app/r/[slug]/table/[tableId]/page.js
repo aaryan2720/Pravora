@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Users, ArrowRight, Star, MapPin } from 'lucide-react';
@@ -9,8 +9,9 @@ import toast from 'react-hot-toast';
 
 export default function TableEntryPage({ params }) {
   const router = useRouter();
-  const slug = params?.slug || 'spice-garden';
-  const tableId = params?.tableId || 'tbl_1';
+  const unwrappedParams = use(params);
+  const slug = unwrappedParams?.slug || 'spice-garden';
+  const tableId = unwrappedParams?.tableId || 'tbl_1';
   const restaurant = mockRestaurant;
 
   const [guestName, setGuestName] = useState('');

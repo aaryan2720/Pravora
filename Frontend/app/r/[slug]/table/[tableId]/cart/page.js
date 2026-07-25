@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ChefHat, ChevronLeft, ShoppingBag, Send, AlertTriangle, FileText } from 'lucide-react';
@@ -9,8 +9,9 @@ import toast from 'react-hot-toast';
 
 export default function CartReviewPage({ params }) {
   const router = useRouter();
-  const slug = params?.slug || 'spice-garden';
-  const tableId = params?.tableId || 'tbl_1';
+  const unwrappedParams = use(params);
+  const slug = unwrappedParams?.slug || 'spice-garden';
+  const tableId = unwrappedParams?.tableId || 'tbl_1';
 
   // Local demo cart items
   const [cartItems, setCartItems] = useState([

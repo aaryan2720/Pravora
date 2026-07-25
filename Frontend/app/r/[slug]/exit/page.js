@@ -1,12 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useState, use } from 'react';
 import Link from 'next/link';
 import { ChefHat, Heart, Star, Compass, UserCheck } from 'lucide-react';
 import { Button, Card } from '@/components/ui';
 import toast from 'react-hot-toast';
 
 export default function GuestExitPage({ params }) {
-  const slug = params?.slug || 'spice-garden';
+  const unwrappedParams = use(params);
+  const slug = unwrappedParams?.slug || 'spice-garden';
 
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);

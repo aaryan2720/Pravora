@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { ChefHat, ShoppingBag, Plus, Bell, Navigation, LogOut, CheckCircle, RefreshCw, Clock } from 'lucide-react';
 import { mockSession } from '@/lib/mockData';
@@ -14,8 +14,9 @@ const statusLabels = {
 };
 
 export default function TableSessionPage({ params }) {
-  const slug = params?.slug || 'spice-garden';
-  const tableId = params?.tableId || 'tbl_1';
+  const unwrappedParams = use(params);
+  const slug = unwrappedParams?.slug || 'spice-garden';
+  const tableId = unwrappedParams?.tableId || 'tbl_1';
 
   const [session, setSession] = useState(mockSession);
   const [requestingHelp, setRequestingHelp] = useState(false);

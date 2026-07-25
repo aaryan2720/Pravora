@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ChefHat, CalendarDays, Clock, Users, ArrowRight, ChevronLeft } from 'lucide-react';
@@ -9,7 +9,8 @@ import toast from 'react-hot-toast';
 
 export default function GuestReservePage({ params }) {
   const router = useRouter();
-  const slug = params?.slug || 'spice-garden';
+  const unwrappedParams = use(params);
+  const slug = unwrappedParams?.slug || 'spice-garden';
   const restaurant = mockRestaurant;
 
   const [form, setForm] = useState({ name: '', phone: '', email: '', date: '', time: '19:30', guests: 2, notes: '' });
