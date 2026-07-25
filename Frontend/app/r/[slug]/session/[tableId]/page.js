@@ -40,8 +40,8 @@ export default function TableSessionPage({ params }) {
       {/* Sticky header */}
       <header className="px-4 py-3 border-b border-slate-900 bg-slate-900/60 backdrop-blur-sm sticky top-0 z-30 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
-            <ChefHat size={16} className="text-slate-900" />
+          <div className="w-8 h-8 rounded-lg bg-brand-orange flex items-center justify-center">
+            <ChefHat size={16} className="text-white" />
           </div>
           <div>
             <h1 className="text-sm font-bold text-white leading-tight">Spice Garden</h1>

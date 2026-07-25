@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
-import { ChefHat, Mail, Lock, Eye, EyeOff, Zap, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Zap, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Button, Input, Divider } from '@/components/ui';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -44,11 +44,9 @@ export default function SignUpPage() {
       <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 py-12 max-w-xl mx-auto w-full">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 mb-10 group">
-          <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
-            <ChefHat size={16} className="text-slate-900" />
-          </div>
-          <span className="font-bold text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            Serve<span className="text-amber-400">Loop</span>
+          <img src="/favicon.svg" alt="ServeLoop" className="w-8 h-8 object-contain" />
+          <span className="font-bold text-lg text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <span className="text-brand-orange">Serve</span><span className="text-brand-yellow">Loop</span>
           </span>
         </Link>
 
@@ -166,12 +164,12 @@ export default function SignUpPage() {
 
       {/* Right panel — decorative */}
       <div className="hidden lg:flex flex-1 relative overflow-hidden" style={{
-        background: 'radial-gradient(ellipse at 30% 50%, rgba(245,158,11,0.12) 0%, transparent 70%), radial-gradient(ellipse at 70% 80%, rgba(16,185,129,0.08) 0%, transparent 60%), #0f172a'
+        background: 'radial-gradient(ellipse at 30% 50%, rgba(253,109,35,0.06) 0%, transparent 70%), radial-gradient(ellipse at 70% 80%, rgba(253,190,19,0.04) 0%, transparent 60%), #f8fafc'
       }}>
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="text-center">
-            <div className="w-16 h-16 rounded-2xl bg-amber-500 flex items-center justify-center mx-auto mb-6">
-              <ChefHat size={32} className="text-slate-900" />
+            <div className="w-16 h-16 rounded-2xl bg-brand-orange/10 border border-brand-orange/30 flex items-center justify-center mx-auto mb-6">
+              <img src="/favicon.svg" alt="ServeLoop" className="w-10 h-10 object-contain" />
             </div>
             <h2 className="text-3xl font-black text-white mb-4" style={{ fontFamily: 'Outfit, sans-serif' }}>
               Your restaurant,<br />

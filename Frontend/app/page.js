@@ -359,11 +359,9 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-amber-500 flex items-center justify-center">
-                <ChefHat size={14} className="text-slate-900" />
-              </div>
-              <span className="font-bold text-base text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                Serve<span className="text-amber-400">Loop</span>
+              <img src="/favicon.svg" alt="ServeLoop" className="w-7 h-7 object-contain" />
+              <span className="font-bold text-base text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <span className="text-brand-orange">Serve</span><span className="text-brand-yellow">Loop</span>
               </span>
             </div>
             <p className="text-sm text-slate-600">© 2025 ServeLoop. Smart restaurant operations platform.</p>

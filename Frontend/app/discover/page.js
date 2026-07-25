@@ -1,10 +1,10 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Search, MapPin, Star, Clock, Zap, ChevronRight } from 'lucide-react';
+import { Search, MapPin, Star, Clock, Zap, ChevronRight, QrCode } from 'lucide-react';
 import { mockDiscoveryRestaurants } from '@/lib/mockData';
 import PublicNav from '@/components/layout/PublicNav';
-import { Badge, Card } from '@/components/ui';
+import { Badge, Card, Button } from '@/components/ui';
 
 const cuisineFilters = ['All', 'Indian', 'Pan-Asian', 'Mediterranean', 'BBQ', 'Quick Service'];
 
@@ -102,6 +102,24 @@ export default function DiscoverPage() {
             <input className="input-base pl-12 py-4 text-base" placeholder="Search restaurant or cuisine..." value={search} onChange={e => setSearch(e.target.value)} />
           </div>
 
+          {/* Quick Scan Promo */}
+          <div className="mb-8 p-6 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-brand-orange flex items-center justify-center flex-shrink-0 text-white shadow-[0_0_15px_rgba(253,109,35,0.2)]">
+                <QrCode size={22} />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-bold text-slate-900">Already at a table?</p>
+                <p className="text-xs text-slate-500">Scan the table QR code to start ordering and pay instantly.</p>
+              </div>
+            </div>
+            <Link href="/scan">
+              <Button variant="primary" size="md" className="whitespace-nowrap flex items-center gap-2 shadow-[0_0_15px_rgba(253,109,35,0.25)]">
+                <QrCode size={15} /> Scan Table QR
+              </Button>
+            </Link>
+          </div>
+
           {/* Cuisine filters */}
           <div className="flex gap-2 mb-8 overflow-x-auto pb-1">
             {cuisineFilters.map(c => (
@@ -117,13 +135,23 @@ export default function DiscoverPage() {
             {filtered.map(r => <RestaurantCard key={r.id} r={r} />)}
           </div>
 
-          {filtered.length === 0 && (
-            <div className="text-center py-16 text-slate-600">
-              No restaurants found for "{search}"
-            </div>
-          )}
-        </div>
+        {filtered.length === 0 && (
+          <div className="text-center py-16 text-slate-600">
+            No restaurants found for "{search}"
+          </div>
+        )}
       </div>
     </div>
-  );
+
+    {/* Floating Scan FAB for quick access */}
+    <div className="fixed bottom-6 right-6 z-50">
+      <Link href="/scan">
+        <button className="flex items-center gap-2 px-5 py-3.5 rounded-full bg-brand-orange text-white font-bold shadow-[0_4px_20px_rgba(253,109,35,0.4)] hover:bg-brand-orange/90 hover:scale-105 active:scale-95 transition-all text-sm cursor-pointer">
+          <QrCode size={18} />
+          Scan Table QR
+        </button>
+      </Link>
+    </div>
+  </div>
+);
 }

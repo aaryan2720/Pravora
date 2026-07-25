@@ -6,7 +6,7 @@ import { Button, Divider } from '@/components/ui';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
-export default function SignInPage() {
+export default function CustomerSignInPage() {
   const router = useRouter();
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPass, setShowPass] = useState(false);
@@ -16,15 +16,15 @@ export default function SignInPage() {
     e.preventDefault();
     setLoading(true);
     await new Promise(r => setTimeout(r, 1000));
-    toast.success('Welcome back!');
-    router.push('/dashboard');
+    toast.success('Welcome back, Foodie!');
+    router.push('/discover');
   };
 
   const handleGoogle = async () => {
     setLoading(true);
     await new Promise(r => setTimeout(r, 700));
-    toast.success('Signed in with Google!');
-    router.push('/dashboard');
+    toast.success('Logged in with Google!');
+    router.push('/discover');
   };
 
   return (
@@ -38,11 +38,11 @@ export default function SignInPage() {
           </span>
         </Link>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl">
           <h1 className="text-2xl font-black text-white mb-1 text-center" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            Welcome back
+            Welcome back, Foodie!
           </h1>
-          <p className="text-slate-400 text-sm text-center mb-7">Sign in to your restaurant dashboard</p>
+          <p className="text-slate-400 text-sm text-center mb-7">Sign in to track points, order history, and scan tables</p>
 
           {/* Google */}
           <Button variant="secondary" size="md" onClick={handleGoogle} disabled={loading} className="w-full mb-5 gap-3">
@@ -55,17 +55,16 @@ export default function SignInPage() {
             Continue with Google
           </Button>
 
-          <Divider label="or" className="mb-5" />
+          <Divider label="or sign in with email" className="mb-5" />
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-slate-300">Email</label>
+              <label className="text-sm font-medium text-slate-300">Email or Mobile Number</label>
               <div className="relative">
                 <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
-                  className="input-base pl-10"
-                  placeholder="you@restaurant.com"
-                  type="email"
+                  className="input-base pl-10 text-sm"
+                  placeholder="you@email.com or phone"
                   value={form.email}
                   onChange={e => setForm({ ...form, email: e.target.value })}
                   required
@@ -74,16 +73,13 @@ export default function SignInPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-slate-300">Password</label>
-                <button type="button" className="text-xs text-amber-400 hover:text-amber-300 transition-colors">Forgot password?</button>
-              </div>
+              <label className="text-sm font-medium text-slate-300">Password</label>
               <div className="relative">
                 <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
-                  className="input-base pl-10 pr-10"
-                  placeholder="Your password"
+                  className="input-base pl-10 pr-10 text-sm"
                   type={showPass ? 'text' : 'password'}
+                  placeholder="Enter your password"
                   value={form.password}
                   onChange={e => setForm({ ...form, password: e.target.value })}
                   required
@@ -95,29 +91,15 @@ export default function SignInPage() {
               </div>
             </div>
 
-            {/* Demo hint */}
-            <div className="px-3 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-400">
-              <span className="font-semibold">Demo mode:</span> Any email + password will sign you in.
-            </div>
-
-            <Button type="submit" variant="primary" size="lg" disabled={loading} className="w-full mt-1 shadow-[0_0_20px_rgba(245,158,11,0.25)]">
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25" />
-                    <path d="M12 2a10 10 0 0 1 10 10" stroke="#0f172a" strokeWidth="3" strokeLinecap="round" />
-                  </svg>
-                  Signing in...
-                </span>
-              ) : (
-                <>Sign In <ArrowRight size={16} /></>
-              )}
+            <Button type="submit" variant="primary" size="lg" disabled={loading} className="w-full mt-2 gap-2 shadow-[0_0_20px_rgba(253,109,35,0.2)]">
+              {loading ? 'Signing in...' : 'Sign In'}
+              <ArrowRight size={16} />
             </Button>
           </form>
 
           <p className="text-sm text-slate-500 mt-6 text-center">
-            New to ServeLoop?{' '}
-            <Link href="/auth/signup" className="text-amber-400 hover:text-amber-300 font-medium">Create account</Link>
+            New foodie in the loop?{' '}
+            <Link href="/auth/customer/signup" className="text-brand-orange hover:underline font-medium">Create customer account</Link>
           </p>
         </div>
       </div>

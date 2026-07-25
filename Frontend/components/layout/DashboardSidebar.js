@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChefHat, LayoutDashboard, ShoppingBag, Grid3x3, UtensilsCrossed, Tag, CalendarDays, Users2, Package, CreditCard, BarChart3, UserCog, Settings, ChevronLeft, ChevronRight, Zap, LogOut } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Grid3x3, UtensilsCrossed, Tag, CalendarDays, Users2, Package, CreditCard, BarChart3, UserCog, Settings, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import { useApp } from '@/lib/context/AppContext';
 import { Avatar } from '@/components/ui';
 
@@ -44,12 +44,10 @@ export default function DashboardSidebar() {
     >
       {/* Logo */}
       <div className="flex items-center gap-2.5 h-16 px-4 border-b border-slate-800 flex-shrink-0">
-        <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center flex-shrink-0">
-          <ChefHat size={16} className="text-slate-900" />
-        </div>
+        <img src="/favicon.svg" alt="ServeLoop" className="w-8 h-8 object-contain flex-shrink-0" />
         {sidebarOpen && (
-          <span className="font-bold text-base text-white truncate" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            Serve<span className="text-amber-400">Loop</span>
+          <span className="font-bold text-base text-slate-900 truncate" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <span className="text-brand-orange">Serve</span><span className="text-brand-yellow">Loop</span>
           </span>
         )}
       </div>

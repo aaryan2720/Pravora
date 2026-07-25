@@ -9,6 +9,9 @@ export const metadata = {
   title: 'ServeLoop — Smart Restaurant Operations Platform',
   description: 'Connect guests, staff, kitchen, and management in real time. Live ordering, QR sessions, analytics, and AI-powered insights for modern restaurants.',
   keywords: 'restaurant management, POS, QR ordering, restaurant SaaS, table management',
+  icons: {
+    icon: '/favicon.svg',
+  },
   openGraph: {
     title: 'ServeLoop — Smart Restaurant Operations Platform',
     description: 'The live restaurant control center that connects everyone.',

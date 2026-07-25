@@ -1,60 +1,57 @@
 @import "tailwindcss";
 
 :root {
-  /* Brand Colors */
-  --color-slate-950: #020617;
-  --color-slate-900: #0f172a;
-  --color-slate-800: #1e293b;
-  --color-slate-700: #334155;
-  --color-slate-600: #475569;
-  --color-slate-500: #64748b;
-  --color-slate-400: #94a3b8;
-  --color-slate-300: #cbd5e1;
-  --color-slate-200: #e2e8f0;
-  --color-slate-100: #f1f5f9;
-  --color-slate-50:  #f8fafc;
+  /* Brand Colors from favicon.svg */
+  --color-brand-orange: #FD6D23;
+  --color-brand-yellow: #FDBE13;
 
-  --color-amber-500:  #f59e0b;
-  --color-amber-400:  #fbbf24;
-  --color-amber-300:  #fcd34d;
-  --color-amber-600:  #d97706;
+  /* Basic slate colors mapped for light mode */
+  --color-slate-950: #ffffff; /* White background */
+  --color-slate-900: #f8fafc; /* Slate 50 - Card background */
+  --color-slate-800: #f1f5f9; /* Slate 100 - Table/Elevated hover */
+  --color-slate-700: #e2e8f0; /* Slate 200 - Borders */
+  --color-slate-600: #cbd5e1; /* Slate 300 - Disabled state */
+  --color-slate-500: #94a3b8; /* Slate 400 - Light text */
+  --color-slate-400: #64748b; /* Slate 500 - Muted text */
+  --color-slate-300: #475569; /* Slate 600 - Secondary text */
+  --color-slate-200: #334155; /* Slate 700 - Body text */
+  --color-slate-100: #1e293b; /* Slate 800 - Header text */
+  --color-slate-50:  #0f172a; /* Slate 900 - High contrast text */
 
-  --color-jade-500:   #10b981;
-  --color-jade-400:   #34d399;
-  --color-jade-600:   #059669;
+  /* Re-assigning semantic variables */
+  --bg-base:       #ffffff;
+  --bg-surface:    #f8fafc;
+  --bg-elevated:   #f1f5f9;
+  --bg-muted:      #cbd5e1;
 
-  --color-rose-500:   #f43f5e;
-  --color-rose-400:   #fb7185;
+  --text-primary:  #0f172a; /* Slate 900 */
+  --text-secondary: #334155; /* Slate 700 */
+  --text-muted:    #64748b; /* Slate 500 */
 
-  --color-violet-500: #8b5cf6;
-  --color-violet-400: #a78bfa;
+  --border-base:   #e2e8f0; /* Slate 200 */
+  --border-subtle: #cbd5e1; /* Slate 300 */
 
-  --color-sky-500:    #0ea5e9;
-  --color-sky-400:    #38bdf8;
+  --accent-primary: var(--color-brand-orange);
+  --accent-success: #10b981;
+  --accent-danger:  #ef4444;
+  --accent-info:    #3b82f6;
+  --accent-purple:  var(--color-brand-yellow); /* Avoid actual purple, map to yellow */
 
-  /* Semantic tokens */
-  --bg-base:       var(--color-slate-950);
-  --bg-surface:    var(--color-slate-900);
-  --bg-elevated:   var(--color-slate-800);
-  --bg-muted:      var(--color-slate-700);
+  /* Glassmorphism for Light Mode */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(15, 23, 42, 0.06);
+  --glass-blur: blur(15px);
 
-  --text-primary:  var(--color-slate-50);
-  --text-secondary: var(--color-slate-300);
-  --text-muted:    var(--color-slate-500);
+  /* Overwrite other colors to avoid purple */
+  --color-violet-500: var(--color-brand-orange);
+  --color-violet-400: var(--color-brand-yellow);
+  --color-sky-500: var(--color-brand-yellow);
+  --color-sky-400: var(--color-brand-orange);
 
-  --border-base:   var(--color-slate-800);
-  --border-subtle: var(--color-slate-700);
-
-  --accent-primary: var(--color-amber-500);
-  --accent-success: var(--color-jade-500);
-  --accent-danger:  var(--color-rose-500);
-  --accent-info:    var(--color-sky-500);
-  --accent-purple:  var(--color-violet-500);
-
-  /* Glass */
-  --glass-bg: rgba(15, 23, 42, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-blur: blur(20px);
+  --color-amber-500:  var(--color-brand-orange);
+  --color-amber-400:  var(--color-brand-yellow);
+  --color-amber-300:  #ffedd5; /* Light orange-100 */
+  --color-amber-600:  #ea580c; /* Orange-600 */
 }
 
 /* Base */
@@ -123,7 +120,7 @@ h1, h2, h3, h4, h5, h6 {
   background-clip: text;
 }
 .gradient-text-hero {
-  background: linear-gradient(135deg, #f8fafc 0%, #f59e0b 50%, #10b981 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #FD6D23 50%, #FDBE13 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -284,6 +281,12 @@ h1, h2, h3, h4, h5, h6 {
   transition: border-color 0.15s, box-shadow 0.15s;
   font-family: 'Inter', sans-serif;
 }
+.input-base.pl-10 {
+  padding-left: 40px !important;
+}
+.input-base.pr-10 {
+  padding-right: 40px !important;
+}
 .input-base:focus {
   outline: none;
   border-color: var(--color-amber-500);
@@ -382,7 +385,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Gradient text */
 .gradient-text-amber {
-  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  background: linear-gradient(135deg, #FD6D23, #FDBE13);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -394,20 +397,89 @@ h1, h2, h3, h4, h5, h6 {
   background-clip: text;
 }
 
+/* Brand Utility Classes */
+.text-brand-orange { color: #FD6D23; }
+.text-brand-yellow { color: #FDBE13; }
+.bg-brand-orange { background-color: #FD6D23; }
+.bg-brand-yellow { background-color: #FDBE13; }
+.border-brand-orange { border-color: #FD6D23; }
+.border-brand-yellow { border-color: #FDBE13; }
+
 /* Kanban column headers */
-.kanban-pending { border-bottom: 2px solid rgba(245,158,11,0.35); }
-.kanban-preparing { border-bottom: 2px solid rgba(14,165,233,0.35); }
+.kanban-pending { border-bottom: 2px solid rgba(253,109,35,0.35); }
+.kanban-preparing { border-bottom: 2px solid rgba(253,190,19,0.35); }
 .kanban-ready { border-bottom: 2px solid rgba(16,185,129,0.35); }
-.kanban-served { border-bottom: 2px solid rgba(139,92,246,0.35); }
+.kanban-served { border-bottom: 2px solid rgba(253,109,35,0.35); }
 
 /* Dashboard mesh background */
 .dashboard-mesh {
-  background-color: #020617;
-  background-image: radial-gradient(ellipse at 20% 10%, rgba(245,158,11,0.04) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 90%, rgba(16,185,129,0.03) 0%, transparent 60%);
+  background-color: #ffffff;
+  background-image: radial-gradient(ellipse at 20% 10%, rgba(253,109,35,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 90%, rgba(253,190,19,0.03) 0%, transparent 60%);
 }
 
 /* Hide scrollbar utility */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Light mode overrides for text utility colors */
+.text-white,
+.text-slate-50,
+.text-slate-100,
+.text-slate-200,
+.text-slate-300 {
+  color: #0f172a !important; /* Slate-900 */
+}
+
+.text-slate-400,
+.text-slate-500 {
+  color: #475569 !important; /* Slate-600 */
+}
+
+.text-slate-600 {
+  color: #64748b !important; /* Slate-500 */
+}
+
+/* Restore white text for specific brand actions/buttons/badges/alerts */
+.bg-brand-orange,
+.bg-brand-orange *,
+.bg-brand-orange svg,
+.bg-amber-500,
+.bg-amber-500 *,
+.bg-amber-500 svg,
+.bg-emerald-500,
+.bg-emerald-500 *,
+.bg-emerald-500 svg,
+.bg-rose-500,
+.bg-rose-500 *,
+.bg-rose-500 svg,
+.bg-violet-600,
+.bg-violet-600 *,
+.bg-violet-600 svg,
+.badge,
+.badge *,
+button.bg-brand-orange,
+button.bg-amber-500,
+button.bg-emerald-500,
+button.bg-rose-500,
+button.bg-violet-600,
+.status-dot,
+.toast *,
+.toast svg {
+  color: #ffffff !important;
+}
+
+/* Adjust primary button styles specifically */
+button.bg-amber-500,
+button.bg-emerald-500,
+button.bg-brand-orange {
+  color: #ffffff !important;
+}
+
+/* Keep dark text on light buttons/drawers where needed */
+button.text-slate-900 {
+  color: #0f172a !important;
+}
+
+
 

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ChefHat, Users, ArrowRight, Star, MapPin } from 'lucide-react';
+import { Users, ArrowRight, Star, MapPin } from 'lucide-react';
 import { mockRestaurant } from '@/lib/mockData';
 import { Button, Card } from '@/components/ui';
 import toast from 'react-hot-toast';
@@ -34,11 +34,9 @@ export default function TableEntryPage({ params }) {
       {/* Header */}
       <header className="px-6 py-4 flex items-center justify-between border-b border-slate-900 bg-slate-900/40 backdrop-blur-sm sticky top-0 z-30">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
-            <ChefHat size={16} className="text-slate-900" />
-          </div>
-          <span className="font-bold text-white text-sm" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            Serve<span className="text-amber-400">Loop</span>
+          <img src="/favicon.svg" alt="ServeLoop" className="w-8 h-8 object-contain" />
+          <span className="font-bold text-slate-900 text-sm" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <span className="text-brand-orange">Serve</span><span className="text-brand-yellow">Loop</span>
           </span>
         </div>
         <div className="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/20 text-emerald-400 text-xs font-semibold flex items-center gap-1.5">
