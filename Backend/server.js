@@ -49,20 +49,12 @@ const getLocalOrigins = () => {
   return origins;
 };
 
-const parsedEnvOrigins = process.env.FRONTEND_URL 
-  ? (process.env.FRONTEND_URL.includes(',') ? process.env.FRONTEND_URL.split(',') : [process.env.FRONTEND_URL])
-  : ['http://localhost:3000'];
-
-const corsOrigin = [
-  ...parsedEnvOrigins,
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  ...getLocalOrigins()
-];
-
 app.use(
   cors({
-    origin: corsOrigin,
+    origin: (origin, callback) => {
+      // Dynamically echo requesting origin to allow all sites (works with credentials: true)
+      callback(null, true);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
