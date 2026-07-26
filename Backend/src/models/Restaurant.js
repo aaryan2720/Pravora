@@ -129,7 +129,6 @@ const restaurantSchema = new mongoose.Schema(
 );
 
 // Index for geo queries and slug lookups
-restaurantSchema.index({ slug: 1 });
 restaurantSchema.index({ 'location.city': 1 });
 restaurantSchema.index({ isLive: 1 });
 
