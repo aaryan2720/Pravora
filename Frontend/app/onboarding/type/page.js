@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Coffee, Utensils, ShoppingBag, Star } from 'lucide-react';
 
 const types = [
@@ -46,6 +46,12 @@ const colorMap = {
 
 export default function RestaurantTypePage() {
   const [selected, setSelected] = useState('casual_dining');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('onboarding_type', selected);
+    }
+  }, [selected]);
 
   return (
     <div className="animate-fadeInUp">

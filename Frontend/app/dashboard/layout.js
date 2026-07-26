@@ -1,12 +1,11 @@
 'use client';
-import { AppProvider } from '@/lib/context/AppContext';
 import DashboardSidebar from '@/components/layout/DashboardSidebar';
 import DashboardHeader from '@/components/layout/DashboardHeader';
 import { usePathname } from 'next/navigation';
 
 const pageTitles = {
   '/dashboard': 'Pulse Dashboard',
-  '/dashboard/orders': 'Orders Board',
+  '/dashboard/orders': 'Chef Board (Kitchen)',
   '/dashboard/tables': 'Tables Board',
   '/dashboard/menu': 'Menu Management',
   '/dashboard/pricing': 'Pricing & Specials',
@@ -37,9 +36,5 @@ function DashboardShell({ children }) {
 }
 
 export default function DashboardLayout({ children }) {
-  return (
-    <AppProvider>
-      <DashboardShell>{children}</DashboardShell>
-    </AppProvider>
-  );
+  return <DashboardShell>{children}</DashboardShell>;
 }

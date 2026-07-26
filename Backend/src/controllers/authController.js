@@ -141,6 +141,10 @@ const customerRegister = async (req, res) => {
   guest.refreshToken = refreshToken;
   await guest.save({ validateBeforeSave: false });
 
+  // Send welcome email (non-blocking)
+  const { sendGuestWelcomeEmail } = require('../services/emailService');
+  sendGuestWelcomeEmail(guest).catch(() => {});
+
   return successResponse(res, { guest, accessToken, refreshToken }, 'Customer account created', 201);
 };
 

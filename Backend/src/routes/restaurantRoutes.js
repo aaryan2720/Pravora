@@ -10,6 +10,9 @@ const {
   toggleLive,
   uploadLogo,
   uploadCover,
+  getStaff,
+  addStaff,
+  deleteStaff,
 } = require('../controllers/restaurantController');
 const { protect, restrictTo, tenantGuard } = require('../middleware/auth');
 const { asyncHandler } = require('../middleware/errorHandler');
@@ -27,5 +30,10 @@ router.put('/:id', protect, restrictTo('owner', 'manager'), asyncHandler(updateR
 router.patch('/:id/go-live', protect, restrictTo('owner'), asyncHandler(toggleLive));
 router.post('/:id/logo', protect, restrictTo('owner', 'manager'), upload.single('logo'), asyncHandler(uploadLogo));
 router.post('/:id/cover', protect, restrictTo('owner', 'manager'), upload.single('cover'), asyncHandler(uploadCover));
+
+// ─── Staff Management (owner/manager only) ────────────────────────────────────
+router.get('/staff', protect, tenantGuard, restrictTo('owner', 'manager'), asyncHandler(getStaff));
+router.post('/staff', protect, tenantGuard, restrictTo('owner', 'manager'), asyncHandler(addStaff));
+router.delete('/staff/:id', protect, tenantGuard, restrictTo('owner', 'manager'), asyncHandler(deleteStaff));
 
 module.exports = router;

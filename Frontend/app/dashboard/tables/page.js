@@ -1,9 +1,11 @@
 'use client';
-import { useState } from 'react';
-import { Users, Clock, CreditCard, X, QrCode } from 'lucide-react';
-import { mockTables, mockOrders } from '@/lib/mockData';
+import { useState, useEffect } from 'react';
+import { Users, Clock, CreditCard, X, QrCode, Download } from 'lucide-react';
 import { Card, Badge } from '@/components/ui';
 import toast from 'react-hot-toast';
+import { api } from '@/lib/api';
+import { useApp } from '@/lib/context/AppContext';
+import { QRCodeCanvas } from 'qrcode.react';
 
 const statusConfig = {
   free: { label: 'Free', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', text: 'text-emerald-400', dot: 'bg-emerald-500' },
@@ -13,12 +15,13 @@ const statusConfig = {
   dirty: { label: 'Needs Cleaning', bg: 'bg-rose-500/10', border: 'border-rose-500/30', text: 'text-rose-400', dot: 'bg-rose-500' },
 };
 
-function TableCard({ table, onAction, onClick }) {
-  const s = statusConfig[table.status];
+function TableCard({ table, onClick }) {
+  const s = statusConfig[table.status] || statusConfig.free;
+  
   return (
     <button
       onClick={() => onClick(table)}
-      className={`relative rounded-2xl border-2 p-4 text-left transition-all duration-200 hover:scale-[1.02] cursor-pointer ${s.bg} ${s.border}`}
+      className={`relative rounded-2xl border-2 p-4 text-left transition-all duration-200 hover:scale-[1.02] cursor-pointer ${s.bg} ${s.border} w-full`}
     >
       {/* Status dot */}
       <span className={`absolute top-3 right-3 w-2.5 h-2.5 rounded-full ${s.dot}`} />
@@ -34,44 +37,61 @@ function TableCard({ table, onAction, onClick }) {
       </div>
 
       {table.status === 'occupied' && (
-        <>
-          <div className="flex items-center gap-1.5 text-xs text-slate-500 mb-1">
-            <Clock size={11} />
-            {table.waitTime}m active
-          </div>
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300">
-            <CreditCard size={11} />
-            ₹{table.billTotal.toLocaleString()}
-          </div>
-        </>
-      )}
-      {table.status === 'reserved' && (
-        <div className="text-xs text-violet-300 mt-1">
-          {table.guestName} · {table.reservationTime}
+        <div className="flex items-center gap-1.5 text-xs text-slate-500 mb-1">
+          <Clock size={11} />
+          Active
         </div>
       )}
-      {table.status === 'paying' && (
-        <div className="flex items-center gap-1.5 text-xs font-bold text-sky-400 mt-1">
-          <CreditCard size={11} />
-          ₹{table.billTotal.toLocaleString()} — paying
+      {table.status === 'reserved' && table.guestName && (
+        <div className="text-xs text-violet-300 mt-1 truncate">
+          {table.guestName}
         </div>
       )}
     </button>
   );
 }
 
-function TableModal({ table, onClose, onStatusChange }) {
+function TableModal({ table, activeRestaurant, onClose, onStatusChange, onReset }) {
   if (!table) return null;
-  const s = statusConfig[table.status];
-  const tableOrders = mockOrders.filter(o => o.tableId === table.id);
+  const s = statusConfig[table.status] || statusConfig.free;
+  
   const actions = {
     free: [{ label: 'Mark as Occupied', next: 'occupied', color: 'amber' }],
-    occupied: [{ label: 'Request Bill', next: 'paying', color: 'sky' }, { label: 'Clear Table', next: 'dirty', color: 'rose' }],
-    paying: [{ label: 'Mark as Paid & Clear', next: 'dirty', color: 'jade' }],
-    dirty: [{ label: 'Mark as Clean', next: 'free', color: 'jade' }],
-    reserved: [{ label: 'Check In Guest', next: 'occupied', color: 'amber' }, { label: 'Cancel Reservation', next: 'free', color: 'rose' }],
+    occupied: [{ label: 'Request Bill / Pay', next: 'paying', color: 'sky' }, { label: 'Reset Table', next: 'reset', color: 'rose' }],
+    paying: [{ label: 'Reset / Clear Table', next: 'reset', color: 'rose' }],
+    dirty: [{ label: 'Mark as Clean / Reset', next: 'reset', color: 'jade' }],
+    reserved: [{ label: 'Check In Guest', next: 'occupied', color: 'amber' }, { label: 'Cancel / Reset', next: 'reset', color: 'rose' }],
   };
-  const btnColors = { amber: 'bg-amber-500 text-slate-900', sky: 'bg-sky-500 text-slate-900', jade: 'bg-emerald-500 text-slate-900', rose: 'bg-rose-500/20 text-rose-400 border border-rose-500/30' };
+  
+  const btnColors = { 
+    amber: 'bg-amber-500 text-slate-900', 
+    sky: 'bg-sky-500 text-slate-900', 
+    jade: 'bg-emerald-500 text-slate-900', 
+    rose: 'bg-rose-500/20 text-rose-400 border border-rose-500/30' 
+  };
+
+  const handleActionClick = (next) => {
+    if (next === 'reset') {
+      onReset(table._id);
+    } else {
+      onStatusChange(table._id, next);
+    }
+    onClose();
+  };
+
+  const qrBaseUrl = activeRestaurant?.settings?.qrBaseUrl || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+  const scanUrl = `${qrBaseUrl}/r/scan?token=${table.qrToken}`;
+
+  const handleDownloadQR = () => {
+    const canvas = document.getElementById(`qr-canvas-${table.label}`);
+    if (!canvas) return;
+    const url = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${activeRestaurant?.name || 'Restaurant'}_Table_${table.label}_QR.png`;
+    a.click();
+    toast.success(`Downloaded Table ${table.label} QR!`);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
@@ -82,53 +102,47 @@ function TableModal({ table, onClose, onStatusChange }) {
             <h2 className="text-xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>Table {table.label}</h2>
             <span className={`text-sm font-semibold ${s.text}`}>{s.label}</span>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-all">
+          <button onClick={onClose} className="p-2 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-all cursor-pointer">
             <X size={16} />
           </button>
         </div>
 
         {/* Table info */}
-        <div className="grid grid-cols-3 gap-3 mb-5">
+        <div className="grid grid-cols-2 gap-3 mb-5">
           <div className="text-center p-3 rounded-xl bg-slate-800 border border-slate-700">
             <p className="text-lg font-black text-amber-400">{table.seats}</p>
             <p className="text-xs text-slate-500">Seats</p>
           </div>
           <div className="text-center p-3 rounded-xl bg-slate-800 border border-slate-700">
-            <p className="text-lg font-black text-sky-400">{table.ordersCount}</p>
-            <p className="text-xs text-slate-500">Orders</p>
-          </div>
-          <div className="text-center p-3 rounded-xl bg-slate-800 border border-slate-700">
-            <p className="text-lg font-black text-emerald-400">₹{(table.billTotal/1000).toFixed(1)}k</p>
-            <p className="text-xs text-slate-500">Bill</p>
+            <p className="text-xs font-semibold text-emerald-400 truncate text-sm mt-1.5">{table.status.toUpperCase()}</p>
+            <p className="text-xs text-slate-500">Status</p>
           </div>
         </div>
 
-        {/* Recent orders */}
-        {tableOrders.length > 0 && (
-          <div className="mb-5">
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Recent Orders</p>
-            <div className="space-y-2">
-              {tableOrders.map(o => (
-                <div key={o.id} className="flex items-center justify-between text-sm p-2 rounded-lg bg-slate-800">
-                  <span className="text-slate-400 truncate">{o.items.map(i => i.name).join(', ')}</span>
-                  <span className={`text-xs ml-2 flex-shrink-0 ${s.text}`}>{o.status}</span>
-                </div>
-              ))}
-            </div>
+        {/* Live QR Section */}
+        <div className="flex flex-col items-center gap-3 p-4 rounded-xl bg-slate-800 border border-slate-700 mb-5">
+          <div className="bg-white p-2.5 rounded-xl">
+            <QRCodeCanvas
+              id={`qr-canvas-${table.label}`}
+              value={scanUrl}
+              size={130}
+              level="H"
+            />
           </div>
-        )}
-
-        {/* QR */}
-        <div className="flex items-center gap-2 text-xs text-slate-500 mb-5 px-3 py-2 rounded-xl bg-slate-800 border border-slate-700">
-          <QrCode size={14} />
-          QR: spiceloop.in/r/spice-garden/table/{table.id}
+          <div className="w-full text-center">
+            <p className="text-[10px] text-slate-500 font-bold uppercase">Table QR Session Code</p>
+            <p className="font-mono text-[10px] text-slate-400 select-all break-all mt-0.5">{table.qrToken}</p>
+          </div>
+          <button onClick={handleDownloadQR} className="w-full py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-xs font-semibold text-slate-200 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <Download size={13} /> Download QR Code Image
+          </button>
         </div>
 
         {/* Actions */}
         <div className="flex flex-col gap-2">
           {(actions[table.status] || []).map(a => (
-            <button key={a.label} onClick={() => { onStatusChange(table.id, a.next); onClose(); toast.success(`${table.label}: ${a.label}`); }}
-              className={`py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 ${btnColors[a.color]}`}>
+            <button key={a.label} onClick={() => handleActionClick(a.next)}
+              className={`py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 cursor-pointer ${btnColors[a.color]}`}>
               {a.label}
             </button>
           ))}
@@ -139,11 +153,65 @@ function TableModal({ table, onClose, onStatusChange }) {
 }
 
 export default function TablesBoardPage() {
-  const [tables, setTables] = useState(mockTables);
+  const { activeRestaurant } = useApp();
+  const [tables, setTables] = useState([]);
   const [selected, setSelected] = useState(null);
   const [filter, setFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
 
-  const updateStatus = (id, status) => setTables(prev => prev.map(t => t.id === id ? { ...t, status } : t));
+  const fetchTables = async () => {
+    try {
+      const res = await api.tables.list();
+      if (res.success) {
+        setTables(res.tables);
+      }
+    } catch (err) {
+      console.error('Failed to fetch tables:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTables();
+  }, []);
+
+  const handleStatusChange = async (id, status) => {
+    try {
+      const res = await api.tables.updateStatus(id, status);
+      if (res.success) {
+        setTables(prev => prev.map(t => t._id === id ? { ...t, status } : t));
+        toast.success('Table status updated!');
+      }
+    } catch (err) {
+      toast.error(err.message || 'Failed to update table status.');
+    }
+  };
+
+  const handleReset = async (id) => {
+    try {
+      const res = await api.tables.reset(id);
+      if (res.success) {
+        setTables(prev => prev.map(t => t._id === id ? res.table : t));
+        toast.success('Table reset successfully!');
+      }
+    } catch (err) {
+      toast.error(err.message || 'Failed to reset table.');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-slate-400">
+        <svg className="animate-spin w-8 h-8 text-amber-500 mb-4" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25" />
+          <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+        </svg>
+        <p>Loading floor layout tables...</p>
+      </div>
+    );
+  }
+
   const filtered = filter === 'all' ? tables : tables.filter(t => t.status === filter);
 
   const stats = {
@@ -162,7 +230,7 @@ export default function TablesBoardPage() {
           const s = statusConfig[status];
           return (
             <button key={status} onClick={() => setFilter(filter === status ? 'all' : status)}
-              className={`p-3 rounded-xl border text-center transition-all ${filter === status ? `${s.bg} ${s.border}` : 'bg-slate-900 border-slate-800 hover:border-slate-700'}`}>
+              className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${filter === status ? `${s.bg} ${s.border}` : 'bg-slate-900 border-slate-800 hover:border-slate-700'}`}>
               <p className={`text-xl font-black ${s.text}`}>{count}</p>
               <p className="text-xs text-slate-500 mt-0.5 capitalize">{status}</p>
             </button>
@@ -171,16 +239,15 @@ export default function TablesBoardPage() {
       </div>
 
       {/* Tables grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-        {filtered.map(t => (
-          <TableCard key={t.id} table={t} onClick={setSelected} onAction={updateStatus} />
-        ))}
-      </div>
-
-      {/* Empty state */}
-      {filtered.length === 0 && (
+      {filtered.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+          {filtered.map(t => (
+            <TableCard key={t._id} table={t} onClick={setSelected} />
+          ))}
+        </div>
+      ) : (
         <div className="text-center py-16 text-slate-600">
-          No tables with this status
+          No tables found with this status.
         </div>
       )}
 
@@ -188,8 +255,10 @@ export default function TablesBoardPage() {
       {selected && (
         <TableModal
           table={selected}
+          activeRestaurant={activeRestaurant}
           onClose={() => setSelected(null)}
-          onStatusChange={updateStatus}
+          onStatusChange={handleStatusChange}
+          onReset={handleReset}
         />
       )}
     </div>

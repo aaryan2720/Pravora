@@ -22,8 +22,11 @@ const createTable = async (req, res) => {
     seats,
   });
 
+  const restaurant = await Restaurant.findById(req.restaurantId).select('settings').lean();
+  const baseUrl = restaurant?.settings?.qrBaseUrl || process.env.FRONTEND_URL || 'http://localhost:3000';
+
   // Generate the QR URL that customers scan
-  const qrUrl = `${process.env.FRONTEND_URL}/r/scan?token=${table.qrToken}`;
+  const qrUrl = `${baseUrl}/r/scan?token=${table.qrToken}`;
   return successResponse(res, { table, qrUrl }, 'Table created', 201);
 };
 
@@ -112,7 +115,23 @@ const updateTableStatus = async (req, res) => {
   return successResponse(res, { table }, 'Table status updated');
 };
 
+const regenerateAllTokens = async (req, res) => {
+  const { v4: uuidv4 } = require('uuid');
+  const tables = await Table.find({ restaurantId: req.restaurantId });
+  for (const table of tables) {
+    table.qrToken = uuidv4();
+    await table.save();
+  }
+  return successResponse(res, { tables }, 'Regenerated secure tokens for all table QRs!');
+};
+
 module.exports = {
-  getTables, createTable, updateTable, deleteTable,
-  resetTable, resolveQRToken, updateTableStatus,
+  getTables,
+  createTable,
+  updateTable,
+  deleteTable,
+  resetTable,
+  resolveQRToken,
+  updateTableStatus,
+  regenerateAllTokens,
 };

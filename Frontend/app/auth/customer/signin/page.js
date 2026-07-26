@@ -3,11 +3,18 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { Button, Divider } from '@/components/ui';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { api } from '@/lib/api';
+import { useApp } from '@/lib/context/AppContext';
 
-export default function CustomerSignInPage() {
+import { Suspense } from 'react';
+
+function SignInForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get('redirect') || '/discover';
+  const { signIn } = useApp();
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -15,9 +22,18 @@ export default function CustomerSignInPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1000));
-    toast.success('Welcome back, Foodie!');
-    router.push('/discover');
+    try {
+      const res = await api.auth.customerLogin(form);
+      if (res.success) {
+        toast.success(`Welcome back, ${res.guest.name}!`);
+        signIn(res.guest, res.accessToken);
+        router.push(redirectPath);
+      }
+    } catch (err) {
+      toast.error(err.message || 'Login failed. Please verify credentials or create a Diner account first.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogle = async () => {
@@ -39,10 +55,15 @@ export default function CustomerSignInPage() {
         </Link>
 
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl">
-          <h1 className="text-2xl font-black text-white mb-1 text-center" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            Welcome back, Foodie!
+          <h1 className="text-xl font-black text-white mb-2 text-center" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            Unlock Diner Perks! 🍽️
           </h1>
-          <p className="text-slate-400 text-sm text-center mb-7">Sign in to track points, order history, and scan tables</p>
+          <div className="p-3.5 mb-6 rounded-xl bg-slate-950/40 border border-slate-800/80 text-xs text-slate-400 space-y-1.5 leading-relaxed text-left">
+            <p className="font-bold text-amber-500 flex items-center gap-1.5">● Get Digital Bills directly to your inbox</p>
+            <p className="font-bold text-amber-500 flex items-center gap-1.5">● Earn loyalty points at cafes all over the world</p>
+            <p className="font-bold text-amber-500 flex items-center gap-1.5">● Receive personalized food recommendations using AI</p>
+            <p className="font-bold text-amber-500 flex items-center gap-1.5">● Track your kitchen timeline live</p>
+          </div>
 
           {/* Google */}
           <Button variant="secondary" size="md" onClick={handleGoogle} disabled={loading} className="w-full mb-5 gap-3">
@@ -104,5 +125,17 @@ export default function CustomerSignInPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CustomerSignInPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-slate-400">
+        <p className="text-sm">Loading sign in portal...</p>
+      </div>
+    }>
+      <SignInForm />
+    </Suspense>
   );
 }

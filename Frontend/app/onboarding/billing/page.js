@@ -1,9 +1,15 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CreditCard, Receipt, QrCode, CheckCircle2 } from 'lucide-react';
 
 export default function BillingSetupPage() {
   const [settings, setSettings] = useState({ payAtTable: true, qrPayment: false, cashPayment: true, taxIncluded: false, taxRate: 18, serviceCharge: 5, receiptEmail: true, exitScreen: true });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('onboarding_billing', JSON.stringify(settings));
+    }
+  }, [settings]);
   const Toggle = ({ label, desc, k }) => (
     <label className="flex items-center justify-between py-3 border-b border-slate-800 cursor-pointer">
       <div><p className="text-sm font-medium text-slate-200">{label}</p><p className="text-xs text-slate-600">{desc}</p></div>

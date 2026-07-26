@@ -1,14 +1,15 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ShoppingBag, Grid3x3, UtensilsCrossed, Tag, CalendarDays, Users2, Package, CreditCard, BarChart3, UserCog, Settings, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Grid3x3, UtensilsCrossed, Tag, CalendarDays, Users2, Package, CreditCard, BarChart3, UserCog, Settings, ChevronLeft, ChevronRight, LogOut, QrCode } from 'lucide-react';
 import { useApp } from '@/lib/context/AppContext';
 import { Avatar } from '@/components/ui';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Pulse', section: 'main' },
-  { href: '/dashboard/orders', icon: ShoppingBag, label: 'Orders', section: 'main', badge: 3 },
+  { href: '/dashboard/orders', icon: ShoppingBag, label: 'Chef Board', section: 'main', badge: 3 },
   { href: '/dashboard/tables', icon: Grid3x3, label: 'Tables', section: 'main' },
+  { href: '/dashboard/qr', icon: QrCode, label: 'QR Codes', section: 'operations' },
   { href: '/dashboard/menu', icon: UtensilsCrossed, label: 'Menu', section: 'operations' },
   { href: '/dashboard/pricing', icon: Tag, label: 'Pricing & Specials', section: 'operations' },
   { href: '/dashboard/reservations', icon: CalendarDays, label: 'Reservations', section: 'operations' },
@@ -38,10 +39,21 @@ export default function DashboardSidebar() {
   };
 
   return (
-    <aside
-      className="relative flex flex-col h-full border-r border-slate-800 bg-slate-900 transition-all duration-300"
-      style={{ width: sidebarOpen ? 240 : 64 }}
-    >
+    <>
+      {/* Mobile Sidebar backdrop */}
+      {sidebarOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-slate-950/65 backdrop-blur-xs z-30 transition-all duration-300"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`fixed md:relative top-0 bottom-0 left-0 z-40 flex flex-col h-full border-r border-slate-800 bg-slate-900 transition-all duration-300 
+          ${sidebarOpen ? 'translate-x-0 w-[240px]' : '-translate-x-full md:translate-x-0'} 
+          ${!sidebarOpen ? 'md:w-[64px]' : 'md:w-[240px]'}
+        `}
+      >
       {/* Logo */}
       <div className="flex items-center gap-2.5 h-16 px-4 border-b border-slate-800 flex-shrink-0">
         <img src="/favicon.svg" alt="ServeLoop" className="w-8 h-8 object-contain flex-shrink-0" />
@@ -130,5 +142,6 @@ export default function DashboardSidebar() {
         {sidebarOpen ? <ChevronLeft size={12} /> : <ChevronRight size={12} />}
       </button>
     </aside>
+    </>
   );
 }

@@ -18,6 +18,9 @@ const steps = [
   { key: 'review', label: 'Review', path: '/onboarding/review' },
 ];
 
+import { api } from '@/lib/api';
+import toast from 'react-hot-toast';
+
 export default function OnboardingLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -25,10 +28,58 @@ export default function OnboardingLayout({ children }) {
   const current = steps[currentIdx];
   const progress = ((currentIdx + 1) / steps.length) * 100;
 
-  const goNext = () => {
-    if (currentIdx < steps.length - 1) router.push(steps[currentIdx + 1].path);
-    else router.push('/dashboard');
+  const goNext = async () => {
+    if (currentIdx === -1) return;
+    
+    const currentKey = steps[currentIdx].key;
+    const rawVal = localStorage.getItem(`onboarding_${currentKey}`);
+    let data = {};
+    
+    if (rawVal) {
+      try {
+        data = JSON.parse(rawVal);
+      } catch (e) {
+        data = { [currentKey]: rawVal };
+      }
+    } else {
+      // default fallbacks if step not loaded/interacted
+      if (currentKey === 'type') data = 'casual_dining';
+      if (currentKey === 'service-model') data = 'hybrid';
+    }
+
+    try {
+      // Save current step to database
+      await api.onboarding.saveStep(currentIdx, data);
+      
+      if (currentIdx < steps.length - 1) {
+        router.push(steps[currentIdx + 1].path);
+      } else {
+        // Final review page -> Complete onboarding and launch workspace
+        const res = await api.onboarding.complete();
+        if (res.success) {
+          toast.success('Restaurant Workspace Launched Live! 🚀');
+          
+          // Clear onboarding local storage
+          steps.forEach(s => localStorage.removeItem(`onboarding_${s.key}`));
+          
+          // Refresh user context to link the completed restaurant metadata
+          const meRes = await api.auth.getMe();
+          if (meRes.success) {
+            localStorage.setItem('user', JSON.stringify(meRes.account));
+            if (meRes.restaurant) {
+              localStorage.setItem('restaurant', JSON.stringify(meRes.restaurant));
+            }
+            window.location.href = '/dashboard';
+          } else {
+            router.push('/dashboard');
+          }
+        }
+      }
+    } catch (err) {
+      toast.error(err.message || 'Failed to save onboarding progress. Please try again.');
+    }
   };
+
   const goPrev = () => {
     if (currentIdx > 0) router.push(steps[currentIdx - 1].path);
   };

@@ -1,9 +1,16 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Grid3x3, Users, Zap, ChefHat, BarChart3 } from 'lucide-react';
 
 export default function CapacityPage() {
   const [form, setForm] = useState({ tables: 16, seatsPerTable: 4, peakPerHour: 60, dailyFootfall: 200, staffPerShift: 8, kitchenStations: 3, dineInPct: 70, takeawayPct: 20, reservePct: 10 });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('onboarding_capacity', JSON.stringify(form));
+    }
+  }, [form]);
+
   const total = form.tables * form.seatsPerTable;
 
   const Field = ({ label, icon: Icon, value, onChange, min = 1, max = 500, helper }) => (

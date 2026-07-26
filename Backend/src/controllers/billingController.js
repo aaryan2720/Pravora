@@ -109,6 +109,18 @@ const markPaid = async (req, res) => {
       },
       { upsert: true, new: true, runValidators: true }
     );
+
+    // Dynamic receipt email dispatching
+    try {
+      const Guest = require('../models/Guest');
+      const guest = await Guest.findById(bill.guestId).select('name email').lean();
+      if (guest?.email) {
+        const { sendReceiptEmail } = require('../services/emailService');
+        sendReceiptEmail({ guestEmail: guest.email, guestName: guest.name, bill }).catch(() => {});
+      }
+    } catch (err) {
+      console.error('Failed to trigger receipt email:', err);
+    }
   }
 
   return successResponse(res, { bill }, 'Payment confirmed. Session closed.');

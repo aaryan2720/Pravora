@@ -1,11 +1,18 @@
 'use client';
-import { useState } from 'react';
-import { MapPin, Phone, Mail, Clock, Upload } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { MapPin, Phone, Mail, Clock, Upload, ImageIcon, Loader2 } from 'lucide-react';
+import { api } from '@/lib/api';
+import toast from 'react-hot-toast';
 
 const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const cuisines = ['Indian', 'Italian', 'Chinese', 'Japanese', 'Mexican', 'Mediterranean', 'American', 'Thai', 'French', 'Fusion', 'Continental', 'Other'];
 
 export default function BusinessProfilePage() {
+  const fileInputRef = useRef(null);
+  const [restaurantId, setRestaurantId] = useState('');
+  const [logoPreview, setLogoPreview] = useState('');
+  const [uploading, setUploading] = useState(false);
+
   const [form, setForm] = useState({
     name: '',
     branches: 1,
@@ -20,14 +27,92 @@ export default function BusinessProfilePage() {
     dineIn: true,
     takeaway: false,
     delivery: false,
+    logo: '',
     hours: daysOfWeek.reduce((acc, d) => ({ ...acc, [d]: { open: true, from: '11:00', to: '23:00' } }), {}),
   });
+
+  // Fetch restaurant onboarding status to get restaurantId and load current step state
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const res = await api.onboarding.getStatus();
+        if (res.success && res.restaurant) {
+          setRestaurantId(res.restaurant._id);
+          
+          // Pre-populate fields if they exist in DB
+          const savedData = res.restaurant.onboardingData || {};
+          
+          // Merge local storage as fallback if available
+          const localSaved = typeof window !== 'undefined' ? localStorage.getItem('onboarding_profile') : null;
+          const merged = {
+            ...form,
+            ...(localSaved ? JSON.parse(localSaved) : {}),
+            ...savedData
+          };
+          
+          setForm(merged);
+          if (merged.logo) {
+            setLogoPreview(merged.logo);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching onboarding status:', err);
+      }
+    };
+    fetchStatus();
+  }, []);
+
+  // Save changes to localStorage periodically for backup
+  useEffect(() => {
+    if (typeof window !== 'undefined' && form.name) {
+      localStorage.setItem('onboarding_profile', JSON.stringify(form));
+    }
+  }, [form]);
 
   const toggleCuisine = (c) => {
     setForm(prev => ({
       ...prev,
       cuisine: prev.cuisine.includes(c) ? prev.cuisine.filter(x => x !== c) : [...prev.cuisine, c],
     }));
+  };
+
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File size exceeds 5MB limit');
+      return;
+    }
+
+    if (!restaurantId) {
+      toast.error('Restaurant workspace not initialized. Please refresh.');
+      return;
+    }
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('logo', file);
+
+    try {
+      const res = await api.restaurant.uploadLogo(restaurantId, formData);
+      if (res.success && res.logo) {
+        setLogoPreview(res.logo);
+        setForm(prev => ({ ...prev, logo: res.logo }));
+        toast.success('Restaurant logo uploaded successfully!');
+      }
+    } catch (err) {
+      console.error('Logo upload error:', err);
+      toast.error(err.message || 'Failed to upload logo.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const triggerFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
   return (
@@ -42,15 +127,45 @@ export default function BusinessProfilePage() {
         </p>
       </div>
 
+      {/* Hidden file input */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleLogoUpload}
+        accept="image/*"
+        className="hidden"
+      />
+
       {/* Logo Upload */}
       <div className="mb-6">
         <p className="text-sm font-medium text-slate-300 mb-2">Restaurant Logo</p>
         <div className="flex items-center gap-4">
-          <div className="w-20 h-20 rounded-2xl border-2 border-dashed border-slate-700 flex flex-col items-center justify-center text-slate-600 cursor-pointer hover:border-amber-500/50 hover:text-amber-500/50 transition-colors">
-            <Upload size={20} />
-            <span className="text-xs mt-1">Upload</span>
+          <div
+            onClick={triggerFileInput}
+            className="w-20 h-20 rounded-2xl border-2 border-dashed border-slate-700 flex flex-col items-center justify-center text-slate-600 cursor-pointer hover:border-amber-500/50 hover:text-amber-500/50 transition-all overflow-hidden relative group bg-slate-900/40"
+          >
+            {uploading ? (
+              <Loader2 className="animate-spin text-amber-500" size={24} />
+            ) : logoPreview ? (
+              <>
+                <img src={logoPreview} alt="Logo" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-slate-950/70 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity text-[10px]">
+                  <Upload size={14} className="mb-0.5 text-amber-400" />
+                  Change
+                </div>
+              </>
+            ) : (
+              <>
+                <ImageIcon size={20} className="group-hover:text-amber-500/50 transition-colors" />
+                <span className="text-[10px] mt-1 group-hover:text-amber-500/50 transition-colors">Upload</span>
+              </>
+            )}
           </div>
-          <p className="text-sm text-slate-500">PNG, JPG up to 5MB<br />Recommended: 200×200px</p>
+          <p className="text-sm text-slate-500 leading-relaxed">
+            PNG, JPG up to 5MB
+            <br />
+            <span className="text-xs text-slate-600">Recommended: Square format (200x200px)</span>
+          </p>
         </div>
       </div>
 
@@ -81,7 +196,7 @@ export default function BusinessProfilePage() {
           <div className="flex flex-wrap gap-2">
             {cuisines.map(c => (
               <button key={c} onClick={() => toggleCuisine(c)}
-                className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                   form.cuisine.includes(c)
                     ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
                     : 'bg-slate-800 text-slate-400 border border-slate-700 hover:border-slate-600'
@@ -133,7 +248,7 @@ export default function BusinessProfilePage() {
           <div className="flex gap-3 flex-wrap">
             {[['dineIn', 'Dine-In'], ['takeaway', 'Takeaway'], ['delivery', 'Delivery']].map(([key, label]) => (
               <button key={key} onClick={() => setForm({...form, [key]: !form[key]})}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border ${
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border cursor-pointer ${
                   form[key] ? 'bg-amber-500/15 text-amber-400 border-amber-500/35' : 'bg-slate-800 text-slate-400 border-slate-700'
                 }`}
               >
@@ -155,7 +270,7 @@ export default function BusinessProfilePage() {
                 <span className="text-sm font-medium text-slate-300 w-10 flex-shrink-0">{day}</span>
                 <button
                   onClick={() => setForm(prev => ({...prev, hours: {...prev.hours, [day]: {...prev.hours[day], open: !prev.hours[day].open}}}))}
-                  className={`relative w-10 h-5 rounded-full transition-colors flex-shrink-0 ${form.hours[day].open ? 'bg-amber-500' : 'bg-slate-700'}`}
+                  className={`relative w-10 h-5 rounded-full transition-colors flex-shrink-0 cursor-pointer ${form.hours[day].open ? 'bg-amber-500' : 'bg-slate-700'}`}
                 >
                   <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${form.hours[day].open ? 'translate-x-5 left-0' : 'left-0.5'}`} />
                 </button>

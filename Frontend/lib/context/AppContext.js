@@ -1,35 +1,54 @@
 'use client';
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { api } from '@/lib/api';
 
 const AppContext = createContext(null);
 
-export const mockUser = {
-  id: 'user_demo',
-  name: 'Ravi Kumar',
-  email: 'ravi@spicegarden.in',
-  role: 'owner',
-  restaurantId: 'r_spicegardenblr',
-  avatar: null,
-};
-
 export function AppProvider({ children }) {
-  const [user, setUser] = useState(mockUser); // pre-authenticated for frontend demo
-  const [activeRestaurant, setActiveRestaurant] = useState({
-    id: 'r_spicegardenblr',
-    slug: 'spice-garden',
-    name: 'Spice Garden',
-  });
+  const [user, setUser] = useState(null);
+  const [activeRestaurant, setActiveRestaurant] = useState(null);
   const [cart, setCart] = useState([]);
   const [activeSession, setActiveSession] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [loading, setLoading] = useState(true);
+
+  // Load auth state from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
+      const storedRestaurant = localStorage.getItem('restaurant');
+      
+      if (storedToken && storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+          if (storedRestaurant) {
+            setActiveRestaurant(JSON.parse(storedRestaurant));
+          }
+        } catch (e) {
+          console.error('Error parsing stored auth state:', e);
+        }
+      }
+      
+      // Load active guest session if any
+      const storedSession = localStorage.getItem('activeSession');
+      if (storedSession) {
+        try {
+          setActiveSession(JSON.parse(storedSession));
+        } catch (e) {}
+      }
+      setLoading(false);
+    }
+  }, []);
 
   const addToCart = useCallback((item, qty = 1, note = '') => {
     setCart(prev => {
-      const existing = prev.find(c => c.itemId === item.id);
+      const existing = prev.find(c => c.itemId === item.id || c.itemId === item._id);
+      const itemId = item.id || item._id;
       if (existing) {
-        return prev.map(c => c.itemId === item.id ? { ...c, qty: c.qty + qty } : c);
+        return prev.map(c => c.itemId === itemId ? { ...c, qty: c.qty + qty } : c);
       }
-      return [...prev, { itemId: item.id, name: item.name, price: item.price, qty, note, isVeg: item.isVeg }];
+      return [...prev, { itemId, name: item.name, price: item.price, qty, note, isVeg: item.isVeg }];
     });
   }, []);
 
@@ -47,13 +66,48 @@ export function AppProvider({ children }) {
   const cartTotal = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
 
   const signOut = useCallback(() => {
+    api.auth.logout();
     setUser(null);
+    setActiveRestaurant(null);
     setCart([]);
     setActiveSession(null);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('restaurant');
+      localStorage.removeItem('activeSession');
+    }
   }, []);
 
-  const signIn = useCallback((userData) => {
-    setUser(userData || mockUser);
+  const signIn = useCallback((userData, token) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
+      
+      if (userData.restaurantId) {
+        // Fetch full restaurant details if they belong to one
+        api.restaurant.getById(userData.restaurantId)
+          .then(data => {
+            if (data.success) {
+              localStorage.setItem('restaurant', JSON.stringify(data.restaurant));
+              setActiveRestaurant(data.restaurant);
+            }
+          })
+          .catch(console.error);
+      }
+    }
+  }, []);
+
+  const saveActiveSession = useCallback((session) => {
+    setActiveSession(session);
+    if (typeof window !== 'undefined') {
+      if (session) {
+        localStorage.setItem('activeSession', JSON.stringify(session));
+      } else {
+        localStorage.removeItem('activeSession');
+      }
+    }
   }, []);
 
   return (
@@ -61,8 +115,9 @@ export function AppProvider({ children }) {
       user, setUser, signIn, signOut,
       activeRestaurant, setActiveRestaurant,
       cart, addToCart, updateCartQty, clearCart, cartCount, cartTotal,
-      activeSession, setActiveSession,
+      activeSession, setActiveSession: saveActiveSession,
       sidebarOpen, setSidebarOpen,
+      loading,
     }}>
       {children}
     </AppContext.Provider>

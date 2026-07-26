@@ -97,6 +97,7 @@ const restaurantSchema = new mongoose.Schema(
       membershipEnabled: { type: Boolean, default: true },
       aiEnabled: { type: Boolean, default: true },
       requireGuestSignIn: { type: Boolean, default: false },
+      qrBaseUrl: { type: String, default: '' },
     },
 
     // ─── Stats (cached) ───────────────────────────

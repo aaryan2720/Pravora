@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { UserCheck, Blend, QrCode, ChevronRight } from 'lucide-react';
 
 const models = [
@@ -44,6 +44,12 @@ const colorMap = {
 
 export default function ServiceModelPage() {
   const [selected, setSelected] = useState('hybrid');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('onboarding_service-model', selected);
+    }
+  }, [selected]);
 
   return (
     <div className="animate-fadeInUp">

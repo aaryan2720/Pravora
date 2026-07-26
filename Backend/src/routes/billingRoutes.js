@@ -7,10 +7,10 @@ const { asyncHandler } = require('../middleware/errorHandler');
 // Get bill: public (customer can view their bill by sessionId)
 router.get('/:sessionId', optionalAuth, asyncHandler(getBill));
 
-// Generate bill: staff or system
-router.post('/generate', protect, tenantGuard, restrictTo('owner', 'manager', 'waiter', 'front_desk'), asyncHandler(generateBill));
+// Generate bill: staff or customer
+router.post('/generate', optionalAuth, tenantGuard, asyncHandler(generateBill));
 
-// Mark paid: staff only
-router.patch('/:billId/pay', protect, tenantGuard, restrictTo('owner', 'manager', 'waiter', 'front_desk'), asyncHandler(markPaid));
+// Mark paid: staff or customer guest
+router.patch('/:billId/pay', protect, tenantGuard, asyncHandler(markPaid));
 
 module.exports = router;

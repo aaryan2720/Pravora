@@ -1,17 +1,26 @@
 'use client';
-import { Bell, Search, Zap } from 'lucide-react';
+import { Bell, Search, Zap, Menu } from 'lucide-react';
 import { Avatar, Badge } from '@/components/ui';
 import { useApp } from '@/lib/context/AppContext';
 import { mockPulse } from '@/lib/mockData';
 
 export default function DashboardHeader({ title = 'Dashboard', subtitle }) {
-  const { user } = useApp();
+  const { user, sidebarOpen, setSidebarOpen } = useApp();
   return (
-    <header className="h-16 border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm flex items-center px-6 gap-4 flex-shrink-0">
+    <header className="h-16 border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm flex items-center px-4 sm:px-6 gap-3 sm:gap-4 flex-shrink-0">
+      {/* Mobile Hamburger toggle */}
+      <button 
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="md:hidden p-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-slate-200 hover:bg-slate-750 transition-all cursor-pointer flex-shrink-0"
+        title="Toggle Menu"
+      >
+        <Menu size={18} />
+      </button>
+
       {/* Title */}
       <div className="flex-1 min-w-0">
-        <h1 className="text-lg font-bold text-white truncate" style={{ fontFamily: 'Outfit, sans-serif' }}>{title}</h1>
-        {subtitle && <p className="text-xs text-slate-500 truncate">{subtitle}</p>}
+        <h1 className="text-base sm:text-lg font-bold text-white truncate" style={{ fontFamily: 'Outfit, sans-serif' }}>{title}</h1>
+        {subtitle && <p className="text-[10px] sm:text-xs text-slate-500 truncate">{subtitle}</p>}
       </div>
 
       {/* Rush indicator */}

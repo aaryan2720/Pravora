@@ -57,12 +57,17 @@ const placeOrder = async (req, res) => {
   const order = await Order.create({
     restaurantId: restaurantId || session.restaurantId,
     sessionId,
-    tableId,
-    tableLabel,
+    tableId: tableId || session.tableId,
+    tableLabel: tableLabel || session.tableLabel,
     items: enrichedItems,
     subtotal,
     guestNote: guestNote || '',
   });
+
+  // Auto-associate guestId if they placed an order while authenticated
+  if (req.guest?._id && !session.guestId) {
+    session.guestId = req.guest._id;
+  }
 
   // Update session totals
   session.totalOrders += 1;

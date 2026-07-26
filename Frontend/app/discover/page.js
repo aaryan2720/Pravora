@@ -1,69 +1,88 @@
 'use client';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, MapPin, Star, Clock, Zap, ChevronRight, QrCode } from 'lucide-react';
 import { mockDiscoveryRestaurants } from '@/lib/mockData';
+import { api } from '@/lib/api';
 import PublicNav from '@/components/layout/PublicNav';
 import { Badge, Card, Button } from '@/components/ui';
 
 const cuisineFilters = ['All', 'Indian', 'Pan-Asian', 'Mediterranean', 'BBQ', 'Quick Service'];
 
 function RestaurantCard({ r }) {
-  const rushColor = r.rushLevel > 70 ? 'text-rose-400' : r.rushLevel > 40 ? 'text-amber-400' : 'text-emerald-400';
+  const isLive = r.isLive;
+  const rating = r.rating || r.avgRating || 4.5;
+  const reviews = r.reviews || r.totalReviews || 120;
+  const cuisineStr = Array.isArray(r.cuisine) ? r.cuisine.join(' · ') : (r.cuisine || 'Cuisine');
+  const city = r.location?.city || r.location || 'Location';
+  const typeTag = r.type ? r.type.replace('_', ' ') : 'dining';
+  const tags = r.tags || [typeTag, r.serviceModel || 'hybrid'];
+
   return (
     <Link href={`/r/${r.slug}`}>
-      <Card hover className="overflow-hidden group">
-        {/* Cover */}
-        <div className="h-40 bg-slate-800 relative overflow-hidden flex items-center justify-center">
-          <div className="text-5xl opacity-20 group-hover:scale-110 transition-transform duration-500">🍽️</div>
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+      <Card hover className="overflow-hidden group bg-slate-900 border-slate-800">
+        {/* Cover Banner */}
+        <div className="h-36 bg-slate-800 relative overflow-hidden flex items-center justify-center">
+          {r.coverImage ? (
+            <img src={r.coverImage} alt={r.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          ) : (
+            <div className="text-5xl opacity-10 group-hover:scale-110 transition-transform duration-500">🍽️</div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+          
+          {/* Status badges */}
           <div className="absolute top-3 left-3 flex gap-2">
-            {r.isLive ? (
-              <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-xs font-semibold text-emerald-400">
+            {isLive ? (
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-[10px] font-bold text-emerald-400">
                 <span className="status-dot live" />
                 Open
               </div>
             ) : (
-              <div className="px-2 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-xs text-slate-500">Closed</div>
+              <div className="px-2 py-0.5 rounded-full bg-slate-800/80 border border-slate-700 text-[10px] font-bold text-slate-500">Closed</div>
             )}
           </div>
-          <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-slate-900/80 border border-slate-700 text-xs font-bold text-slate-300">
-            {r.priceRange}
+          
+          <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-slate-950/70 border border-slate-800 text-[10px] font-bold text-slate-300">
+            {r.priceRange || '₹₹'}
           </div>
-          <div className="absolute bottom-3 right-3 text-xs text-slate-400 flex items-center gap-1">
-            <MapPin size={11} /> {r.distance}
+
+          {/* Overlapping Logo */}
+          <div className="absolute -bottom-6 left-4 z-10 w-14 h-14 rounded-xl overflow-hidden border-[3px] border-slate-900 bg-slate-800 shadow-lg flex items-center justify-center">
+            {r.logo ? (
+              <img src={r.logo} alt={r.name} className="w-full h-full object-contain" />
+            ) : (
+              <span className="text-lg font-black text-amber-500" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                {r.name?.charAt(0).toUpperCase() || 'R'}
+              </span>
+            )}
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-4">
+        <div className="p-4 pt-8">
           <div className="flex items-start justify-between mb-1">
-            <h3 className="font-bold text-white text-base group-hover:text-amber-400 transition-colors" style={{ fontFamily: 'Outfit, sans-serif' }}>{r.name}</h3>
-            <div className="flex items-center gap-1 text-xs font-semibold flex-shrink-0 ml-2">
+            <h3 className="font-bold text-white text-base group-hover:text-amber-400 transition-colors truncate max-w-[170px]" style={{ fontFamily: 'Outfit, sans-serif' }}>
+              {r.name}
+            </h3>
+            <div className="flex items-center gap-1 text-xs font-semibold flex-shrink-0">
               <Star size={11} className="text-amber-400 fill-amber-400" />
-              <span className="text-slate-300">{r.rating}</span>
-              <span className="text-slate-600">({r.reviews})</span>
+              <span className="text-slate-300">{rating}</span>
+              <span className="text-slate-500">({reviews})</span>
             </div>
           </div>
-          <p className="text-xs text-slate-500 mb-2">{r.cuisine}</p>
+          <p className="text-xs text-slate-500 mb-2 truncate">{cuisineStr}</p>
 
-          {/* Rush + location */}
-          <div className="flex items-center gap-3 mb-3 text-xs">
-            <span className="flex items-center gap-1 text-slate-500">
-              <MapPin size={11} /> {r.location}
+          {/* Location */}
+          <div className="flex items-center gap-3 mb-3 text-xs text-slate-500">
+            <span className="flex items-center gap-1 truncate">
+              <MapPin size={11} /> {city}
             </span>
-            {r.isLive && (
-              <span className={`flex items-center gap-1 ${rushColor}`}>
-                <Zap size={11} />
-                {r.rushLevel > 70 ? 'Very Busy' : r.rushLevel > 40 ? 'Moderate' : 'Quiet'}
-              </span>
-            )}
           </div>
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-1.5">
-            {r.tags.map(t => (
-              <span key={t} className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-800 border border-slate-700 text-slate-400 capitalize">{t}</span>
+          <div className="flex flex-wrap gap-1">
+            {tags.slice(0, 2).map(t => (
+              <span key={t} className="px-2 py-0.5 rounded-full text-[9px] font-medium bg-slate-800/80 border border-slate-800 text-slate-400 capitalize">{t}</span>
             ))}
           </div>
         </div>
@@ -73,12 +92,37 @@ function RestaurantCard({ r }) {
 }
 
 export default function DiscoverPage() {
+  const [restaurants, setRestaurants] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [cuisine, setCuisine] = useState('All');
 
-  const filtered = mockDiscoveryRestaurants.filter(r => {
-    const matchSearch = !search || r.name.toLowerCase().includes(search.toLowerCase()) || r.cuisine.toLowerCase().includes(search.toLowerCase());
-    const matchCuisine = cuisine === 'All' || r.cuisine.toLowerCase().includes(cuisine.toLowerCase());
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const res = await api.restaurant.list();
+        if (res.success && res.restaurants?.length > 0) {
+          setRestaurants(res.restaurants);
+        } else {
+          setRestaurants(mockDiscoveryRestaurants);
+        }
+      } catch (err) {
+        console.error(err);
+        setRestaurants(mockDiscoveryRestaurants);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRestaurants();
+  }, []);
+
+  const filtered = restaurants.filter(r => {
+    const cuisineStr = Array.isArray(r.cuisine) ? r.cuisine.join(' ') : (r.cuisine || '');
+    const matchSearch = !search || 
+      r.name.toLowerCase().includes(search.toLowerCase()) || 
+      cuisineStr.toLowerCase().includes(search.toLowerCase());
+    const matchCuisine = cuisine === 'All' || 
+      cuisineStr.toLowerCase().includes(cuisine.toLowerCase());
     return matchSearch && matchCuisine;
   });
 
@@ -132,7 +176,7 @@ export default function DiscoverPage() {
 
           {/* Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filtered.map(r => <RestaurantCard key={r.id} r={r} />)}
+            {filtered.map(r => <RestaurantCard key={r._id || r.id} r={r} />)}
           </div>
 
         {filtered.length === 0 && (

@@ -1,6 +1,7 @@
 import { Inter, Outfit } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'react-hot-toast';
+import { AppProvider } from '@/lib/context/AppContext';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit', weight: ['400','500','600','700','800','900'] });
@@ -23,7 +24,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`} data-scroll-behavior="smooth">
       <body>
-        {children}
+        <AppProvider>
+          {children}
+        </AppProvider>
         <Toaster
           position="top-right"
           toastOptions={{

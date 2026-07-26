@@ -60,4 +60,25 @@ const toggleFavorite = async (req, res) => {
   return successResponse(res, { favorites: membership.favorites }, 'Favorites updated');
 };
 
-module.exports = { getCustomers, getCustomerProfile, toggleFavorite };
+const getMyMemberships = async (req, res) => {
+  const guestId = req.guest?._id || req.user?._id;
+  if (!guestId) {
+    return res.status(401).json({ success: false, message: 'Customer account not found.' });
+  }
+
+  // Find all memberships for this guest, populating the restaurant branding details
+  const memberships = await Membership.find({ guestId })
+    .populate('restaurantId', 'name slug logo brandColor coverImage type')
+    .lean();
+
+  // Find recent bills for this guest across any restaurant
+  const bills = await Bill.find({ guestId })
+    .sort('-createdAt')
+    .limit(10)
+    .populate('restaurantId', 'name slug logo brandColor')
+    .lean();
+
+  return successResponse(res, { memberships, recentBills: bills }, 'Guest memberships retrieved');
+};
+
+module.exports = { getCustomers, getCustomerProfile, toggleFavorite, getMyMemberships };

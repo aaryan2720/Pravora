@@ -1,8 +1,14 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sparkles } from 'lucide-react';
 export default function AIPage() {
   const [s, setS] = useState({ aiEnabled: true, demandForecast: true, menuSuggestions: true, operationalAlerts: true, managerSummaries: true, lowStockAlerts: true, historyData: false });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('onboarding_ai', JSON.stringify(s));
+    }
+  }, [s]);
   const T = ({ label, desc, k }) => (
     <label className="flex items-center justify-between py-3 border-b border-slate-800 cursor-pointer">
       <div><p className="text-sm font-medium text-slate-200">{label}</p><p className="text-xs text-slate-600">{desc}</p></div>

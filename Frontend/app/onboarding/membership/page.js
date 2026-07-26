@@ -1,7 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 export default function MembershipPage() {
   const [s, setS] = useState({ membership: true, signIn: true, visitHistory: true, favorites: true, offers: true, recommendations: true });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('onboarding_membership', JSON.stringify(s));
+    }
+  }, [s]);
   const T = ({ label, desc, k }) => (
     <label className="flex items-center justify-between py-3 border-b border-slate-800 cursor-pointer">
       <div><p className="text-sm font-medium text-slate-200">{label}</p><p className="text-xs text-slate-600">{desc}</p></div>

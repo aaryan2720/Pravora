@@ -52,6 +52,5 @@ const tableSchema = new mongoose.Schema(
 
 // Compound index: fast lookup of all tables for a restaurant
 tableSchema.index({ restaurantId: 1, label: 1 });
-tableSchema.index({ qrToken: 1 });
 
 module.exports = mongoose.model('Table', tableSchema);

@@ -35,13 +35,34 @@ connectDB();
 app.use(helmet());
 
 // CORS — allow frontend origin
+const getLocalOrigins = () => {
+  const os = require('os');
+  const interfaces = os.networkInterfaces();
+  const origins = [];
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        origins.push(`http://${iface.address}:3000`);
+      }
+    }
+  }
+  return origins;
+};
+
+const parsedEnvOrigins = process.env.FRONTEND_URL 
+  ? (process.env.FRONTEND_URL.includes(',') ? process.env.FRONTEND_URL.split(',') : [process.env.FRONTEND_URL])
+  : ['http://localhost:3000'];
+
+const corsOrigin = [
+  ...parsedEnvOrigins,
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  ...getLocalOrigins()
+];
+
 app.use(
   cors({
-    origin: [
-      process.env.FRONTEND_URL || 'http://localhost:3000',
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-    ],
+    origin: corsOrigin,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],

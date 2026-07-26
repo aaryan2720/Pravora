@@ -142,6 +142,47 @@ const uploadCover = async (req, res) => {
     return res.status(500).json({ success: false, message: 'Image upload failed.', error: err.message });
   }
 };
+const getStaff = async (req, res) => {
+  const User = require('../models/User');
+  const staff = await User.find({ restaurantId: req.restaurantId }).select('-passwordHash -refreshToken').lean();
+  return successResponse(res, { staff }, 'Staff list retrieved');
+};
+
+const addStaff = async (req, res) => {
+  const User = require('../models/User');
+  const { name, email, phone, role, password } = req.body;
+
+  const existing = await User.findOne({ email });
+  if (existing) {
+    return res.status(400).json({ success: false, message: 'A user with this email already exists.' });
+  }
+
+  const staff = await User.create({
+    name,
+    email,
+    phone: phone || null,
+    role: role || 'waiter',
+    passwordHash: password || '123456',
+    restaurantId: req.restaurantId,
+    isVerified: true
+  });
+
+  return successResponse(res, { staff }, 'Staff member added', 201);
+};
+
+const deleteStaff = async (req, res) => {
+  const User = require('../models/User');
+  const member = await User.findOneAndDelete({ _id: req.params.id, restaurantId: req.restaurantId });
+  if (!member) {
+    return res.status(404).json({ success: false, message: 'Staff member not found.' });
+  }
+
+  if (member._id.toString() === req.user._id.toString()) {
+    return res.status(400).json({ success: false, message: 'You cannot delete your own account.' });
+  }
+
+  return successResponse(res, {}, 'Staff member removed');
+};
 
 module.exports = {
   listRestaurants,
@@ -151,4 +192,7 @@ module.exports = {
   toggleLive,
   uploadLogo,
   uploadCover,
+  getStaff,
+  addStaff,
+  deleteStaff,
 };

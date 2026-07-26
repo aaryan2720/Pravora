@@ -14,8 +14,13 @@ const createSession = async (req, res) => {
 
   if (table.status === 'occupied') {
     // Return the existing active session
-    const existing = await TableSession.findOne({ tableId, status: 'active' }).lean();
+    const existing = await TableSession.findOne({ tableId, status: 'active' });
     if (existing) {
+      // Auto-associate guestId if they signed in/registered after starting
+      if (guestId && !existing.guestId) {
+        existing.guestId = guestId;
+        await existing.save();
+      }
       return successResponse(res, { session: existing, isExisting: true }, 'Resumed existing session');
     }
   }
@@ -57,7 +62,7 @@ const getSession = async (req, res) => {
 const getActiveSessions = async (req, res) => {
   const sessions = await TableSession.find({
     restaurantId: req.restaurantId,
-    status: 'active',
+    status: { $in: ['active', 'billing'] },
   })
     .populate('tableId', 'label seats')
     .sort('startedAt')
