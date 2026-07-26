@@ -47,14 +47,14 @@ const sendWelcomeEmail = async (user) => {
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #f59e0b;">Welcome to ServeLoop, ${user.name}!</h2>
         <p>Your restaurant account has been created. Start by completing your onboarding setup to go live.</p>
-        <a href="${process.env.FRONTEND_URL}/onboarding" 
+        <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/onboarding" 
            style="display:inline-block;background:#f59e0b;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">
           Complete Setup
         </a>
         <p style="color:#888;margin-top:24px;font-size:12px;">ServeLoop — Smart Restaurant Operations</p>
       </div>
     `,
-    text: `Welcome to ServeLoop, ${user.name}! Complete your setup at ${process.env.FRONTEND_URL}/onboarding`,
+    text: `Welcome to ServeLoop, ${user.name}! Complete your setup at ${process.env.FRONTEND_URL || 'http://localhost:3000'}/onboarding`,
   });
 };
 
