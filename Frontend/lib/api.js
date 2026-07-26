@@ -2,8 +2,9 @@ let BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 if (typeof window !== 'undefined') {
   const hostname = window.location.hostname;
-  // If accessed via an IPv4 address, dynamically route API requests to port 5000 on the same host machine
-  if (hostname !== 'localhost' && hostname !== '127.0.0.1' && hostname.match(/^[0-9.]+$/)) {
+  const isLocalUrl = !process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_URL.includes('localhost') || process.env.NEXT_PUBLIC_API_URL.includes('127.0.0.1');
+  // If accessed via an IPv4 address and using a local API URL, dynamically route API requests to port 5000 on the same host machine
+  if (isLocalUrl && hostname !== 'localhost' && hostname !== '127.0.0.1' && hostname.match(/^[0-9.]+$/)) {
     BASE_URL = `${window.location.protocol}//${hostname}:5000/api`;
   }
 }
