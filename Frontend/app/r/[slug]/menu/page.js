@@ -80,7 +80,7 @@ function CartSummary({ slug, tableId }) {
 }
 
 export default function MenuPage({ params }) {
-  const { activeRestaurant, activeSession } = useApp();
+  const { activeRestaurant, setActiveRestaurant, activeSession } = useApp();
   const unwrappedParams = use(params);
   const slug = unwrappedParams?.slug || 'spice-garden';
   const tableId = unwrappedParams?.tableId || activeSession?.tableId || 'tbl_1';
@@ -92,9 +92,23 @@ export default function MenuPage({ params }) {
 
   useEffect(() => {
     const fetchMenu = async () => {
-      if (!activeRestaurant?._id) return;
       try {
-        const res = await api.menu.getPublic(activeRestaurant._id);
+        let restaurantId = activeRestaurant?._id;
+        
+        // Fetch restaurant metadata if context is empty (e.g., direct page load/refresh)
+        if (!restaurantId) {
+          const restRes = await api.restaurant.getBySlug(slug);
+          if (restRes.success && restRes.restaurant) {
+            restaurantId = restRes.restaurant._id;
+            setActiveRestaurant(restRes.restaurant);
+          } else {
+            toast.error('Restaurant details not found.');
+            setLoading(false);
+            return;
+          }
+        }
+
+        const res = await api.menu.getPublic(restaurantId);
         if (res.success && res.menu) {
           // Parse categories and items from backend grouped menu structure
           const cats = res.menu.map(c => ({ id: c._id, name: c.name, icon: c.icon || '🍛' }));
@@ -109,8 +123,8 @@ export default function MenuPage({ params }) {
         setLoading(false);
       }
     };
-    fetchMenu();
-  }, [activeRestaurant]);
+    if (slug) fetchMenu();
+  }, [activeRestaurant, slug]);
 
   if (loading) {
     return (

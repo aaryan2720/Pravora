@@ -72,37 +72,43 @@ export default function PulseDashboard() {
   const [todayStats, setTodayStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadPulseData = async () => {
-      try {
-        // Run concurrent fetches for fast mount loading
-        const [pulseRes, ordersRes, tablesRes, weekRes, todayRes] = await Promise.all([
-          api.analytics.getPulse(),
-          api.orders.list('limit=10'),
-          api.tables.list(),
-          api.analytics.getWeek(),
-          api.analytics.getToday()
-        ]);
+  const loadPulseData = async (showLoading = false) => {
+    if (showLoading) setLoading(true);
+    try {
+      // Run concurrent fetches for fast mount loading
+      const [pulseRes, ordersRes, tablesRes, weekRes, todayRes] = await Promise.all([
+        api.analytics.getPulse(),
+        api.orders.list('limit=10'),
+        api.tables.list(),
+        api.analytics.getWeek(),
+        api.analytics.getToday()
+      ]);
 
-        if (pulseRes.success) setPulse(pulseRes.pulse);
-        if (ordersRes.success) setOrders(ordersRes.orders);
-        if (tablesRes.success) setTables(tablesRes.tables);
-        if (todayRes.success) setTodayStats(todayRes.today);
-        
-        if (weekRes.success && weekRes.week) {
-          const formatted = weekRes.week.labels.map((label, i) => ({
-            label,
-            revenue: weekRes.week.revenue[i] || 0
-          }));
-          setWeekChart(formatted);
-        }
-      } catch (err) {
-        console.error('Failed to load pulse metrics:', err);
-      } finally {
-        setLoading(false);
+      if (pulseRes.success) setPulse(pulseRes.pulse);
+      if (ordersRes.success) setOrders(ordersRes.orders);
+      if (tablesRes.success) setTables(tablesRes.tables);
+      if (todayRes.success) setTodayStats(todayRes.today);
+      
+      if (weekRes.success && weekRes.week) {
+        const formatted = weekRes.week.labels.map((label, i) => ({
+          label,
+          revenue: weekRes.week.revenue[i] || 0
+        }));
+        setWeekChart(formatted);
       }
-    };
-    loadPulseData();
+    } catch (err) {
+      console.error('Failed to load pulse metrics:', err);
+    } finally {
+      if (showLoading) setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPulseData(true);
+    const interval = setInterval(() => {
+      loadPulseData(false);
+    }, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {

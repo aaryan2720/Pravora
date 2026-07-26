@@ -15,6 +15,8 @@ export default function InventoryPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [activeTab, setActiveTab] = useState('single'); // single | bulk
+  const [dragging, setDragging] = useState(false);
   const [form, setForm] = useState({ name: '', unit: 'kg', current: 10, min: 5, max: 20, notes: '' });
 
   const fetchInventory = async (showLoading = false) => {
@@ -29,6 +31,121 @@ export default function InventoryPage() {
     } finally {
       if (showLoading) setLoading(false);
     }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setDragging(false);
+  };
+
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    setDragging(false);
+    
+    const file = e.dataTransfer.files?.[0];
+    if (!file) return;
+    
+    if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+      toast.error('Please upload a valid CSV file.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const csvText = event.target.result;
+      await parseAndImportCSV(csvText);
+    };
+    reader.readAsText(file);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+      toast.error('Please upload a valid CSV file.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const csvText = event.target.result;
+      await parseAndImportCSV(csvText);
+    };
+    reader.readAsText(file);
+  };
+
+  const parseAndImportCSV = async (text) => {
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    if (lines.length < 2) {
+      toast.error('The CSV file is empty or lacks data rows.');
+      return;
+    }
+
+    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+    const nameIndex = headers.indexOf('name');
+    const unitIndex = headers.indexOf('unit');
+    const currentIndex = headers.indexOf('current');
+    const minIndex = headers.indexOf('min');
+    const maxIndex = headers.indexOf('max');
+    const notesIndex = headers.indexOf('notes');
+
+    if (nameIndex === -1 || unitIndex === -1) {
+      toast.error('CSV must contain "Name" and "Unit" columns at a minimum.');
+      return;
+    }
+
+    toast.loading('Importing inventory items...', { id: 'csv-import' });
+    let successCount = 0;
+    let failCount = 0;
+
+    for (let i = 1; i < lines.length; i++) {
+      const row = lines[i].split(',').map(field => field.replace(/^["']|["']$/g, '').trim());
+      const name = row[nameIndex];
+      const unit = row[unitIndex] || 'kg';
+      
+      if (!name) {
+        failCount++;
+        continue;
+      }
+
+      const current = currentIndex !== -1 ? Number(row[currentIndex]) || 0 : 10;
+      const min = minIndex !== -1 ? Number(row[minIndex]) || 5 : 5;
+      const max = maxIndex !== -1 ? Number(row[maxIndex]) || 20 : 20;
+      const notes = notesIndex !== -1 ? row[notesIndex] || '' : '';
+
+      try {
+        await api.inventory.create({ name, unit, current, min, max, notes });
+        successCount++;
+      } catch (err) {
+        console.error('Failed to import CSV row:', name, err);
+        failCount++;
+      }
+    }
+
+    toast.dismiss('csv-import');
+    if (successCount > 0) {
+      toast.success(`Successfully imported ${successCount} inventory items! 🎉`);
+      fetchInventory(false);
+    }
+    if (failCount > 0) {
+      toast.error(`Failed to import ${failCount} rows. Please review format.`);
+    }
+  };
+
+  const handleDownloadCSVTemplate = () => {
+    const csvContent = "data:text/csv;charset=utf-8,Name,Unit,Current,Min,Max,Notes\nRice,kg,50,10,100,Basmati Stock\nMilk,liters,20,5,30,Organic Fresh Milk\nSalt,packets,8,2,15,Table Salt";
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "inventory_template.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   useEffect(() => {
@@ -150,41 +267,108 @@ export default function InventoryPage() {
 
       {/* Form modal or panel */}
       {showAddForm && (
-        <form onSubmit={handleCreateItem} className="mb-6 p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm animate-fadeIn">
-          <p className="text-sm font-bold text-slate-200 mb-4 uppercase tracking-wider text-[11px]">Create New Stock Item</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 mb-4">
-            <div className="md:col-span-2">
-              <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Item Name *</label>
-              <input required className="input-base text-sm" placeholder="e.g. Cheese, Milk, Rice" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
-            </div>
-            <div>
-              <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Unit *</label>
-              <input required className="input-base text-sm" placeholder="e.g. kg, L, boxes" value={form.unit} onChange={e => setForm({...form, unit: e.target.value})} />
-            </div>
-            <div>
-              <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Current Stock</label>
-              <input type="number" required className="input-base text-sm" min={0} value={form.current} onChange={e => setForm({...form, current: e.target.value})} />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Min Threshold</label>
-                <input type="number" required className="input-base text-sm" min={0} value={form.min} onChange={e => setForm({...form, min: e.target.value})} />
+        <div className="mb-6 p-5 rounded-2xl bg-slate-900 border border-slate-800 shadow-sm animate-fadeIn">
+          {/* Tab Selection */}
+          <div className="flex gap-2 border-b border-slate-800 pb-3 mb-4">
+            <button
+              type="button"
+              onClick={() => setActiveTab('single')}
+              className={`pb-2 px-1 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer ${
+                activeTab === 'single'
+                  ? 'border-amber-500 text-amber-500'
+                  : 'border-transparent text-slate-500 hover:text-slate-300'
+              }`}
+            >
+              Single Item
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('bulk')}
+              className={`pb-2 px-1 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer ${
+                activeTab === 'bulk'
+                  ? 'border-amber-500 text-amber-500'
+                  : 'border-transparent text-slate-500 hover:text-slate-300'
+              }`}
+            >
+              Bulk CSV Import
+            </button>
+          </div>
+
+          {activeTab === 'single' ? (
+            <form onSubmit={handleCreateItem}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+                <div className="md:col-span-2">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Item Name *</label>
+                  <input required className="input-base text-sm" placeholder="e.g. Cheese, Milk, Rice" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Unit *</label>
+                  <input required className="input-base text-sm" placeholder="e.g. kg, L, boxes" value={form.unit} onChange={e => setForm({...form, unit: e.target.value})} />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Current Stock</label>
+                  <input type="number" required className="input-base text-sm" min={0} value={form.current} onChange={e => setForm({...form, current: e.target.value})} />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Min Threshold</label>
+                    <input type="number" required className="input-base text-sm" min={0} value={form.min} onChange={e => setForm({...form, min: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Max Level</label>
+                    <input type="number" required className="input-base text-sm" min={1} value={form.max} onChange={e => setForm({...form, max: e.target.value})} />
+                  </div>
+                </div>
               </div>
               <div>
-                <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Max Level</label>
-                <input type="number" required className="input-base text-sm" min={1} value={form.max} onChange={e => setForm({...form, max: e.target.value})} />
+                <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Notes (optional)</label>
+                <input className="input-base text-sm mb-4" placeholder="e.g. Keep refrigerated" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button type="button" variant="secondary" size="sm" onClick={() => setShowAddForm(false)}>Cancel</Button>
+                <Button type="submit" variant="primary" size="sm">Create Item</Button>
+              </div>
+            </form>
+          ) : (
+            <div className="space-y-4">
+              <div 
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => document.getElementById('csv-file-input').click()}
+                className={`p-8 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-3 cursor-pointer transition-all ${
+                  dragging 
+                    ? 'border-amber-500 bg-amber-500/10' 
+                    : 'border-slate-800 bg-slate-900/60 hover:border-slate-700 hover:bg-slate-900'
+                }`}
+              >
+                <Package size={28} className={dragging ? 'text-amber-400 animate-bounce' : 'text-slate-500'} />
+                <div className="text-center">
+                  <p className="text-sm font-bold text-slate-200">Drag & drop your CSV file here, or click to browse</p>
+                  <p className="text-xs text-slate-500 mt-1">Expected columns: Name, Unit, Current, Min, Max, Notes</p>
+                </div>
+                <input 
+                  id="csv-file-input" 
+                  type="file" 
+                  accept=".csv" 
+                  onChange={handleFileChange} 
+                  className="hidden" 
+                />
+              </div>
+
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span className="flex items-center gap-1.5"><Info size={13} className="text-slate-400" /> Format example: <code>Name,Unit,Current,Min,Max,Notes</code></span>
+                <button 
+                  type="button" 
+                  onClick={handleDownloadCSVTemplate}
+                  className="text-amber-500 hover:text-amber-400 font-semibold cursor-pointer"
+                >
+                  Download CSV Template
+                </button>
               </div>
             </div>
-          </div>
-          <div>
-            <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Notes (optional)</label>
-            <input className="input-base text-sm mb-4" placeholder="e.g. Keep refrigerated" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
-          </div>
-          <div className="flex gap-2 justify-end">
-            <Button type="button" variant="secondary" size="sm" onClick={() => setShowAddForm(false)}>Cancel</Button>
-            <Button type="submit" variant="primary" size="sm">Create Item</Button>
-          </div>
-        </form>
+          )}
+        </div>
       )}
 
       {/* Inventory table */}

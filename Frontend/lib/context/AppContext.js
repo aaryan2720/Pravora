@@ -99,6 +99,17 @@ export function AppProvider({ children }) {
     }
   }, []);
 
+  const saveActiveRestaurant = useCallback((restaurant) => {
+    setActiveRestaurant(restaurant);
+    if (typeof window !== 'undefined') {
+      if (restaurant) {
+        localStorage.setItem('restaurant', JSON.stringify(restaurant));
+      } else {
+        localStorage.removeItem('restaurant');
+      }
+    }
+  }, []);
+
   const saveActiveSession = useCallback((session) => {
     setActiveSession(session);
     if (typeof window !== 'undefined') {
@@ -113,7 +124,7 @@ export function AppProvider({ children }) {
   return (
     <AppContext.Provider value={{
       user, setUser, signIn, signOut,
-      activeRestaurant, setActiveRestaurant,
+      activeRestaurant, setActiveRestaurant: saveActiveRestaurant,
       cart, addToCart, updateCartQty, clearCart, cartCount, cartTotal,
       activeSession, setActiveSession: saveActiveSession,
       sidebarOpen, setSidebarOpen,

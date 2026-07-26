@@ -10,16 +10,22 @@ import { useApp } from '@/lib/context/AppContext';
 
 export default function TableEntryPage({ params }) {
   const router = useRouter();
-  const { setActiveSession, setActiveRestaurant } = useApp();
+  const { setActiveSession, setActiveRestaurant, user } = useApp();
   const unwrappedParams = use(params);
   const slug = unwrappedParams?.slug || 'spice-garden';
   const tableId = unwrappedParams?.tableId || '';
   
   const [restaurant, setRestaurant] = useState(null);
-  const [guestName, setGuestName] = useState('');
+  const [guestName, setGuestName] = useState(user?.name || '');
   const [guests, setGuests] = useState(2);
   const [loading, setLoading] = useState(false);
   const [loadingRestaurant, setLoadingRestaurant] = useState(true);
+
+  useEffect(() => {
+    if (user?.name) {
+      setGuestName(user.name);
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchRestaurant = async () => {
@@ -52,7 +58,8 @@ export default function TableEntryPage({ params }) {
         tableId,
         restaurantId: restaurant._id,
         guestCount: guests,
-        guestName: guestName.trim()
+        guestName: guestName.trim(),
+        guestId: user?._id || null
       });
 
       if (res.success) {

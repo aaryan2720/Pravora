@@ -27,16 +27,29 @@ export default function PublicNav() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-6">
-            {[
-              { href: '/about', label: 'How It Works' },
-              { href: '/pricing', label: 'Pricing' },
-              { href: '/discover', label: 'Explore' },
-            ].map(item => (
-              <Link key={item.href} href={item.href}
-                className="text-sm text-slate-400 hover:text-white transition-colors font-medium">
-                {item.label}
-              </Link>
-            ))}
+            {user && !user.role ? (
+              [
+                { href: '/discover', label: 'Explore Cafes' },
+                { href: '/customer/profile', label: 'Diner Circle' },
+                { href: '/scan', label: 'Scan QR' },
+              ].map(item => (
+                <Link key={item.href} href={item.href}
+                  className="text-sm text-slate-400 hover:text-white transition-colors font-medium">
+                  {item.label}
+                </Link>
+              ))
+            ) : (
+              [
+                { href: '/about', label: 'How It Works' },
+                { href: '/pricing', label: 'Pricing' },
+                { href: '/discover', label: 'Explore' },
+              ].map(item => (
+                <Link key={item.href} href={item.href}
+                  className="text-sm text-slate-400 hover:text-white transition-colors font-medium">
+                  {item.label}
+                </Link>
+              ))
+            )}
           </div>
 
           {/* CTA */}
@@ -95,16 +108,29 @@ export default function PublicNav() {
       {open && (
         <div className="md:hidden border-t border-slate-200 bg-white/95 backdrop-blur-xl">
           <div className="px-4 py-4 flex flex-col gap-3">
-            {[
-              { href: '/about', label: 'How It Works' },
-              { href: '/pricing', label: 'Pricing' },
-              { href: '/discover', label: 'Explore' },
-            ].map(item => (
-              <Link key={item.href} href={item.href} onClick={() => setOpen(false)}
-                className="text-slate-600 hover:text-slate-900 py-2 font-medium transition-colors">
-                {item.label}
-              </Link>
-            ))}
+            {user && !user.role ? (
+              [
+                { href: '/discover', label: 'Explore Cafes' },
+                { href: '/customer/profile', label: 'Diner Circle' },
+                { href: '/scan', label: 'Scan QR' },
+              ].map(item => (
+                <Link key={item.href} href={item.href} onClick={() => setOpen(false)}
+                  className="text-slate-600 hover:text-slate-900 py-2 font-medium transition-colors">
+                  {item.label}
+                </Link>
+              ))
+            ) : (
+              [
+                { href: '/about', label: 'How It Works' },
+                { href: '/pricing', label: 'Pricing' },
+                { href: '/discover', label: 'Explore' },
+              ].map(item => (
+                <Link key={item.href} href={item.href} onClick={() => setOpen(false)}
+                  className="text-slate-600 hover:text-slate-900 py-2 font-medium transition-colors">
+                  {item.label}
+                </Link>
+              ))
+            )}
             
             <div className="flex flex-col gap-2 mt-2 pt-3 border-t border-slate-200">
               {user ? (

@@ -9,7 +9,7 @@ const getReservations = async (req, res) => {
   const { limit, skip } = paginate(req.query);
   const filter = { restaurantId: req.restaurantId };
   if (date) filter.date = date;
-  else filter.date = getTodayDateString(); // default to today
+  else filter.date = { $gte: getTodayDateString() }; // Return today's and all future reservations by default
   if (status) filter.status = status;
 
   const [reservations, total] = await Promise.all([

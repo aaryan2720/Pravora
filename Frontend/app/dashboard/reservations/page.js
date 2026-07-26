@@ -48,6 +48,10 @@ export default function ReservationsPage() {
 
   useEffect(() => {
     fetchReservations(true);
+    const interval = setInterval(() => {
+      fetchReservations(false);
+    }, 3000);
+    return () => clearInterval(interval);
   }, [activeRestaurant]);
 
   const updateStatus = async (id, status) => {

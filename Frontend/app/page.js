@@ -1,9 +1,11 @@
 'use client';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { ChefHat, Zap, ArrowRight, CheckCircle2, Star, TrendingUp, QrCode, BarChart3, Users, Clock, Shield, Sparkles, ChevronRight, Play } from 'lucide-react';
+import { ChefHat, Zap, ArrowRight, CheckCircle2, Star, TrendingUp, QrCode, BarChart3, Users, Clock, Shield, Sparkles, ChevronRight, Play, MapPin } from 'lucide-react';
 import PublicNav from '@/components/layout/PublicNav';
 import { Button, Badge, Card } from '@/components/ui';
+import { useApp } from '@/lib/context/AppContext';
+import { api } from '@/lib/api';
 
 const features = [
   {
@@ -97,6 +99,245 @@ function AnimatedCounter({ target, suffix = '' }) {
 }
 
 export default function LandingPage() {
+  const { user, activeSession, activeRestaurant } = useApp();
+  const [restaurants, setRestaurants] = useState([]);
+  const [loadingRestaurants, setLoadingRestaurants] = useState(false);
+
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      setLoadingRestaurants(true);
+      try {
+        const res = await api.restaurant.list();
+        if (res.success) {
+          setRestaurants(res.restaurants || []);
+        }
+      } catch (err) {
+        console.error('Error fetching restaurants:', err);
+      } finally {
+        setLoadingRestaurants(false);
+      }
+    };
+    if (user && !user.role) {
+      fetchRestaurants();
+    }
+  }, [user]);
+
+  // If customer is logged in, show the personalized Diner Hub View
+  if (user && !user.role) {
+    const nearby = restaurants.filter(r => {
+      const city = r.location?.city?.toLowerCase() || '';
+      const address = r.location?.address?.toLowerCase() || '';
+      return city.includes('aurangabad') || city.includes('sambhajinagar') || address.includes('aurangabad') || address.includes('sambhajinagar');
+    });
+    const displayRestaurants = nearby.length > 0 ? nearby : restaurants;
+
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100">
+        <PublicNav />
+        
+        <main className="max-w-6xl mx-auto px-4 pt-28 pb-16 space-y-12">
+          {/* Header Block */}
+          <div className="relative overflow-hidden rounded-3xl p-8 border border-slate-800 bg-gradient-to-r from-amber-500/10 via-slate-900 to-slate-900/60 shadow-2xl">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold">
+                  <Sparkles size={11} className="animate-spin" />
+                  Diner Circle Active
+                </span>
+                <h1 className="text-3xl sm:text-4xl font-black text-white leading-tight" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  Hey, {user.name}! 🍽️
+                </h1>
+                <p className="text-slate-400 text-sm">
+                  Ready to explore Chhatrapati Sambhajinagar (Aurangabad) and earn loyalty perks?
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <Link href="/scan">
+                  <Button variant="primary" size="md" className="gap-2 font-bold shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                    <QrCode size={16} />
+                    Scan Table QR
+                  </Button>
+                </Link>
+                <Link href="/discover">
+                  <Button variant="secondary" size="md" className="font-bold border border-slate-700">
+                    Explore All
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Active Table Session Tracker */}
+          {activeSession && (
+            <div className="p-6 rounded-2xl border-2 border-emerald-500/20 bg-emerald-500/5 animate-pulse flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  Active Dining Session
+                </p>
+                <h3 className="text-lg font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  Dining at {activeRestaurant?.name || 'Restaurant'}, Table {activeSession.tableLabel || 'Table'}
+                </h3>
+                <p className="text-xs text-slate-400">Order from menu, view timeline, and checkout from your phone.</p>
+              </div>
+              <Link href={`/r/${activeRestaurant?.slug || 'scan'}/session/${activeSession.tableId?._id || activeSession.tableId}`}>
+                <Button variant="primary" size="md" className="bg-emerald-500 border-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold gap-2">
+                  Track Live Session
+                  <ArrowRight size={16} />
+                </Button>
+              </Link>
+            </div>
+          )}
+
+          {/* Nearby Aurangabad Swiper Row */}
+          <div className="space-y-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-extrabold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  Nearby in Chhatrapati Sambhajinagar 📍
+                </h2>
+                <p className="text-xs text-slate-500">Handpicked partners with direct ordering and loyalty points</p>
+              </div>
+            </div>
+
+            {loadingRestaurants ? (
+              <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="w-72 h-80 rounded-2xl bg-slate-900 border border-slate-800 animate-pulse flex-shrink-0" />
+                ))}
+              </div>
+            ) : displayRestaurants.length === 0 ? (
+              <div className="p-12 text-center rounded-2xl border border-slate-800 bg-slate-900/40 text-slate-500 text-sm">
+                No active partner restaurants found in your area yet.
+              </div>
+            ) : (
+              <div className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x">
+                {displayRestaurants.map(r => (
+                  <div key={r._id} className="w-72 flex-shrink-0 bg-slate-900 border border-slate-800/80 rounded-2xl overflow-hidden shadow-lg snap-start hover:border-amber-500/50 transition-all group flex flex-col justify-between">
+                    {/* Cover Banner */}
+                    <div className="relative h-36 w-full overflow-hidden">
+                      <img 
+                        src={r.coverImage || r.coverBanner || '/placeholder-cover.jpg'} 
+                        alt={r.name} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&auto=format&fit=crop&q=60'; }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+                      
+                      {/* Rating */}
+                      <span className="absolute top-3 right-3 px-2 py-0.5 rounded-lg bg-slate-950/80 border border-slate-800 text-xs font-bold text-amber-400 flex items-center gap-1">
+                        ★ {r.avgRating || '4.8'}
+                      </span>
+                    </div>
+
+                    {/* Logo & Info Panel */}
+                    <div className="p-5 pt-7 relative flex-1 flex flex-col justify-between">
+                      {/* Floating Overlapping Logo */}
+                      <div className="absolute -top-6 left-5 w-12 h-12 rounded-xl border-2 border-slate-900 bg-slate-800 overflow-hidden shadow-lg">
+                        <img 
+                          src={r.logo || '/favicon.svg'} 
+                          alt="logo" 
+                          className="w-full h-full object-cover"
+                          onError={(e) => { e.target.src = '/favicon.svg'; }}
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <h3 className="text-base font-black text-white truncate" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                          {r.name}
+                        </h3>
+                        <p className="text-xs text-slate-400 line-clamp-1">
+                          {r.cuisines?.join(', ') || 'Multi-Cuisine'}
+                        </p>
+                        <p className="text-[10px] text-slate-500 flex items-center gap-1">
+                          <MapPin size={10} /> {r.location?.city || 'Aurangabad'}
+                        </p>
+                      </div>
+
+                      <div className="pt-4">
+                        <Link href={`/r/${r.slug}/menu`}>
+                          <Button variant="secondary" size="sm" className="w-full font-bold border border-slate-800 bg-slate-950 hover:bg-slate-800 hover:text-white">
+                            View Menu & Dine
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Diner Footprint Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Loyalty Perks */}
+            <Card className="p-6 bg-slate-900 border-slate-800 flex flex-col justify-between h-44">
+              <div>
+                <h3 className="text-base font-black text-white mb-1" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  My Membership Perks 🎁
+                </h3>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Earn points automatically on checkouts. Redeem for special meals and cashback discounts at all partner restaurants.
+                </p>
+              </div>
+              <div className="flex justify-between items-center mt-4">
+                <div>
+                  <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Accumulated Points</p>
+                  <p className="text-xl font-black text-amber-500">1,240 XP</p>
+                </div>
+                <Link href="/customer/profile">
+                  <Button variant="glass" size="sm" className="text-xs font-bold">
+                    View Loyalty Profile
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+
+            {/* Quick QR Scanner Guide */}
+            <Card className="p-6 bg-slate-900 border-slate-800 flex flex-col justify-between h-44">
+              <div>
+                <h3 className="text-base font-black text-white mb-1" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  Self-Service Ordering ⚡
+                </h3>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Sitting at a partner cafe? Scan the table QR code to start a dynamic session. Order dishes instantly and get digital invoices.
+                </p>
+              </div>
+              <div className="mt-4">
+                <Link href="/scan">
+                  <Button variant="primary" size="sm" className="w-full font-bold gap-2">
+                    <QrCode size={14} />
+                    Open Web Camera Scanner
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+          </div>
+        </main>
+
+        {/* Footer */}
+        <footer className="border-t border-slate-900 bg-slate-950 py-12 px-4 text-center">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-sm text-slate-500">
+            <div className="flex items-center gap-2">
+              <img src="/favicon.svg" alt="ServeLoop" className="w-6 h-6 object-contain" />
+              <span className="font-bold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <span className="text-brand-orange text-xs">Serve</span><span className="text-brand-yellow text-xs">Loop</span>
+              </span>
+            </div>
+            <p className="text-xs">© 2025 ServeLoop. Serving partner cafes all over the world.</p>
+            <div className="flex gap-4">
+              <Link href="/about" className="hover:text-slate-300">About</Link>
+              <Link href="/discover" className="hover:text-slate-300">Explore</Link>
+              <Link href="/customer/profile" className="hover:text-slate-300">Profile</Link>
+            </div>
+          </div>
+        </footer>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-950">
       <PublicNav />

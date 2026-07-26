@@ -1,20 +1,59 @@
 'use client';
-import { useState, use } from 'react';
+import { useState, use, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ChefHat, CalendarDays, Clock, Users, ArrowRight, ChevronLeft } from 'lucide-react';
-import { mockRestaurant } from '@/lib/mockData';
 import { Button, Card } from '@/components/ui';
 import toast from 'react-hot-toast';
+import { api } from '@/lib/api';
+import { useApp } from '@/lib/context/AppContext';
 
 export default function GuestReservePage({ params }) {
   const router = useRouter();
+  const { user } = useApp();
   const unwrappedParams = use(params);
   const slug = unwrappedParams?.slug || 'spice-garden';
-  const restaurant = mockRestaurant;
 
-  const [form, setForm] = useState({ name: '', phone: '', email: '', date: '', time: '19:30', guests: 2, notes: '' });
+  const [restaurant, setRestaurant] = useState(null);
+  const [loadingRestaurant, setLoadingRestaurant] = useState(true);
+  const [form, setForm] = useState({ 
+    name: user?.name || '', 
+    phone: user?.phone || '', 
+    email: user?.email || '', 
+    date: '', 
+    time: '19:30', 
+    guests: 2, 
+    notes: '' 
+  });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setForm(prev => ({
+        ...prev,
+        name: prev.name || user.name || '',
+        phone: prev.phone || user.phone || '',
+        email: prev.email || user.email || '',
+      }));
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      try {
+        const res = await api.restaurant.getBySlug(slug);
+        if (res.success) {
+          setRestaurant(res.restaurant);
+        }
+      } catch (err) {
+        console.error('Error loading restaurant:', err);
+        toast.error('Failed to load restaurant details.');
+      } finally {
+        setLoadingRestaurant(false);
+      }
+    };
+    if (slug) fetchRestaurant();
+  }, [slug]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,11 +61,54 @@ export default function GuestReservePage({ params }) {
       toast.error('Please fill in required fields');
       return;
     }
+    if (!restaurant?._id) {
+      toast.error('Restaurant context missing. Cannot submit reservation.');
+      return;
+    }
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1200));
-    toast.success('🎉 Reservation request sent! Check your WhatsApp/SMS shortly.');
-    router.push(`/r/${slug}`);
+    try {
+      const res = await api.reservations.create({
+        restaurantId: restaurant._id,
+        guestName: form.name,
+        guestPhone: form.phone,
+        guestEmail: form.email || null,
+        partySize: form.guests,
+        date: form.date,
+        time: form.time,
+        notes: form.notes || ''
+      });
+      if (res.success) {
+        toast.success('🎉 Table reserved successfully! Email confirmation sent.');
+        router.push(`/r/${slug}`);
+      }
+    } catch (err) {
+      toast.error(err.message || 'Failed to submit reservation.');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loadingRestaurant) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400">
+        <svg className="animate-spin w-8 h-8 text-amber-500 mb-4" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" opacity="0.25" />
+          <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+        </svg>
+        <p>Opening booking desk...</p>
+      </div>
+    );
+  }
+
+  if (!restaurant) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-slate-400 p-6 text-center">
+        <h1 className="text-xl font-bold text-rose-400 mb-2">Restaurant Not Found</h1>
+        <p className="text-sm text-slate-500 mb-4">Please verify the dining link and try booking again.</p>
+        <Link href="/" className="px-4 py-2 bg-slate-800 rounded-xl text-xs font-semibold hover:bg-slate-700">Go Home</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between">

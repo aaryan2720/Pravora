@@ -24,6 +24,15 @@ const generateBill = async (req, res) => {
     return res.status(400).json({ success: false, message: 'No orders found for this session.' });
   }
 
+  // Ensure all orders are served before bill generation
+  const unserved = orders.some((o) => o.status !== 'served');
+  if (unserved) {
+    return res.status(400).json({
+      success: false,
+      message: "Let's finish your food first! 🍽️ Once all your items are served, you can request the bill.",
+    });
+  }
+
   // Compute subtotal from orders
   const subtotal = orders.reduce((sum, o) => sum + o.subtotal, 0);
 
@@ -88,6 +97,15 @@ const markPaid = async (req, res) => {
   if (!bill) return res.status(404).json({ success: false, message: 'Bill not found.' });
   if (bill.status === 'paid') return successResponse(res, { bill }, 'Bill already paid');
 
+  // Verify all orders for the session are served before paying
+  const activeOrders = await Order.find({ sessionId: bill.sessionId, status: { $ne: 'cancelled' } }).lean();
+  if (activeOrders.some((o) => o.status !== 'served')) {
+    return res.status(400).json({
+      success: false,
+      message: "Let's finish your food first! 🍽️ Once all your items are served, you can pay the bill.",
+    });
+  }
+
   bill.status = 'paid';
   bill.paymentMethod = paymentMethod || 'cash';
   bill.paidAt = new Date();
@@ -96,7 +114,7 @@ const markPaid = async (req, res) => {
 
   // Close the session
   await TableSession.findByIdAndUpdate(bill.sessionId, { status: 'closed', closedAt: new Date() });
-  await Table.findByIdAndUpdate(bill.tableId, { status: 'dirty', currentSessionId: null });
+  await Table.findByIdAndUpdate(bill.tableId, { status: 'free', currentSessionId: null });
 
   // Update membership points (1 point per ₹10 spent)
   if (bill.guestId) {

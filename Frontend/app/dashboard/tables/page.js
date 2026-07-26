@@ -159,7 +159,8 @@ export default function TablesBoardPage() {
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
 
-  const fetchTables = async () => {
+  const fetchTables = async (showLoad = false) => {
+    if (showLoad) setLoading(true);
     try {
       const res = await api.tables.list();
       if (res.success) {
@@ -168,12 +169,16 @@ export default function TablesBoardPage() {
     } catch (err) {
       console.error('Failed to fetch tables:', err);
     } finally {
-      setLoading(false);
+      if (showLoad) setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchTables();
+    fetchTables(true);
+    const interval = setInterval(() => {
+      fetchTables(false);
+    }, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleStatusChange = async (id, status) => {
