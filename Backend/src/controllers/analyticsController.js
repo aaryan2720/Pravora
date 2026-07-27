@@ -146,4 +146,88 @@ const getPulse = async (req, res) => {
   }, 'Pulse data retrieved');
 };
 
-module.exports = { getTodayAnalytics, getWeekAnalytics, getMonthAnalytics, getPulse };
+const getSaaSAnalytics = async (req, res) => {
+  const Restaurant = require('../models/Restaurant');
+  const Table = require('../models/Table');
+  const Reservation = require('../models/Reservation');
+  const Complaint = require('../models/Complaint');
+  const Order = require('../models/Order');
+
+  const [
+    restaurants,
+    tablesCount,
+    activeSessions,
+    bills,
+    recentSessions,
+    recentReservations,
+    allComplaints,
+    recentOrders
+  ] = await Promise.all([
+    Restaurant.find().lean(),
+    Table.countDocuments(),
+    TableSession.find({ status: 'active' }).populate('restaurantId', 'name').lean(),
+    Bill.find({ status: 'paid' }).select('total').lean(),
+    TableSession.find()
+      .populate('restaurantId', 'name')
+      .populate('tableId', 'label')
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .lean(),
+    Reservation.find()
+      .populate('restaurantId', 'name')
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .lean(),
+    Complaint.find()
+      .populate('restaurantId', 'name')
+      .populate('tableId', 'label')
+      .sort({ createdAt: -1 })
+      .lean(),
+    Order.find()
+      .populate('restaurantId', 'name')
+      .sort({ createdAt: -1 })
+      .limit(15)
+      .lean()
+  ]);
+
+  const totalRevenue = bills.reduce((s, b) => s + b.total, 0);
+  const totalRestaurants = restaurants.length;
+
+  const partnerCafes = restaurants.map(r => {
+    const activeCount = activeSessions.filter(s => {
+      const sRestId = s.restaurantId?._id?.toString() || s.restaurantId?.toString();
+      return sRestId === r._id.toString();
+    }).length;
+    return {
+      _id: r._id,
+      name: r.name,
+      slug: r.slug,
+      logo: r.logo,
+      coverImage: r.coverImage,
+      tagline: r.tagline,
+      cuisine: r.cuisine || [],
+      city: r.location?.city || 'Aurangabad',
+      address: r.location?.address || '',
+      activeTables: activeCount,
+      isOnboarded: r.isOnboarded ?? true,
+      createdAt: r.createdAt
+    };
+  });
+
+  return successResponse(res, {
+    saas: {
+      totalRestaurants,
+      totalTables: tablesCount,
+      activeSessionsCount: activeSessions.length,
+      totalRevenue,
+      partnerCafes,
+      recentSessions,
+      recentReservations,
+      complaints: allComplaints,
+      recentOrders
+    }
+  }, 'SaaS global analytics retrieved');
+};
+
+module.exports = { getTodayAnalytics, getWeekAnalytics, getMonthAnalytics, getPulse, getSaaSAnalytics };
+

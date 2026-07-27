@@ -107,15 +107,21 @@ export default function TableSessionPage({ params }) {
       {/* Body */}
       <main className="flex-1 max-w-lg mx-auto w-full p-4 space-y-5">
         {/* Help actions */}
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="secondary" size="md" onClick={callWaiter} disabled={requestingHelp} className="flex-1 py-3 text-xs cursor-pointer">
-            <Bell size={14} className="text-amber-400 mr-2" />
+        <div className="grid grid-cols-3 gap-2">
+          <Button variant="secondary" size="md" onClick={callWaiter} disabled={requestingHelp} className="flex-1 py-3 text-[10px] cursor-pointer">
+            <Bell size={12} className="text-amber-400 mr-1.5" />
             Call Waiter
           </Button>
-          <Button variant="secondary" size="md" onClick={requestWater} disabled={requestingWater} className="flex-1 py-3 text-xs cursor-pointer">
-            <span className="mr-2">🥤</span>
-            Request Water
+          <Button variant="secondary" size="md" onClick={requestWater} disabled={requestingWater} className="flex-1 py-3 text-[10px] cursor-pointer">
+            <span className="mr-1.5">🥤</span>
+            Water
           </Button>
+          <Link href={`/r/${slug}/help`} className="flex-1">
+            <Button variant="secondary" size="md" className="w-full py-3 text-[10px] cursor-pointer">
+              <span className="mr-1.5">🛎️</span>
+              Care Desk
+            </Button>
+          </Link>
         </div>
 
         {/* Order history */}

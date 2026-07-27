@@ -188,6 +188,7 @@ export const api = {
     getWeek: () => request('/analytics/week'),
     getMonth: () => request('/analytics/month'),
     getPulse: () => request('/analytics/pulse'),
+    getSaaS: () => request('/analytics/saas'),
   },
 
   // ─── AI Insights ────────────────────────────────────────────────────────────
@@ -203,5 +204,13 @@ export const api = {
     list: () => request('/restaurants/staff'),
     create: (data) => request('/restaurants/staff', { method: 'POST', body: JSON.stringify(data) }),
     delete: (id) => request(`/restaurants/staff/${id}`, { method: 'DELETE' }),
+  },
+
+  // ─── Complaints ─────────────────────────────────────────────────────────────
+  complaints: {
+    list: (params = '') => request(`/complaints?${params}`),
+    create: (data) => request('/complaints', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id, data) => request(`/complaints/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+    delete: (id) => request(`/complaints/${id}`, { method: 'DELETE' }),
   },
 };

@@ -25,11 +25,107 @@ const inventoryRoutes = require('./src/routes/inventoryRoutes');
 const membershipRoutes = require('./src/routes/membershipRoutes');
 const analyticsRoutes = require('./src/routes/analyticsRoutes');
 const aiRoutes = require('./src/routes/aiRoutes');
+const complaintRoutes = require('./src/routes/complaintRoutes');
 
 const app = express();
 
-// ─── Connect Database ─────────────────────────────────────────────────────────
-connectDB();
+// ─── Connect Database & Seed Data ─────────────────────────────────────────────
+connectDB().then(() => {
+  const seedData = async () => {
+    try {
+      const User = require('./src/models/User');
+      const Restaurant = require('./src/models/Restaurant');
+      
+      // 1. Seed global admin if not present
+      let admin = await User.findOne({ email: 'admin@serveloop.in' });
+      if (!admin) {
+        admin = await User.create({
+          name: 'ServeLoop Admin',
+          email: 'admin@serveloop.in',
+          passwordHash: 'admin123456',
+          role: 'admin',
+          restaurantId: null,
+          isVerified: true
+        });
+        console.log('👤 Global Super-Admin seeded: admin@serveloop.in');
+      } else {
+        if (admin.restaurantId !== null || admin.role !== 'admin') {
+          admin.restaurantId = null;
+          admin.role = 'admin';
+          await admin.save();
+          console.log('🔄 Enforced global role and cleared restaurantId on admin account');
+        }
+      }
+
+      // 2. Check if hello@soracafe.in user exists
+      let soraOwner = await User.findOne({ email: 'hello@soracafe.in' });
+      if (!soraOwner) {
+        soraOwner = new User({
+          name: 'Sora Cafe Manager',
+          email: 'hello@soracafe.in',
+          passwordHash: '123456789',
+          role: 'owner',
+          isVerified: true
+        });
+        await soraOwner.save();
+        console.log('👤 Sora Cafe Owner seeded: hello@soracafe.in');
+      }
+
+      // Ensure no restaurant is owned by the admin user
+      if (admin && soraOwner) {
+        const ownedRestaurant = await Restaurant.findOne({ owner: admin._id });
+        if (ownedRestaurant) {
+          ownedRestaurant.owner = soraOwner._id;
+          await ownedRestaurant.save();
+          console.log(`🔄 Re-assigned ownership of restaurant ${ownedRestaurant.name} from admin to soraOwner`);
+        }
+      }
+
+      let soraCafe = null;
+      if (soraOwner && soraOwner.restaurantId) {
+        soraCafe = await Restaurant.findById(soraOwner.restaurantId);
+      }
+      if (!soraCafe) {
+        soraCafe = await Restaurant.findOne({ slug: { $in: ['sora-cafe', 'sora-cafes-restaurant'] } });
+      }
+
+      if (!soraCafe) {
+        soraCafe = await Restaurant.create({
+          slug: 'sora-cafe',
+          name: 'Sora Café',
+          tagline: 'Modern Dining in Aurangabad',
+          type: 'cafe',
+          serviceModel: 'hybrid',
+          isLive: true,
+          onboardingComplete: true,
+          owner: soraOwner._id,
+          location: {
+            address: 'Downtown Street, Aurangabad',
+            city: 'Aurangabad',
+            state: 'Maharashtra',
+            country: 'India',
+            pincode: '431001'
+          },
+          capacity: {
+            tables: 8,
+            seatsPerTable: 4,
+            totalSeats: 32
+          }
+        });
+        console.log('🏢 Sora Café restaurant tenant seeded');
+      }
+
+      if (soraOwner && !soraOwner.restaurantId) {
+        soraOwner.restaurantId = soraCafe._id;
+        await soraOwner.save();
+        console.log('🔗 Linked Sora Café owner to restaurantId');
+      }
+    } catch (err) {
+      console.error('❌ Seeding error:', err.message);
+    }
+  };
+  seedData();
+});
 
 // ─── Global Middleware ────────────────────────────────────────────────────────
 app.use(helmet());
@@ -107,6 +203,7 @@ app.use('/api/inventory', inventoryRoutes);
 app.use('/api/memberships', membershipRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/complaints', complaintRoutes);
 
 // ─── 404 Handler ─────────────────────────────────────────────────────────────
 app.use((req, res) => {

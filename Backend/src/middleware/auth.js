@@ -79,6 +79,12 @@ const restrictTo = (...roles) => {
 const tenantGuard = (req, res, next) => {
   if (!req.user) return next(); // guests don't need tenant isolation this way
 
+  // Bypass tenant checks for global super-admins
+  if (req.user.role === 'admin') {
+    req.restaurantId = req.headers['x-restaurant-id'] || req.query.restaurantId || req.body.restaurantId || null;
+    return next();
+  }
+
   const userRestaurantId = req.user.restaurantId?.toString();
 
   // Allow owners/managers to access their own restaurant

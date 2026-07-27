@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ShoppingBag, Grid3x3, UtensilsCrossed, Tag, CalendarDays, Users2, Package, CreditCard, BarChart3, UserCog, Settings, ChevronLeft, ChevronRight, LogOut, QrCode } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Grid3x3, UtensilsCrossed, Tag, CalendarDays, Users2, Package, CreditCard, BarChart3, UserCog, Settings, ChevronLeft, ChevronRight, LogOut, QrCode, LifeBuoy } from 'lucide-react';
 import { useApp } from '@/lib/context/AppContext';
 import { Avatar } from '@/components/ui';
 
@@ -14,6 +14,7 @@ const navItems = [
   { href: '/dashboard/pricing', icon: Tag, label: 'Pricing & Specials', section: 'operations' },
   { href: '/dashboard/reservations', icon: CalendarDays, label: 'Reservations', section: 'operations' },
   { href: '/dashboard/queue', icon: Users2, label: 'Queue', section: 'operations' },
+  { href: '/dashboard/complaints', icon: LifeBuoy, label: 'Complaints Desk', section: 'operations' },
   { href: '/dashboard/inventory', icon: Package, label: 'Inventory', section: 'operations' },
   { href: '/dashboard/billing', icon: CreditCard, label: 'Billing & Payments', section: 'finance' },
   { href: '/dashboard/customers', icon: UserCog, label: 'Customers', section: 'finance' },
@@ -37,6 +38,17 @@ export default function DashboardSidebar() {
     if (href === '/dashboard') return pathname === '/dashboard';
     return pathname.startsWith(href);
   };
+
+  const currentSections = user?.role === 'admin'
+    ? [{ key: 'saas', label: 'Platform Oversight' }]
+    : sections;
+
+  const currentNavItems = user?.role === 'admin'
+    ? [
+        { href: '/dashboard/saas', icon: LayoutDashboard, label: 'SaaS Console', section: 'saas' },
+        { href: '/dashboard/settings', icon: Settings, label: 'Settings', section: 'saas' },
+      ]
+    : navItems;
 
   return (
     <>
@@ -65,7 +77,7 @@ export default function DashboardSidebar() {
       </div>
 
       {/* Restaurant badge */}
-      {sidebarOpen && activeRestaurant && (
+      {sidebarOpen && activeRestaurant && user?.role !== 'admin' && (
         <div className="mx-3 my-3 px-3 py-2 rounded-xl bg-slate-800 border border-slate-700">
           <p className="text-xs text-slate-500 mb-0.5">Restaurant</p>
           <p className="text-sm font-semibold text-slate-100 truncate">{activeRestaurant.name}</p>
@@ -78,8 +90,8 @@ export default function DashboardSidebar() {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-2 px-2">
-        {sections.map(section => {
-          const items = navItems.filter(n => n.section === section.key);
+        {currentSections.map(section => {
+          const items = currentNavItems.filter(n => n.section === section.key);
           return (
             <div key={section.key} className="mb-1">
               {section.label && sidebarOpen && (

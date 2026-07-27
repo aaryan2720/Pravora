@@ -23,8 +23,10 @@ export default function SignInPage() {
       if (res.success) {
         toast.success('Welcome back!');
         signIn(res.user, res.accessToken);
-        // Redirect based on whether restaurant onboarding is complete
-        if (res.user.restaurantId) {
+        // Redirect based on whether restaurant onboarding is complete or if user is a global super-admin
+        if (res.user.role === 'admin') {
+          router.push('/dashboard/saas');
+        } else if (res.user.restaurantId) {
           const restaurantRes = await api.restaurant.getById(res.user.restaurantId);
           if (restaurantRes.success && restaurantRes.restaurant.onboardingComplete) {
             router.push('/dashboard');

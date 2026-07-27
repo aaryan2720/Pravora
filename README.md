@@ -1,13 +1,20 @@
-# <p align="center"><img src="Frontend/public/favicon.svg" width="48" height="48" alt="ServeLoop Logo" /> <br/><b>ServeLoop</b></p>
+<p align="center">
+  <img src="Frontend/public/favicon.svg" width="96" height="96" alt="ServeLoop Logo" />
+  <h1 align="center" style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 38px; border: none; margin-bottom: 0;">ServeLoop</h1>
+  <p align="center" style="font-size: 16px; color: #94a3b8; margin-top: 4px;">
+    Next-Generation Multi-Tenant Restaurant SaaS Platform
+  </p>
+</p>
 
 <p align="center">
-  <a href="https://pa-serveloop.vercel.app"><b>Live Diner Hub Web App</b></a> · 
-  <a href="https://serve-loop-pi.vercel.app/api/health"><b>Live API Health</b></a>
+  <a href="https://pa-serveloop.vercel.app">
+    <img src="https://img.shields.io/badge/Live_Diner_Hub-pa--serveloop.vercel.app-f59e0b?style=for-the-badge&logo=vercel" alt="Live Diner Hub" />
+  </a>
+  <a href="https://serve-loop-pi.vercel.app/api/health">
+    <img src="https://img.shields.io/badge/Live_API_Status-LIVE-emerald?style=for-the-badge&logo=mongodb" alt="Live API Status" />
+  </a>
 </p>
 
-<p align="center" style="font-family: 'Outfit', sans-serif; font-size: 16px; color: #94a3b8;">
-  A next-generation, multi-tenant restaurant SaaS platform that streamlines table operations, queue systems, real-time kitchen tracking, inventory management, and diner loyalty circles.
-</p>
 ---
 
 ## 📖 Architectural Blueprints & Project History
@@ -24,21 +31,54 @@ To review the original design specifications, build timelines, and proof of deve
 
 ## 🍽️ The Aurangabad Dining Demo (Try It Live!)
 
-We have configured a fully active dining tenant for **Sora Café**, located in downtown Chhatrapati Sambhajinagar (Aurangabad). You can test the end-to-end customer and staff workflow right now:
+We have configured a fully active dining tenant for **Sora Café**, located in downtown Chhatrapati Sambhajinagar (Aurangabad). You can test the end-to-end customer, manager, and SaaS administrator workflow right now:
 
-### 1. Scan Table T1 QR Code
-Scan this QR code using your phone's camera or Google Lens to immediately open Table T1's live session at Sora Café:
+### 🔑 Active Testing Credentials
+
+Sign in to verify various operational and super-admin dashboards:
+
+| User Role | Login URL | Email Address | Password | Access Scope |
+| :--- | :--- | :--- | :--- | :--- |
+| **Sora Café Manager** | `/auth/signin` | `hello@soracafe.in` | `123456789` | Full operational control of Sora Café (Tables, Menu, Orders, Complaints) |
+| **ServeLoop SaaS Super-Admin** | `/auth/signin` | `admin@serveloop.in` | `admin123456` | Platform-wide administrative console (System Health, Global Feeds, Tickets) |
+| **Diner Customer (QR Scan)** | *Direct Access* | *No Credentials Required* | *No Password* | Scan table QR code to browse menus, order food, and file help requests |
+
+---
+
+### 1. Scan Table T1 QR Code (Guest Journey)
+
+Guests sit at a table and scan the paired QR code to open their dynamic dining session. Scan this QR code using your phone's camera or Google Lens to immediately open Table T1's live session at Sora Café:
 
 <p align="center">
   <img src="Frontend/public/Sora Café_Table_T1_QR.png" width="220" alt="Sora Cafe Table T1 QR" style="border: 2px solid rgba(255,255,255,0.1); border-radius: 16px;" />
 </p>
 
-### 2. Experience the Diner Journey
+#### Guest Experience Checklist:
 - **Browse the Cloud Menu**: Check out the live category slider and see item availability synced with real kitchen stock.
 - **Enforced Authenticated Checkout**: Add items to your cart. Placing orders or requesting the bill routes you to sign in/up to protect checkouts, allocate loyalty points, and send automated email receipts.
 - **Track Order Status**: Once placed, watch your orders transition through the kitchen pipeline (`placed` ➔ `preparing` ➔ `ready` ➔ `served`) on the live diner timeline.
 - **Food-First Checkout Policy**: If you attempt to checkout while items are preparing, the system blocks the payment action: *"Let's finish your food first! 🍽️ Once all your items are served, you can request the bill."*
 - **Settle the Bill**: Once served, select your payment method (UPI, Card, Cash) to request check-out, which immediately frees the table on the manager's dashboard.
+
+---
+
+### 2. Live Platform Customer Care Desk (Help Tickets)
+
+If a customer faces any issues (e.g., cold food, slow service, billing errors) during their dining session:
+
+- **Guest Submission**: Click the **Care Desk** shortcut on the table session timeline (`/r/sora-cafe/help`) and file a complaint.
+- **Staff Ticketing Dashboard**: Log in as the **Sora Café Manager** (`hello@soracafe.in`) and navigate to the **Complaints Desk** in the sidebar. 
+- **Real-Time Refresher**: The ticket pops up immediately (polling every 3 seconds) without page reloads! You can assign the ticket to a waiter, append resolution notes, and mark it resolved.
+
+---
+
+### 3. ServeLoop Global Super-Admin Console (Platform Oversight)
+
+Log in as the **ServeLoop SaaS Super-Admin** (`admin@serveloop.in`) to monitor platform operations:
+
+- **Live Platform Health**: View real-time ping latency and server uptime queries executing live against the `/api/health` diagnostics endpoint.
+- **Branded Cafes Cards**: Inspect onboarded tenant cafe cards, displaying logos, cover banners, cuisine tags, and active table statistics.
+- **Platform-Wide Feeds**: Monitor all recent guest orders and customer complaints filed across all restaurants from a unified administrative timeline.
 
 ---
 
@@ -55,22 +95,11 @@ Scan this QR code using your phone's camera or Google Lens to immediately open T
 
 ### 📋 3. Live Queue & Booking Desk
 - **Queue Tokens**: Automatically issue numbered queue tokens (e.g. `Q01`, `Q02`) with guest counts and ETA.
-- **Future Table Bookings**: Submit reservations on the diner app. The manager dashboard retrieves all upcoming reservations from today onwards in real-time (polling every 3 seconds) and confirmation emails are dispatched automatically.
+- **Future Table Bookings**: Submit reservations on the diner app. The manager dashboard retrieves all upcoming reservations in real-time (polling every 3 seconds) and confirmation emails are dispatched automatically.
 
 ### 📦 4. Smart Inventory & Bulk Importer
 - **Single Form Stocking**: Add individual kitchen ingredients.
 - **Bulk CSV Drag-and-Drop**: Drag and drop stock CSV files directly into the dash. Features error-tolerant client-side parsing, dynamic templates, progress indicators, and instant list updates.
-
----
-
-## 🚀 Upcoming Milestones (Roadmap)
-
-### 📢 1. Restaurant & Customer Complaint Center
-- A dedicated ticket tracking interface allowing diners to report issues (e.g. missing items, cold food, slow service) directly from their active table session.
-- Staff can prioritize complaints, assign waiter tasks, and mark issues resolved in real-time.
-
-### 👑 2. Global SaaS Super-Admin Dashboard
-- An executive command center to monitor all active partner cafes, review total transacted SaaS revenues, check system health metrics, manage global billing subscriptions, and approve onboarding requests.
 
 ---
 
