@@ -79,14 +79,16 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-// ─── Health Check ─────────────────────────────────────────────────────────────
+// ─── Branded Health Check ──────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    message: '🍽️  ServeLoop API is running',
-    version: '1.0.0',
+    status: 'LIVE',
+    service: 'ServeLoop Restaurant SaaS API',
+    uptime: `${Math.round(process.uptime())}s`,
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV,
+    environment: process.env.NODE_ENV || 'production',
+    author: 'ServeLoop Operations',
   });
 });
 
