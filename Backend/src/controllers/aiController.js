@@ -58,11 +58,17 @@ const customerRecommendation = async (req, res) => {
     isActive: true,
     availability: 'available',
   })
-    .select('name price isVeg tags spiceLevel')
-    .limit(20)
+    .select('name price isVeg tags spiceLevel description')
+    .limit(25)
     .lean();
 
-  const result = await generateCustomerRecommendation(restaurantId, guestHistory || {}, items);
+  // Extract diner personalization properties if authenticated guest is present
+  const preferences = {
+    dietaryPreference: req.guest?.dietaryPreference || 'none',
+    allergies: req.guest?.allergies || [],
+  };
+
+  const result = await generateCustomerRecommendation(restaurantId, guestHistory || {}, items, preferences);
   return successResponse(res, { recommendation: result }, 'Recommendation generated');
 };
 

@@ -76,6 +76,7 @@ export function AppProvider({ children }) {
       localStorage.removeItem('user');
       localStorage.removeItem('restaurant');
       localStorage.removeItem('activeSession');
+      window.location.href = '/';
     }
   }, []);
 

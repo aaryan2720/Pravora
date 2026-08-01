@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { api } from '@/lib/api';
 import { useApp } from '@/lib/context/AppContext';
+import { GoogleLogin } from '@react-oauth/google';
 
 export default function SignInPage() {
   const router = useRouter();
@@ -23,7 +24,6 @@ export default function SignInPage() {
       if (res.success) {
         toast.success('Welcome back!');
         signIn(res.user, res.accessToken);
-        // Redirect based on whether restaurant onboarding is complete or if user is a global super-admin
         if (res.user.role === 'admin') {
           router.push('/dashboard/saas');
         } else if (res.user.restaurantId) {
@@ -44,8 +44,32 @@ export default function SignInPage() {
     }
   };
 
-  const handleGoogle = async () => {
-    toast.error('Google OAuth not configured. Please use Email and Password.');
+  const handleGoogleSuccess = async (credentialResponse) => {
+    const idToken = credentialResponse.credential;
+    setLoading(true);
+    try {
+      const res = await api.auth.googleLogin({ idToken });
+      if (res.success) {
+        toast.success('Logged in with Google successfully!');
+        signIn(res.user, res.accessToken);
+        if (res.user.role === 'admin') {
+          router.push('/dashboard/saas');
+        } else if (res.user.restaurantId) {
+          const restaurantRes = await api.restaurant.getById(res.user.restaurantId);
+          if (restaurantRes.success && restaurantRes.restaurant.onboardingComplete) {
+            router.push('/dashboard');
+          } else {
+            router.push('/onboarding');
+          }
+        } else {
+          router.push('/onboarding');
+        }
+      }
+    } catch (err) {
+      toast.error(err.message || 'Google Login verification failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,18 +78,30 @@ export default function SignInPage() {
         {/* Logo */}
         <Link href="/" className="flex items-center justify-center gap-2 mb-10 group">
           <img src="/favicon.svg" alt="ServeLoop" className="w-9 h-9 object-contain" />
-          <span className="font-bold text-xl text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            <span className="text-brand-orange">Serve</span><span className="text-brand-yellow">Loop</span>
+          <span className="font-bold text-xl text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <span className="text-amber-500">Serve</span><span className="text-amber-400">Loop</span>
           </span>
         </Link>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 flex flex-col">
           <h1 className="text-2xl font-black text-white mb-1 text-center" style={{ fontFamily: 'Outfit, sans-serif' }}>
             Welcome back
           </h1>
           <p className="text-slate-400 text-sm text-center mb-7">Sign in to your restaurant dashboard</p>
 
-          <Divider label="Email and Password" className="mb-5" />
+          {/* Google Sign-in component */}
+          <div className="w-full flex justify-center mb-5 overflow-hidden rounded-lg">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => toast.error('Google Sign-In failed.')}
+              theme="filled_dark"
+              shape="pill"
+              text="continue_with"
+              width="320px"
+            />
+          </div>
+
+          <Divider label="or use email and password" className="mb-5" />
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">

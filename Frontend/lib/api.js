@@ -75,6 +75,9 @@ export const api = {
     getMe: () => request('/auth/me'),
     customerRegister: (data) => request('/auth/customer/register', { method: 'POST', body: JSON.stringify(data) }),
     customerLogin: (data) => request('/auth/customer/login', { method: 'POST', body: JSON.stringify(data) }),
+    googleLogin: (data) => request('/auth/google', { method: 'POST', body: JSON.stringify(data) }),
+    customerGoogleLogin: (data) => request('/auth/customer/google', { method: 'POST', body: JSON.stringify(data) }),
+    updateCustomerProfile: (data) => request('/auth/customer/profile', { method: 'PATCH', body: JSON.stringify(data) }),
   },
 
   // ─── Restaurant ────────────────────────────────────────────────────────────
@@ -212,5 +215,13 @@ export const api = {
     create: (data) => request('/complaints', { method: 'POST', body: JSON.stringify(data) }),
     update: (id, data) => request(`/complaints/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
     delete: (id) => request(`/complaints/${id}`, { method: 'DELETE' }),
+  },
+
+  // ─── Memberships ────────────────────────────────────────────────────────────
+  memberships: {
+    getMyMemberships: () => request('/memberships/me'),
+    getCustomers: () => request('/memberships/customers'),
+    getCustomerProfile: (id) => request(`/memberships/customers/${id}`),
+    toggleFavorite: (itemId) => request('/memberships/favorites', { method: 'POST', body: JSON.stringify({ itemId }) }),
   },
 };

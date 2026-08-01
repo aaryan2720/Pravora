@@ -42,6 +42,15 @@ const guestSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    dietaryPreference: {
+      type: String,
+      enum: ['none', 'veg', 'vegan', 'gluten_free', 'halal'],
+      default: 'none',
+    },
+    allergies: {
+      type: [String],
+      default: [],
+    },
     // Membership and loyalty across all restaurants
     totalVisits: { type: Number, default: 0 },
     totalSpent: { type: Number, default: 0 },

@@ -130,15 +130,20 @@ Keep it conversational and under 150 words.
 /**
  * generateCustomerRecommendation — personalized item suggestions for a guest.
  */
-const generateCustomerRecommendation = async (restaurantId, guestHistory, availableItems) => {
+const generateCustomerRecommendation = async (restaurantId, guestHistory, availableItems, preferences = {}) => {
   const prompt = `
-You are a friendly restaurant assistant. Based on a guest's order history and the current menu, suggest 2-3 items they might enjoy.
+You are a friendly restaurant assistant. Based on a guest's order history, dietary preferences, food allergies, and the current menu, suggest 2-3 items they might enjoy.
 
+Guest Dietary Preference: ${preferences.dietaryPreference || 'none'} (Note: 'veg' means Vegetarian)
+Guest Allergies: ${JSON.stringify(preferences.allergies || [])}
 Guest History: ${JSON.stringify(guestHistory || {}, null, 2)}
-Available Items (sample): ${JSON.stringify(availableItems.slice(0, 15), null, 2)}
+Available Items (sample): ${JSON.stringify(availableItems.slice(0, 20), null, 2)}
 
-Write a short, friendly recommendation message (2-3 sentences) suggesting specific items from the menu by name.
-Do not mention items that are unavailable. Keep it warm and appetizing.
+CRITICAL SAFETY RULES:
+1. EXCLUDE/FILTER OUT any item whose name or description contains any of the guest's allergies (e.g. peanuts, dairy, gluten, soy, seafood).
+2. If the guest dietary preference is 'veg', ONLY recommend items that are marked vegetarian ('isVeg: true' or tags like 'veg').
+3. Suggest 2-3 specific items from the menu by name.
+4. Write a short, friendly recommendation message (2-3 sentences). Keep it warm, appetizing, and concise.
 `.trim();
 
   const { response } = await callGemini(restaurantId, 'recommendation', prompt);

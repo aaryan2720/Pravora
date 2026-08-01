@@ -10,9 +10,16 @@ const {
   getMe,
   customerRegister,
   customerLogin,
+  googleLogin,
+  customerGoogleLogin,
+  updateCustomerProfile,
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 const { asyncHandler, validate } = require('../middleware/errorHandler');
+
+router.post('/google', asyncHandler(googleLogin));
+router.post('/customer/google', asyncHandler(customerGoogleLogin));
+router.patch('/customer/profile', protect, asyncHandler(updateCustomerProfile));
 
 // ─── Staff / Restaurant Owner Auth ────────────────────────────────────────────
 router.post(

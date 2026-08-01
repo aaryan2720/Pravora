@@ -14,7 +14,9 @@ function RestaurantCard({ r }) {
   const rating = r.rating || r.avgRating || 4.5;
   const reviews = r.reviews || r.totalReviews || 120;
   const cuisineStr = Array.isArray(r.cuisine) ? r.cuisine.join(' · ') : (r.cuisine || 'Cuisine');
-  const city = r.location?.city || r.location || 'Location';
+  const city = typeof r.location === 'object' && r.location
+    ? (r.location.city || r.location.country || 'Location')
+    : (r.location || 'Location');
   const typeTag = r.type ? r.type.replace('_', ' ') : 'dining';
   const tags = r.tags || [typeTag, r.serviceModel || 'hybrid'];
 

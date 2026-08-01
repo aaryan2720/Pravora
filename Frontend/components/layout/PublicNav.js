@@ -70,10 +70,17 @@ export default function PublicNav() {
                         </span>
                       </Link>
                     )}
-                    <Link href="/customer/profile">
-                      <Button variant="ghost" size="sm" className="text-slate-700 hover:text-slate-900 font-bold">
+                    <Link href="/customer/profile" className="flex items-center gap-2">
+                      {user.avatar ? (
+                        <img src={user.avatar} alt="Profile" className="w-8 h-8 rounded-full border border-slate-300 object-cover shadow-sm hover:opacity-85 transition-opacity" />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-500 text-xs font-black shadow-sm">
+                          {user.name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <span className="text-slate-700 hover:text-slate-900 font-bold text-sm hidden sm:inline-block">
                         Hi, {user.name.split(' ')[0]}
-                      </Button>
+                      </span>
                     </Link>
                   </>
                 )}

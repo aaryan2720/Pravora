@@ -5,6 +5,9 @@ import { Mail, Lock, Eye, EyeOff, Zap, ArrowRight, CheckCircle2 } from 'lucide-r
 import { Button, Input, Divider } from '@/components/ui';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { useApp } from '@/lib/context/AppContext';
+import { api } from '@/lib/api';
+import { GoogleLogin } from '@react-oauth/google';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -17,12 +20,11 @@ export default function SignUpPage() {
     const e = {};
     if (!form.name.trim()) e.name = 'Name is required';
     if (!form.email.includes('@')) e.email = 'Enter a valid email';
-    if (form.password.length < 6) e.password = 'Password must be 6+ characters'; // aligned with backend validator (min 6)
+    if (form.password.length < 6) e.password = 'Password must be 6+ characters';
     return e;
   };
 
-  const { signIn } = require('@/lib/context/AppContext').useApp();
-  const { api } = require('@/lib/api');
+  const { signIn } = useApp();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +32,6 @@ export default function SignUpPage() {
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setLoading(true);
     try {
-      // Pass standard registration details. In version 1, restaurant stub is created automatically.
       const res = await api.auth.register({
         name: form.name,
         email: form.email,
@@ -49,8 +50,32 @@ export default function SignUpPage() {
     }
   };
 
-  const handleGoogle = async () => {
-    toast.error('Google OAuth not configured. Please use Email and Password.');
+  const handleGoogleSuccess = async (credentialResponse) => {
+    const idToken = credentialResponse.credential;
+    setLoading(true);
+    try {
+      const res = await api.auth.googleLogin({ idToken });
+      if (res.success) {
+        toast.success('Successfully authenticated with Google!');
+        signIn(res.user, res.accessToken);
+        if (res.user.role === 'admin') {
+          router.push('/dashboard/saas');
+        } else if (res.user.restaurantId) {
+          const restaurantRes = await api.restaurant.getById(res.user.restaurantId);
+          if (restaurantRes.success && restaurantRes.restaurant.onboardingComplete) {
+            router.push('/dashboard');
+          } else {
+            router.push('/onboarding');
+          }
+        } else {
+          router.push('/onboarding');
+        }
+      }
+    } catch (err) {
+      toast.error(err.message || 'Google authentication failed.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,8 +85,8 @@ export default function SignUpPage() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 mb-10 group">
           <img src="/favicon.svg" alt="ServeLoop" className="w-8 h-8 object-contain" />
-          <span className="font-bold text-lg text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            <span className="text-brand-orange">Serve</span><span className="text-brand-yellow">Loop</span>
+          <span className="font-bold text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <span className="text-amber-500">Serve</span><span className="text-amber-400">Loop</span>
           </span>
         </Link>
 
@@ -74,7 +99,19 @@ export default function SignUpPage() {
           </p>
         </div>
 
-        <Divider label="Register with Email and Password" className="mb-6" />
+        {/* Google Sign-in component */}
+        <div className="w-full flex justify-center mb-5 overflow-hidden rounded-lg">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => toast.error('Google Sign-Up failed.')}
+            theme="filled_dark"
+            shape="pill"
+            text="signup_with"
+            width="320px"
+          />
+        </div>
+
+        <Divider label="or register with email and password" className="mb-6" />
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
@@ -168,16 +205,16 @@ export default function SignUpPage() {
 
       {/* Right panel — decorative */}
       <div className="hidden lg:flex flex-1 relative overflow-hidden" style={{
-        background: 'radial-gradient(ellipse at 30% 50%, rgba(253,109,35,0.06) 0%, transparent 70%), radial-gradient(ellipse at 70% 80%, rgba(253,190,19,0.04) 0%, transparent 60%), #f8fafc'
+        background: 'radial-gradient(ellipse at 30% 50%, rgba(245,158,11,0.04) 0%, transparent 70%), radial-gradient(ellipse at 70% 80%, rgba(245,158,11,0.02) 0%, transparent 60%), #020617'
       }}>
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="text-center">
-            <div className="w-16 h-16 rounded-2xl bg-brand-orange/10 border border-brand-orange/30 flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto mb-6">
               <img src="/favicon.svg" alt="ServeLoop" className="w-10 h-10 object-contain" />
             </div>
             <h2 className="text-3xl font-black text-white mb-4" style={{ fontFamily: 'Outfit, sans-serif' }}>
               Your restaurant,<br />
-              <span className="gradient-text-amber">fully connected.</span>
+              <span className="text-amber-400">fully connected.</span>
             </h2>
             <p className="text-slate-400 text-base mb-8 max-w-xs mx-auto leading-relaxed">
               From guest discovery to bill payment — manage everything from one intelligent dashboard.
@@ -185,7 +222,7 @@ export default function SignUpPage() {
             {/* Feature pills */}
             <div className="flex flex-wrap gap-2 justify-center max-w-xs mx-auto">
               {['QR Table Sessions', 'Live Orders', 'Analytics', 'AI Insights', 'Reservations', 'Membership'].map(f => (
-                <span key={f} className="px-3 py-1.5 rounded-full text-xs font-medium bg-slate-800 border border-slate-700 text-slate-300">
+                <span key={f} className="px-3 py-1.5 rounded-full text-xs font-medium bg-slate-800 border border-slate-700 text-slate-350">
                   {f}
                 </span>
               ))}

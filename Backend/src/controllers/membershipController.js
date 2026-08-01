@@ -69,6 +69,10 @@ const getMyMemberships = async (req, res) => {
   // Find all memberships for this guest, populating the restaurant branding details
   const memberships = await Membership.find({ guestId })
     .populate('restaurantId', 'name slug logo brandColor coverImage type')
+    .populate({
+      path: 'favorites',
+      select: 'name price image description category rating isVeg isAvailable'
+    })
     .lean();
 
   // Find recent bills for this guest across any restaurant
