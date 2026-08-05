@@ -1,4 +1,14 @@
-let BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+let BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').trim();
+
+// Remove trailing slashes
+while (BASE_URL.endsWith('/')) {
+  BASE_URL = BASE_URL.slice(0, -1);
+}
+
+// Auto-append /api suffix if not present
+if (!BASE_URL.endsWith('/api')) {
+  BASE_URL = `${BASE_URL}/api`;
+}
 
 if (typeof window !== 'undefined') {
   const hostname = window.location.hostname;
@@ -27,7 +37,11 @@ const getHeaders = (isMultipart = false) => {
 
 // Generic request wrapper
 const request = async (endpoint, options = {}) => {
-  const url = `${BASE_URL}${endpoint}`;
+  let cleanEndpoint = endpoint.trim();
+  if (!cleanEndpoint.startsWith('/')) {
+    cleanEndpoint = `/${cleanEndpoint}`;
+  }
+  const url = `${BASE_URL}${cleanEndpoint}`;
   const isMultipart = options.body instanceof FormData;
   
   const config = {

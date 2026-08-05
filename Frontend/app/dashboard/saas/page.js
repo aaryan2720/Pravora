@@ -62,7 +62,14 @@ export default function SaaSAdminPage() {
   const pingHealth = async () => {
     const start = Date.now();
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/health`);
+      let cleanUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').trim();
+      while (cleanUrl.endsWith('/')) {
+        cleanUrl = cleanUrl.slice(0, -1);
+      }
+      if (!cleanUrl.endsWith('/api')) {
+        cleanUrl = `${cleanUrl}/api`;
+      }
+      const res = await fetch(`${cleanUrl}/health`);
       const body = await res.json();
       const latency = `${Date.now() - start}ms`;
       if (res.ok && body.status === 'LIVE') {
