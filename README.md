@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://pravora-20.vercel.app">
-    <img src="https://img.shields.io/badge/Live_Diner_Hub-pa--pravora.vercel.app-f59e0b?style=for-the-badge&logo=vercel" alt="Live Diner Hub" />
+    <img src="https://img.shields.io/badge/Live_Diner_Hub-pravora--20.vercel.app-E96A0A?style=for-the-badge&logo=vercel" alt="Live Diner Hub" />
   </a>
   <a href="https://pravora-backend.vercel.app/api/health">
     <img src="https://img.shields.io/badge/Live_API_Status-LIVE-emerald?style=for-the-badge&logo=mongodb" alt="Live API Status" />
@@ -26,59 +26,6 @@ To review the original design specifications, build timelines, and proof of deve
 - **[Backend Operations Guide](docs/backend-readme.md)**: API route architecture, models layout, and server configurations.
 - **[Frontend Architecture Guide](docs/frontend-readme.md)**: Next.js folder hierarchies, context states, and public styling setups.
 - **[Proof of Documentation & Commit History](docs/proof-of-documentation.md)**: Verified commit ledger mapping development from first repository creation to target milestones.
-
----
-
-## 🍽️ The Aurangabad Dining Demo (Try It Live!)
-
-We have configured a fully active dining tenant for **Sora Café**, located in downtown Chhatrapati Sambhajinagar (Aurangabad). You can test the end-to-end customer, manager, and SaaS administrator workflow right now:
-
-### 🔑 Active Testing Credentials
-
-Sign in to verify various operational and super-admin dashboards:
-
-| User Role | Login URL | Email Address | Password | Access Scope |
-| :--- | :--- | :--- | :--- | :--- |
-| **Sora Café Manager** | `/auth/signin` | `hello@soracafe.in` | `123456789` | Full operational control of Sora Café (Tables, Menu, Orders, Complaints) |
-| **Pravora SaaS Super-Admin** | `/auth/signin` | `admin@pravora.in` | `admin123456` | Platform-wide administrative console (System Health, Global Feeds, Tickets) |
-| **Diner Customer (QR Scan)** | *Direct Access* | *No Credentials Required* | *No Password* | Scan table QR code to browse menus, order food, and file help requests |
-
----
-
-### 1. Scan Table T1 QR Code (Guest Journey)
-
-Guests sit at a table and scan the paired QR code to open their dynamic dining session. Scan this QR code using your phone's camera or Google Lens to immediately open Table T1's live session at Sora Café:
-
-<p align="center">
-  <img src="Frontend/public/Sora Café_Table_T1_QR.png" width="220" alt="Sora Cafe Table T1 QR" style="border: 2px solid rgba(255,255,255,0.1); border-radius: 16px;" />
-</p>
-
-#### Guest Experience Checklist:
-- **Browse the Cloud Menu**: Check out the live category slider and see item availability synced with real kitchen stock.
-- **Enforced Authenticated Checkout**: Add items to your cart. Placing orders or requesting the bill routes you to sign in/up to protect checkouts, allocate loyalty points, and send automated email receipts.
-- **Track Order Status**: Once placed, watch your orders transition through the kitchen pipeline (`placed` ➔ `preparing` ➔ `ready` ➔ `served`) on the live diner timeline.
-- **Food-First Checkout Policy**: If you attempt to checkout while items are preparing, the system blocks the payment action: *"Let's finish your food first! 🍽️ Once all your items are served, you can request the bill."*
-- **Settle the Bill**: Once served, select your payment method (UPI, Card, Cash) to request check-out, which immediately frees the table on the manager's dashboard.
-
----
-
-### 2. Live Platform Customer Care Desk (Help Tickets)
-
-If a customer faces any issues (e.g., cold food, slow service, billing errors) during their dining session:
-
-- **Guest Submission**: Click the **Care Desk** shortcut on the table session timeline (`/r/sora-cafe/help`) and file a complaint.
-- **Staff Ticketing Dashboard**: Log in as the **Sora Café Manager** (`hello@soracafe.in`) and navigate to the **Complaints Desk** in the sidebar. 
-- **Real-Time Refresher**: The ticket pops up immediately (polling every 3 seconds) without page reloads! You can assign the ticket to a waiter, append resolution notes, and mark it resolved.
-
----
-
-### 3. Pravora Global Super-Admin Console (Platform Oversight)
-
-Log in as the **Pravora SaaS Super-Admin** (`admin@pravora.in`) to monitor platform operations:
-
-- **Live Platform Health**: View real-time ping latency and server uptime queries executing live against the `/api/health` diagnostics endpoint.
-- **Branded Cafes Cards**: Inspect onboarded tenant cafe cards, displaying logos, cover banners, cuisine tags, and active table statistics.
-- **Platform-Wide Feeds**: Monitor all recent guest orders and customer complaints filed across all restaurants from a unified administrative timeline.
 
 ---
 
@@ -101,48 +48,12 @@ Log in as the **Pravora SaaS Super-Admin** (`admin@pravora.in`) to monitor platf
 - **Single Form Stocking**: Add individual kitchen ingredients.
 - **Bulk CSV Drag-and-Drop**: Drag and drop stock CSV files directly into the dash. Features error-tolerant client-side parsing, dynamic templates, progress indicators, and instant list updates.
 
----
+### 👤 5. Guest Portal & Loyalty Program
+- **Google OAuth Auth**: Instant Diner account creation to track favorites and checkouts.
+- **Dietary & Allergy AI Filtering**: Diners set preferences (Vegetarian, Vegan, Gluten-Free) and allergies (Peanuts, Dairy, Seafood) which the Gemini engine automatically uses to filter menu recommendations.
+- **Loyalty Progression Tiers**: Real-time points tracking with progress gauges indicating thresholds for Bronze, Silver, Gold, and Platinum Elite memberships.
+- **Timeline & Transaction Hub**: Real-time kitchen status progression tracking for live table sessions, combined with digital receipt emails and favorites lists.
 
-## 🛠️ Local Installation & Development
-
-### 1. Prerequisites
-- **Node.js** >= 18.0.0
-- **MongoDB** Local instance or Atlas Connection string
-
-### 2. Backend Setup
-1. Navigate to `/Backend` and run:
-   ```bash
-   npm install
-   ```
-2. Create a `.env` file based on `.env.example`:
-   ```env
-   PORT=5000
-   NODE_ENV=development
-   MONGODB_URI=mongodb+srv://...
-   JWT_SECRET=your_secret
-   EMAIL_HOST=smtp.gmail.com
-   EMAIL_USER=your_email@gmail.com
-   EMAIL_PASS=your_app_password
-   ```
-3. Run the development server:
-   ```bash
-   npm run dev
-   ```
-
-### 3. Frontend Setup
-1. Navigate to `/Frontend` and run:
-   ```bash
-   npm install
-   ```
-2. Create a `.env.local` file:
-   ```env
-   NEXT_PUBLIC_API_URL=http://localhost:5000/api
-   ```
-3. Launch the Next.js development server:
-   ```bash
-   npm run dev
-   ```
-4. Access the web app at `http://localhost:3000`.
-
-### 🌐 Mobile Testing over Local Wifi
-The frontend includes a dynamic API router. If you access the frontend using your computer's local IP address (e.g., `http://192.168.1.15:3000`), it automatically maps the API endpoints to port `5000` on the same host, enabling seamless mobile testing without hardcoding!
+### 🛡️ 6. Super-Admin Platform Oversight & Complaint Ticket Desk
+- **Super-Admin Unified Console**: SaaS KPIs dashboard (aggregate cafes, active tables, platform revenue counters) with global active order feeds.
+- **Real-Time Customer Care Desk**: Guest-filed complaints on the diner table session automatically propagate to the manager panel for rapid tracking, staff delegation, and resolution.
