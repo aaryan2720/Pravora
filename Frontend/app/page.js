@@ -72,11 +72,11 @@ const howItWorks = [
 ];
 
 const colorMap = {
-  amber: { bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.2)', text: '#fbbf24', icon: 'text-amber-400' },
-  jade: { bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.2)', text: '#34d399', icon: 'text-emerald-400' },
-  sky: { bg: 'rgba(14,165,233,0.1)', border: 'rgba(14,165,233,0.2)', text: '#38bdf8', icon: 'text-sky-400' },
-  violet: { bg: 'rgba(139,92,246,0.1)', border: 'rgba(139,92,246,0.2)', text: '#a78bfa', icon: 'text-violet-400' },
-  rose: { bg: 'rgba(244,63,94,0.1)', border: 'rgba(244,63,94,0.2)', text: '#fb7185', icon: 'text-rose-400' },
+  amber: { bg: 'rgba(233,106,10,0.06)', border: 'rgba(233,106,10,0.15)', text: '#E96A0A' },
+  jade: { bg: 'rgba(16,185,129,0.06)', border: 'rgba(16,185,129,0.15)', text: '#10b981' },
+  sky: { bg: 'rgba(59,130,246,0.06)', border: 'rgba(59,130,246,0.15)', text: '#3b82f6' },
+  violet: { bg: 'rgba(245,138,31,0.06)', border: 'rgba(245,138,31,0.15)', text: '#F58A1F' },
+  rose: { bg: 'rgba(244,63,94,0.06)', border: 'rgba(244,63,94,0.15)', text: '#ef4444' },
 };
 
 function AnimatedCounter({ target, suffix = '' }) {
@@ -155,7 +155,7 @@ export default function LandingPage() {
 
               <div className="flex gap-3">
                 <Link href="/scan">
-                  <Button variant="primary" size="md" className="gap-2 font-bold shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                  <Button variant="primary" size="md" className="gap-2 font-bold shadow-[0_0_20px_rgba(233,106,10,0.18)]">
                     <QrCode size={16} />
                     Scan Table QR
                   </Button>
@@ -578,7 +578,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4 relative z-10">
               <Link href="/auth/signup">
-                <Button variant="primary" size="xl" className="shadow-[0_0_30px_rgba(245,158,11,0.4)]">
+                <Button variant="primary" size="xl" className="shadow-[0_0_30px_rgba(233,106,10,0.3)]">
                   <Zap size={18} />
                   Start Free Today
                   <ArrowRight size={16} />

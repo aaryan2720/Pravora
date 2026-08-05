@@ -34,7 +34,7 @@ export default function PublicNav() {
                 { href: '/scan', label: 'Scan QR' },
               ].map(item => (
                 <Link key={item.href} href={item.href}
-                  className="text-sm text-slate-400 hover:text-white transition-colors font-medium">
+                  className="text-sm text-slate-300 hover:text-brand-orange transition-colors font-medium">
                   {item.label}
                 </Link>
               ))
@@ -45,7 +45,7 @@ export default function PublicNav() {
                 { href: '/discover', label: 'Explore' },
               ].map(item => (
                 <Link key={item.href} href={item.href}
-                  className="text-sm text-slate-400 hover:text-white transition-colors font-medium">
+                  className="text-sm text-slate-300 hover:text-brand-orange transition-colors font-medium">
                   {item.label}
                 </Link>
               ))
@@ -89,10 +89,10 @@ export default function PublicNav() {
             ) : (
               <>
                 <Link href="/auth/customer/signin">
-                  <Button variant="ghost" size="sm" className="text-slate-700 hover:text-slate-900">Diner Login</Button>
+                  <Button variant="glass" size="sm" className="text-slate-300 hover:text-brand-orange hover:border-brand-orange font-semibold shadow-sm transition-all">Diner Login</Button>
                 </Link>
                 <Link href="/auth/signin">
-                  <Button variant="ghost" size="sm" className="text-slate-700 hover:text-slate-900">Restaurant Login</Button>
+                  <Button variant="glass" size="sm" className="text-slate-300 hover:text-brand-orange hover:border-brand-orange font-semibold shadow-sm transition-all">Restaurant Login</Button>
                 </Link>
                 <Link href="/auth/signup">
                   <Button variant="primary" size="sm">
@@ -105,7 +105,7 @@ export default function PublicNav() {
           </div>
 
           {/* Mobile menu button */}
-          <button onClick={() => setOpen(!open)} className="md:hidden p-2 text-slate-500 hover:text-slate-900">
+          <button onClick={() => setOpen(!open)} className="md:hidden p-2 text-slate-300 hover:text-brand-orange transition-colors">
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
@@ -122,7 +122,7 @@ export default function PublicNav() {
                 { href: '/scan', label: 'Scan QR' },
               ].map(item => (
                 <Link key={item.href} href={item.href} onClick={() => setOpen(false)}
-                  className="text-slate-600 hover:text-slate-900 py-2 font-medium transition-colors">
+                  className="text-slate-300 hover:text-brand-orange py-2 font-medium transition-colors">
                   {item.label}
                 </Link>
               ))
@@ -133,7 +133,7 @@ export default function PublicNav() {
                 { href: '/discover', label: 'Explore' },
               ].map(item => (
                 <Link key={item.href} href={item.href} onClick={() => setOpen(false)}
-                  className="text-slate-600 hover:text-slate-900 py-2 font-medium transition-colors">
+                  className="text-slate-300 hover:text-brand-orange py-2 font-medium transition-colors">
                   {item.label}
                 </Link>
               ))

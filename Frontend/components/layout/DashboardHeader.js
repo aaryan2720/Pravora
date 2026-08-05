@@ -19,7 +19,7 @@ export default function DashboardHeader({ title = 'Dashboard', subtitle }) {
 
       {/* Title */}
       <div className="flex-1 min-w-0">
-        <h1 className="text-base sm:text-lg font-bold text-white truncate" style={{ fontFamily: 'Outfit, sans-serif' }}>{title}</h1>
+        <h1 className="text-base sm:text-lg font-bold text-slate-200 truncate" style={{ fontFamily: 'Outfit, sans-serif' }}>{title}</h1>
         {subtitle && <p className="text-[10px] sm:text-xs text-slate-500 truncate">{subtitle}</p>}
       </div>
 

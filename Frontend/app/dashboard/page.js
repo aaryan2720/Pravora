@@ -8,11 +8,11 @@ import { api } from '@/lib/api';
 
 function MetricCard({ label, value, sub, icon: Icon, color = 'amber', trend, href }) {
   const colorMap = {
-    amber: { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.15)', text: '#fbbf24', icon: 'text-amber-400' },
-    jade: { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.15)', text: '#34d399', icon: 'text-emerald-400' },
-    sky: { bg: 'rgba(14,165,233,0.08)', border: 'rgba(14,165,233,0.15)', text: '#38bdf8', icon: 'text-sky-400' },
-    rose: { bg: 'rgba(244,63,94,0.08)', border: 'rgba(244,63,94,0.15)', text: '#fb7185', icon: 'text-rose-400' },
-    violet: { bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.15)', text: '#a78bfa', icon: 'text-violet-400' },
+    amber: { bg: 'rgba(233,106,10,0.06)', border: 'rgba(233,106,10,0.15)', text: '#E96A0A' },
+    jade: { bg: 'rgba(16,185,129,0.06)', border: 'rgba(16,185,129,0.15)', text: '#10b981' },
+    sky: { bg: 'rgba(59,130,246,0.06)', border: 'rgba(59,130,246,0.15)', text: '#3b82f6' },
+    rose: { bg: 'rgba(244,63,94,0.06)', border: 'rgba(244,63,94,0.15)', text: '#ef4444' },
+    violet: { bg: 'rgba(245,138,31,0.06)', border: 'rgba(245,138,31,0.15)', text: '#F58A1F' },
   };
   const c = colorMap[color];
   const content = (
@@ -21,11 +21,11 @@ function MetricCard({ label, value, sub, icon: Icon, color = 'amber', trend, hre
         <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${c.bg}`, border: `1px solid ${c.border}` }}>
           <Icon size={18} style={{ color: c.text }} />
         </div>
-        {trend !== undefined && <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${trend > 0 ? 'bg-emerald-500/15 text-emerald-400' : 'bg-rose-500/15 text-rose-400'}`}>{trend > 0 ? '+' : ''}{trend}%</span>}
+        {trend !== undefined && <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${trend > 0 ? 'bg-emerald-500/15 text-emerald-600' : 'bg-rose-500/15 text-rose-500'}`}>{trend > 0 ? '+' : ''}{trend}%</span>}
       </div>
-      <p className="text-2xl font-black text-white mb-0.5" style={{ fontFamily: 'Outfit, sans-serif' }}>{value}</p>
+      <p className="text-2xl font-black text-slate-100 mb-0.5" style={{ fontFamily: 'Outfit, sans-serif' }}>{value}</p>
       <p className="text-sm text-slate-400 font-medium">{label}</p>
-      {sub && <p className="text-xs text-slate-600 mt-1">{sub}</p>}
+      {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
     </div>
   );
   return href ? <Link href={href} className="block">{content}</Link> : content;
@@ -33,11 +33,11 @@ function MetricCard({ label, value, sub, icon: Icon, color = 'amber', trend, hre
 
 function OrderCard({ order }) {
   const statusMap = {
-    pending: { label: 'Pending', color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' },
-    preparing: { label: 'Preparing', color: 'text-sky-400', bg: 'bg-sky-500/10 border-sky-500/20' },
-    ready: { label: 'Ready', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' },
-    served: { label: 'Served', color: 'text-violet-400', bg: 'bg-violet-500/10 border-violet-500/20' },
-    cancelled: { label: 'Cancelled', color: 'text-rose-400', bg: 'bg-rose-500/10 border-rose-500/20' },
+    pending: { label: 'Pending', color: 'text-brand-orange', bg: 'bg-brand-light-orange/15 border-brand-orange/20' },
+    preparing: { label: 'Preparing', color: 'text-sky-500', bg: 'bg-sky-500/5 border-sky-500/15' },
+    ready: { label: 'Ready', color: 'text-emerald-600', bg: 'bg-emerald-500/5 border-emerald-500/15' },
+    served: { label: 'Served', color: 'text-slate-400', bg: 'bg-slate-200/5 border-slate-700' },
+    cancelled: { label: 'Cancelled', color: 'text-rose-500', bg: 'bg-rose-500/5 border-rose-500/15' },
   };
   const s = statusMap[order.status] || statusMap.pending;
   const mins = Math.floor((Date.now() - new Date(order.placedAt)) / 60000);
@@ -45,7 +45,7 @@ function OrderCard({ order }) {
     <div className={`p-3.5 rounded-xl border ${s.bg}`}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <span className="font-bold text-sm text-white">{order.tableLabel}</span>
+          <span className="font-bold text-sm text-slate-100">{order.tableLabel}</span>
           <span className={`text-xs font-semibold ${s.color}`}>{s.label}</span>
         </div>
         <div className="flex items-center gap-1 text-xs text-slate-500">
@@ -156,7 +156,7 @@ export default function PulseDashboard() {
         <Card className="p-5 xl:col-span-2">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h3 className="font-bold text-white text-base" style={{ fontFamily: 'Outfit, sans-serif' }}>Weekly Revenue</h3>
+              <h3 className="font-bold text-slate-200 text-base" style={{ fontFamily: 'Outfit, sans-serif' }}>Weekly Revenue</h3>
               <p className="text-sm text-slate-500">Past 7 days</p>
             </div>
           </div>
@@ -166,17 +166,17 @@ export default function PulseDashboard() {
                 <AreaChart data={weekChart} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
                   <defs>
                     <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#E96A0A" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#E96A0A" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <XAxis dataKey="label" tick={{ fill: '#64748b', fontSize: 12 }} axisLine={false} tickLine={false} />
                   <Tooltip
-                    contentStyle={{ background: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, fontSize: 12 }}
+                    contentStyle={{ background: '#ffffff', border: '1px solid #ECECEC', borderRadius: 12, fontSize: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
                     formatter={v => [`₹${(v/1000).toFixed(1)}k`, 'Revenue']}
-                    labelStyle={{ color: '#94a3b8' }}
+                    labelStyle={{ color: '#1F1F1F' }}
                   />
-                  <Area type="monotone" dataKey="revenue" stroke="#f59e0b" strokeWidth={2} fill="url(#revGrad)" dot={false} />
+                  <Area type="monotone" dataKey="revenue" stroke="#E96A0A" strokeWidth={2} fill="url(#revGrad)" dot={false} />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
@@ -188,8 +188,8 @@ export default function PulseDashboard() {
         {/* Top items */}
         <Card className="p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-white text-base" style={{ fontFamily: 'Outfit, sans-serif' }}>Top Items Today</h3>
-            <Star size={16} className="text-amber-400" />
+            <h3 className="font-bold text-slate-200 text-base" style={{ fontFamily: 'Outfit, sans-serif' }}>Top Items Today</h3>
+            <Star size={16} className="text-brand-orange" />
           </div>
           <div className="space-y-3">
             {todayStats?.topItems && todayStats.topItems.length > 0 ? (
@@ -215,10 +215,10 @@ export default function PulseDashboard() {
         <Card className="p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <h3 className="font-bold text-white text-base" style={{ fontFamily: 'Outfit, sans-serif' }}>Live Orders</h3>
+              <h3 className="font-bold text-slate-200 text-base" style={{ fontFamily: 'Outfit, sans-serif' }}>Live Orders</h3>
               <span className="status-dot live" />
             </div>
-            <Link href="/dashboard/orders" className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1">
+            <Link href="/dashboard/orders" className="text-xs text-brand-orange hover:text-brand-yellow flex items-center gap-1">
               All orders <ArrowRight size={12} />
             </Link>
           </div>
@@ -234,8 +234,8 @@ export default function PulseDashboard() {
         {/* Table status overview */}
         <Card className="p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-white text-base" style={{ fontFamily: 'Outfit, sans-serif' }}>Table Status</h3>
-            <Link href="/dashboard/tables" className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1">
+            <h3 className="font-bold text-slate-200 text-base" style={{ fontFamily: 'Outfit, sans-serif' }}>Table Status</h3>
+            <Link href="/dashboard/tables" className="text-xs text-brand-orange hover:text-brand-yellow flex items-center gap-1">
               Manage <ArrowRight size={12} />
             </Link>
           </div>

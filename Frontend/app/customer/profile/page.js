@@ -202,7 +202,7 @@ export default function CustomerProfilePage() {
                 </div>
               )}
               <div>
-                <h1 className="text-xl font-black text-white flex items-center gap-2 justify-center sm:justify-start" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <h1 className="text-xl font-black text-slate-100 flex items-center gap-2 justify-center sm:justify-start" style={{ fontFamily: 'Outfit, sans-serif' }}>
                   {user.name}
                   {user.dietaryPreference && user.dietaryPreference !== 'none' && (
                     <Badge variant={user.dietaryPreference === 'veg' ? 'emerald' : 'amber'} className="capitalize text-[10px] py-0.5 px-2">
@@ -234,7 +234,7 @@ export default function CustomerProfilePage() {
           {showSettings && (
             <div className="mt-4 pt-5 border-t border-slate-800 animate-slideDown">
               <form onSubmit={handleSaveProfile} className="space-y-4">
-                <h3 className="text-sm font-bold text-white mb-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <h3 className="text-sm font-bold text-slate-200 mb-3" style={{ fontFamily: 'Outfit, sans-serif' }}>
                   Diner Profile & Dietary Preferences
                 </h3>
 
@@ -323,7 +323,7 @@ export default function CustomerProfilePage() {
                   <Utensils size={18} />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-bold text-white">You are actively paired with Table!</p>
+                  <p className="text-sm font-bold text-slate-200">You are actively paired with Table!</p>
                   <p className="text-xs text-slate-400">Order foods, call waiter, and check your kitchen timeline live</p>
                 </div>
               </div>
@@ -393,7 +393,7 @@ export default function CustomerProfilePage() {
                             </div>
                             <div>
                               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{tier.name}</p>
-                              <h3 className="text-sm font-bold text-white truncate max-w-[150px]">{m.restaurantId?.name}</h3>
+                              <h3 className="text-sm font-bold text-slate-100 truncate max-w-[150px]">{m.restaurantId?.name}</h3>
                             </div>
                           </div>
 
@@ -462,7 +462,7 @@ export default function CustomerProfilePage() {
                         <div>
                           <div className="flex items-center gap-1.5">
                             <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${item.isVeg ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-                            <h4 className="text-sm font-bold text-white truncate pr-6">{item.name}</h4>
+                            <h4 className="text-sm font-bold text-slate-100 truncate pr-6">{item.name}</h4>
                           </div>
                           <p className="text-[10px] text-slate-500 truncate mt-0.5">{item.restaurant?.name || 'Restaurant'}</p>
                           <p className="text-xs text-slate-400 mt-1 font-bold">₹{item.price}</p>

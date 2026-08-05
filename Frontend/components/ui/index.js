@@ -10,13 +10,13 @@ export function Button({ children, variant = 'primary', size = 'md', className =
     xl: 'px-8 py-4 text-lg',
   };
   const variants = {
-    primary: 'bg-gradient-to-r from-[#E96A0A] to-[#F58A1F] text-white hover:from-[#d55f09] hover:to-[#ea821a] hover:shadow-[0_4px_20px_rgba(233,106,10,0.25)] active:scale-[0.98]',
-    secondary: 'bg-white text-[#E96A0A] border border-[#E96A0A]/70 hover:bg-[#FFE7D1]/30 hover:border-[#F58A1F] active:scale-[0.98]',
-    ghost: 'bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-surface)] hover:text-[var(--text-primary)] active:scale-[0.98]',
+    primary: 'bg-gradient-to-r from-brand-orange to-brand-yellow text-white hover:opacity-95 hover:shadow-[0_4px_20px_rgba(233,106,10,0.25)] active:scale-[0.98]',
+    secondary: 'bg-white text-brand-orange border border-brand-orange/30 hover:bg-brand-light-orange/20 hover:border-brand-orange active:scale-[0.98]',
+    ghost: 'bg-transparent text-slate-300 hover:bg-slate-900 hover:text-slate-100 active:scale-[0.98]',
     danger: 'bg-rose-500/10 text-rose-500 border border-rose-500/20 hover:bg-rose-500/20 active:scale-[0.98]',
     success: 'bg-emerald-500 text-white hover:bg-emerald-600 hover:shadow-[0_4px_20px_rgba(16,185,129,0.25)] active:scale-[0.98]',
-    outline: 'bg-transparent text-[#E96A0A] border border-[#E96A0A]/40 hover:bg-[#E96A0A]/10 hover:border-[#E96A0A] active:scale-[0.98]',
-    glass: 'bg-white/70 backdrop-blur-sm text-[var(--text-primary)] border border-[var(--border-base)] hover:bg-white/90 active:scale-[0.98]',
+    outline: 'bg-transparent text-brand-orange border border-brand-orange/40 hover:bg-brand-orange/5 hover:border-brand-orange active:scale-[0.98]',
+    glass: 'bg-white/70 backdrop-blur-sm text-slate-100 border border-slate-700 hover:bg-white/95 active:scale-[0.98]',
   };
   return (
     <button
@@ -34,21 +34,21 @@ export function Button({ children, variant = 'primary', size = 'md', className =
 // Badge Component
 export function Badge({ children, variant = 'default', className = '' }) {
   const variants = {
-    default: 'bg-slate-100 text-slate-600 border border-slate-200',
+    default: 'bg-slate-200/8 text-slate-300 border border-slate-200/15',
     available: 'badge-available',
     unavailable: 'badge-unavailable',
     soon: 'badge-soon',
     special: 'badge-special',
     veg: 'badge-veg',
     nonveg: 'badge-nonveg',
-    gold: 'bg-[#FFE7D1] text-[#E96A0A] border border-[#E96A0A]/20',
-    silver: 'bg-slate-100 text-slate-600 border border-slate-200',
-    platinum: 'bg-violet-500/10 text-violet-600 border border-violet-500/20',
-    amber: 'bg-[#FFE7D1] text-[#E96A0A] border border-[#E96A0A]/20',
+    gold: 'bg-amber-300/25 text-brand-orange border border-brand-orange/15',
+    silver: 'bg-slate-200/8 text-slate-300 border border-slate-200/15',
+    platinum: 'bg-slate-200/15 text-slate-100 border border-slate-200/30 font-bold',
+    amber: 'bg-brand-light-orange/30 text-brand-orange border border-brand-orange/15',
     jade: 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20',
     sky: 'bg-sky-500/10 text-sky-600 border border-sky-500/20',
     rose: 'bg-rose-500/10 text-rose-600 border border-rose-500/20',
-    violet: 'bg-violet-500/10 text-violet-600 border border-violet-500/20',
+    violet: 'bg-brand-light-orange/30 text-brand-orange border border-brand-orange/15',
   };
   return (
     <span className={`badge ${variants[variant] || variants.default} ${className}`}>
