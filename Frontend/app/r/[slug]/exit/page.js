@@ -80,7 +80,7 @@ export default function GuestExitPage({ params }) {
       </div>
 
       <footer className="text-center text-[10px] text-slate-600">
-        Powered by ServeLoop · Seamless dining experience
+        Powered by Pravora · Seamless dining experience
       </footer>
     </div>
   );

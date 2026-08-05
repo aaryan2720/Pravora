@@ -20,7 +20,7 @@ export default function AboutPage() {
             We're on a mission to <span className="gradient-text-amber">redefine restaurant hospitality</span>
           </h1>
           <p className="text-lg sm:text-xl text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed mb-8">
-            ServeLoop was built to connect dining rooms, kitchens, guests, and management in one seamless, real-time operating ecosystem.
+            Pravora was built to connect dining rooms, kitchens, guests, and management in one seamless, real-time operating ecosystem.
           </p>
         </div>
       </section>
@@ -37,7 +37,7 @@ export default function AboutPage() {
                 As diners and tech enthusiasts, we noticed a persistent gap: restaurants use disjointed tools for reservations, POS, QR ordering, and employee shifts. Guests wait too long to order or pay, kitchens get overwhelmed, and managers fly blind.
               </p>
               <p>
-                We built ServeLoop as a single source of truth. By bringing table states, order cycles, inventory, and staff rosters under one intelligent dashboard, we empower operators to do what they do best: focus on the hospitality.
+                We built Pravora as a single source of truth. By bringing table states, order cycles, inventory, and staff rosters under one intelligent dashboard, we empower operators to do what they do best: focus on the hospitality.
               </p>
             </div>
           </div>

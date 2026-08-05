@@ -1,4 +1,4 @@
-// ServeLoop Mock Data — comprehensive data for all pages
+// Pravora Mock Data — comprehensive data for all pages
 
 export const mockRestaurant = {
   id: 'r_spicegardenblr',

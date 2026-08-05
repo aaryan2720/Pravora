@@ -68,10 +68,10 @@ export default function DashboardSidebar() {
       >
       {/* Logo */}
       <div className="flex items-center gap-2.5 h-16 px-4 border-b border-slate-800 flex-shrink-0">
-        <img src="/favicon.svg" alt="ServeLoop" className="w-8 h-8 object-contain flex-shrink-0" />
+        <img src="/favicon.svg" alt="Pravora" className="w-8 h-8 object-contain flex-shrink-0" />
         {sidebarOpen && (
           <span className="font-bold text-base text-slate-900 truncate" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            <span className="text-brand-orange">Serve</span><span className="text-brand-yellow">Loop</span>
+            <span className="text-brand-orange">Pra</span><span className="text-brand-yellow">vora</span>
           </span>
         )}
       </div>

@@ -53,7 +53,7 @@ export default function PaymentSuccessPage({ params }) {
       </div>
 
       <footer className="text-center text-[10px] text-slate-600">
-        Paid securely via ServeLoop Pay · GST Invoice #IN-90812
+        Paid securely via Pravora Pay · GST Invoice #IN-90812
       </footer>
     </div>
   );

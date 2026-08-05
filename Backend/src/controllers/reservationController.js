@@ -46,7 +46,7 @@ const createReservation = async (req, res) => {
     sendReservationConfirmation({
       guestEmail,
       guestName,
-      restaurantName: restaurant?.name || 'ServeLoop Restaurant',
+      restaurantName: restaurant?.name || 'Pravora Restaurant',
       date,
       time,
       partySize,

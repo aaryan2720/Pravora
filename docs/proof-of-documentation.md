@@ -1,6 +1,6 @@
-# 📜 ServeLoop Proof of Documentation & Git History
+# 📜 Pravora Proof of Documentation & Git History
 
-This document serves as verification of the timeline, commit history, and milestone verification logs for the development of the ServeLoop platform.
+This document serves as verification of the timeline, commit history, and milestone verification logs for the development of the Pravora platform.
 
 ---
 
@@ -21,8 +21,8 @@ Below is the verified commit logs, mapping chronological code contributions to p
 | **feat: initialize root layout with global styles** | Customized CSS design tokens, HSL custom dark palettes, and Outif font typography. |
 | **feat: implement core restaurant ordering flow** | Coded cart managers, timeline tracking logs, and active table guest pairings. |
 | **feat: implement initial frontend application structure** | Established Next.js Page structures for menus, bills, dashboards, and discover portals. |
-| **ServeLoop Frontend — Complete Build Walkthrough** | Integrated dynamic scan loaders, QR canvas generator components, and active session hubs. |
-| **Add initial documentation for ServeLoop** | Concocted initial blueprint schemas, mock databases, and environment templates. |
+| **Pravora Frontend — Complete Build Walkthrough** | Integrated dynamic scan loaders, QR canvas generator components, and active session hubs. |
+| **Add initial documentation for Pravora** | Concocted initial blueprint schemas, mock databases, and environment templates. |
 | **first commit aaryan2720** | Repository initializations. |
 
 ---

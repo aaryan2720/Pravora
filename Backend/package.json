@@ -1,7 +1,7 @@
 {
-  "name": "serveloop-backend",
+  "name": "pravora-backend",
   "version": "1.0.0",
-  "description": "ServeLoop multi-tenant restaurant SaaS backend API",
+  "description": "Pravora multi-tenant restaurant SaaS backend API",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -12,9 +12,9 @@
     "restaurant",
     "saas",
     "api",
-    "serveloop"
+    "pravora"
   ],
-  "author": "ServeLoop",
+  "author": "Pravora",
   "license": "MIT",
   "dependencies": {
     "@google/generative-ai": "^0.21.0",

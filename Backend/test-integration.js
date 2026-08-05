@@ -83,8 +83,8 @@ async function runTest() {
     console.log('☁️ Uploading Test Image to Cloudinary...');
     const base64Image = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
     
-    // We construct the folder name based on the restaurant's slug: serveloop/test-spice-garden/menu
-    const folderPath = `serveloop/${testRestaurant.slug}/menu`;
+    // We construct the folder name based on the restaurant's slug: pravora/test-spice-garden/menu
+    const folderPath = `pravora/${testRestaurant.slug}/menu`;
     const uploadResult = await cloudinary.uploader.upload(base64Image, {
       folder: folderPath,
       public_id: `test_item_${testItem._id}`,

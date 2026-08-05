@@ -116,7 +116,7 @@ export default function SaaSAdminPage() {
           </div>
           <div>
             <h2 className="text-base font-bold text-white uppercase tracking-wider text-xs" style={{ fontFamily: 'Outfit, sans-serif' }}>Super-Admin Command Console</h2>
-            <p className="text-xs text-slate-450 mt-0.5">Real-time overview of the ServeLoop multi-tenant platform.</p>
+            <p className="text-xs text-slate-450 mt-0.5">Real-time overview of the Pravora multi-tenant platform.</p>
           </div>
         </div>
 
@@ -208,7 +208,7 @@ export default function SaaSAdminPage() {
                     )}
                     <div className="min-w-0">
                       <h4 className="font-bold text-white text-sm truncate">{cafe.name}</h4>
-                      <p className="text-[10px] text-slate-500 truncate">{cafe.tagline || 'ServeLoop onboarded tenant'}</p>
+                      <p className="text-[10px] text-slate-500 truncate">{cafe.tagline || 'Pravora onboarded tenant'}</p>
                     </div>
                   </div>
 

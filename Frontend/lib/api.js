@@ -43,12 +43,19 @@ const request = async (endpoint, options = {}) => {
     const data = await res.json();
     
     if (!res.ok) {
-      // Handle expired token
-      if (res.status === 401 && data.code === 'TOKEN_EXPIRED') {
+      // Handle expired/invalid token
+      if (res.status === 401) {
         if (typeof window !== 'undefined') {
           localStorage.removeItem('token');
           localStorage.removeItem('user');
-          window.location.href = '/auth/signin';
+          
+          const path = window.location.pathname;
+          // Clean redirections for customer portals vs business consoles
+          if (path.startsWith('/r/') || path.startsWith('/customer/')) {
+            window.location.href = `/auth/customer/signin?redirect=${encodeURIComponent(path)}`;
+          } else {
+            window.location.href = '/auth/signin';
+          }
         }
       }
       throw new Error(data.message || 'Something went wrong');

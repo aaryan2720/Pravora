@@ -1,6 +1,6 @@
-# ServeLoop Backend README
+# Pravora Backend README
 
-This document defines the backend scope for ServeLoop.
+This document defines the backend scope for Pravora.
 
 The backend is responsible for authentication, tenant separation, restaurant data, orders, reservations, QR sessions, billing, memberships, analytics, AI orchestration, and all operational state changes.
 

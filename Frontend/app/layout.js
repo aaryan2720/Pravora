@@ -8,14 +8,14 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit', weight: ['400','500','600','700','800','900'] });
 
 export const metadata = {
-  title: 'ServeLoop — Smart Restaurant Operations Platform',
+  title: 'Pravora — The Intelligent Operating System for Modern Restaurants',
   description: 'Connect guests, staff, kitchen, and management in real time. Live ordering, QR sessions, analytics, and AI-powered insights for modern restaurants.',
   keywords: 'restaurant management, POS, QR ordering, restaurant SaaS, table management',
   icons: {
     icon: '/favicon.svg',
   },
   openGraph: {
-    title: 'ServeLoop — Smart Restaurant Operations Platform',
+    title: 'Pravora — The Intelligent Operating System for Modern Restaurants',
     description: 'The live restaurant control center that connects everyone.',
     type: 'website',
   },

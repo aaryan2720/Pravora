@@ -1,4 +1,4 @@
-# ServeLoop Technical Plan
+# Pravora Technical Plan
 
 This document translates the product blueprint into a rough build plan.
 
@@ -6,7 +6,7 @@ It is intentionally implementation-oriented but still high level. The goal is to
 
 ## 1. Technical Goal
 
-Build ServeLoop as a multi-tenant restaurant SaaS with:
+Build Pravora as a multi-tenant restaurant SaaS with:
 
 - a public-facing customer experience,
 - a restaurant onboarding flow,

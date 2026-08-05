@@ -33,7 +33,7 @@ function QRResolveInner() {
 
   return (
     <div className="w-full max-w-sm text-center">
-      <img src="/favicon.svg" alt="ServeLoop" className="w-12 h-12 mx-auto mb-6 animate-pulse" />
+      <img src="/favicon.svg" alt="Pravora" className="w-12 h-12 mx-auto mb-6 animate-pulse" />
       
       {error ? (
         <div className="space-y-4">
@@ -54,7 +54,7 @@ function QRResolveInner() {
             <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping delay-150" />
           </div>
           <p className="text-xs text-slate-500 leading-relaxed pt-2">
-            ServeLoop is matching your table number and active session...
+            Pravora is matching your table number and active session...
           </p>
         </div>
       )}
@@ -67,7 +67,7 @@ export default function QRResolvePage() {
     <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-slate-100">
       <Suspense fallback={
         <div className="w-full max-w-sm text-center space-y-3">
-          <img src="/favicon.svg" alt="ServeLoop" className="w-12 h-12 mx-auto mb-6 animate-pulse" />
+          <img src="/favicon.svg" alt="Pravora" className="w-12 h-12 mx-auto mb-6 animate-pulse" />
           <h1 className="text-xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>Loading gateway...</h1>
         </div>
       }>

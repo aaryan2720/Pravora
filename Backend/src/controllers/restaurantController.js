@@ -103,7 +103,7 @@ const uploadLogo = async (req, res) => {
     // Upload to Cloudinary — folder per restaurant slug for clean isolation
     const result = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
-        { folder: `serveloop/${restaurant.slug}/brand`, public_id: 'logo', overwrite: true },
+        { folder: `pravora/${restaurant.slug}/brand`, public_id: 'logo', overwrite: true },
         (error, result) => (error ? reject(error) : resolve(result))
       );
       stream.end(req.file.buffer);
@@ -130,7 +130,7 @@ const uploadCover = async (req, res) => {
   try {
     const result = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
-        { folder: `serveloop/${restaurant.slug}/brand`, public_id: 'cover', overwrite: true },
+        { folder: `pravora/${restaurant.slug}/brand`, public_id: 'cover', overwrite: true },
         (error, result) => (error ? reject(error) : resolve(result))
       );
       stream.end(req.file.buffer);

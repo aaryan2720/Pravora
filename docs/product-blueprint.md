@@ -1,8 +1,8 @@
-# ServeLoop Product Blueprint
+# Pravora Product Blueprint
 
 ## 1. Product Thesis
 
-Build ServeLoop, a restaurant operating system that reduces manual work and improves the dining experience from the moment a guest discovers the menu to the moment the restaurant closes the day’s books.
+Build Pravora, a restaurant operating system that reduces manual work and improves the dining experience from the moment a guest discovers the menu to the moment the restaurant closes the day’s books.
 
 This is not a delivery clone. The platform should solve operational problems:
 

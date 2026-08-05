@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="Frontend/public/favicon.svg" width="96" height="96" alt="ServeLoop Logo" />
-  <h1 align="center" style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 38px; border: none; margin-bottom: 0;">ServeLoop</h1>
+  <img src="Frontend/public/favicon.svg" width="96" height="96" alt="Pravora Logo" />
+  <h1 align="center" style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 38px; border: none; margin-bottom: 0;">Pravora</h1>
   <p align="center" style="font-size: 16px; color: #94a3b8; margin-top: 4px;">
     Next-Generation Multi-Tenant Restaurant SaaS Platform
   </p>
 </p>
 
 <p align="center">
-  <a href="https://pa-serveloop.vercel.app">
-    <img src="https://img.shields.io/badge/Live_Diner_Hub-pa--serveloop.vercel.app-f59e0b?style=for-the-badge&logo=vercel" alt="Live Diner Hub" />
+  <a href="https://pravora-20.vercel.app">
+    <img src="https://img.shields.io/badge/Live_Diner_Hub-pa--pravora.vercel.app-f59e0b?style=for-the-badge&logo=vercel" alt="Live Diner Hub" />
   </a>
-  <a href="https://serve-loop-pi.vercel.app/api/health">
+  <a href="https://pravora-backend.vercel.app/api/health">
     <img src="https://img.shields.io/badge/Live_API_Status-LIVE-emerald?style=for-the-badge&logo=mongodb" alt="Live API Status" />
   </a>
 </p>
@@ -40,7 +40,7 @@ Sign in to verify various operational and super-admin dashboards:
 | User Role | Login URL | Email Address | Password | Access Scope |
 | :--- | :--- | :--- | :--- | :--- |
 | **Sora Café Manager** | `/auth/signin` | `hello@soracafe.in` | `123456789` | Full operational control of Sora Café (Tables, Menu, Orders, Complaints) |
-| **ServeLoop SaaS Super-Admin** | `/auth/signin` | `admin@serveloop.in` | `admin123456` | Platform-wide administrative console (System Health, Global Feeds, Tickets) |
+| **Pravora SaaS Super-Admin** | `/auth/signin` | `admin@pravora.in` | `admin123456` | Platform-wide administrative console (System Health, Global Feeds, Tickets) |
 | **Diner Customer (QR Scan)** | *Direct Access* | *No Credentials Required* | *No Password* | Scan table QR code to browse menus, order food, and file help requests |
 
 ---
@@ -72,9 +72,9 @@ If a customer faces any issues (e.g., cold food, slow service, billing errors) d
 
 ---
 
-### 3. ServeLoop Global Super-Admin Console (Platform Oversight)
+### 3. Pravora Global Super-Admin Console (Platform Oversight)
 
-Log in as the **ServeLoop SaaS Super-Admin** (`admin@serveloop.in`) to monitor platform operations:
+Log in as the **Pravora SaaS Super-Admin** (`admin@pravora.in`) to monitor platform operations:
 
 - **Live Platform Health**: View real-time ping latency and server uptime queries executing live against the `/api/health` diagnostics endpoint.
 - **Branded Cafes Cards**: Inspect onboarded tenant cafe cards, displaying logos, cover banners, cuisine tags, and active table statistics.

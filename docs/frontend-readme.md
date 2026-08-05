@@ -1,6 +1,6 @@
-# ServeLoop Frontend README
+# Pravora Frontend README
 
-This document defines the frontend scope for ServeLoop.
+This document defines the frontend scope for Pravora.
 
 The frontend is responsible for the customer experience, onboarding experience, restaurant workspace, and all visible dashboard interactions. It should feel fast, premium, mobile-friendly, and easy to understand for both restaurant staff and customers.
 

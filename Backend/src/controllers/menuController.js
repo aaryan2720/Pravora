@@ -159,7 +159,7 @@ const uploadItemImage = async (req, res) => {
   try {
     const result = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
-        { folder: `serveloop/${slug}/menu`, public_id: item._id.toString(), overwrite: true },
+        { folder: `pravora/${slug}/menu`, public_id: item._id.toString(), overwrite: true },
         (error, result) => (error ? reject(error) : resolve(result))
       );
       stream.end(req.file.buffer);

@@ -101,9 +101,9 @@ export default function TableEntryPage({ params }) {
       {/* Header */}
       <header className="px-6 py-4 flex items-center justify-between border-b border-slate-900 bg-slate-900/40 backdrop-blur-sm sticky top-0 z-30">
         <div className="flex items-center gap-2">
-          <img src="/favicon.svg" alt="ServeLoop" className="w-8 h-8 object-contain" />
+          <img src="/favicon.svg" alt="Pravora" className="w-8 h-8 object-contain" />
           <span className="font-bold text-slate-900 text-sm" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            <span className="text-brand-orange">Serve</span><span className="text-brand-yellow">Loop</span>
+            <span className="text-brand-orange">Pra</span><span className="text-brand-yellow">vora</span>
           </span>
         </div>
         <div className="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/20 text-emerald-400 text-xs font-semibold flex items-center gap-1.5 animate-pulse">
@@ -192,7 +192,7 @@ export default function TableEntryPage({ params }) {
 
       {/* Footer */}
       <footer className="text-center py-6 text-xs text-slate-600 border-t border-slate-900">
-        Powered by ServeLoop · Seamless dining experience
+        Powered by Pravora · Seamless dining experience
       </footer>
     </div>
   );

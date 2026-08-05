@@ -19,9 +19,9 @@ export default function PublicNav() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <img src="/favicon.svg" alt="ServeLoop" className="w-8 h-8 object-contain transition-transform group-hover:scale-105" />
+            <img src="/favicon.svg" alt="Pravora" className="w-8 h-8 object-contain transition-transform group-hover:scale-105" />
             <span className="font-bold text-lg text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
-              <span className="text-brand-orange">Serve</span><span className="text-brand-yellow">Loop</span>
+              <span className="text-brand-orange">Pra</span><span className="text-brand-yellow">vora</span>
             </span>
           </Link>
 

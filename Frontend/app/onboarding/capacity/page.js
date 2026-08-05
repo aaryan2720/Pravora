@@ -37,7 +37,7 @@ export default function CapacityPage() {
           Restaurant size and capacity
         </h2>
         <p className="text-slate-400 leading-relaxed">
-          This helps ServeLoop size your table map, optimize queue estimates, and configure the operations dashboard.
+          This helps Pravora size your table map, optimize queue estimates, and configure the operations dashboard.
         </p>
       </div>
 

@@ -37,17 +37,17 @@ connectDB().then(() => {
       const Restaurant = require('./src/models/Restaurant');
       
       // 1. Seed global admin if not present
-      let admin = await User.findOne({ email: 'admin@serveloop.in' });
+      let admin = await User.findOne({ email: 'admin@pravora.in' });
       if (!admin) {
         admin = await User.create({
-          name: 'ServeLoop Admin',
-          email: 'admin@serveloop.in',
+          name: 'Pravora Admin',
+          email: 'admin@pravora.in',
           passwordHash: 'admin123456',
           role: 'admin',
           restaurantId: null,
           isVerified: true
         });
-        console.log('👤 Global Super-Admin seeded: admin@serveloop.in');
+        console.log('👤 Global Super-Admin seeded: admin@pravora.in');
       } else {
         if (admin.restaurantId !== null || admin.role !== 'admin') {
           admin.restaurantId = null;
@@ -145,11 +145,25 @@ const getLocalOrigins = () => {
   return origins;
 };
 
+const allowedOrigins = [
+  'https://pravora-20.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:3001'
+];
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Dynamically echo requesting origin to allow all sites (works with credentials: true)
-      callback(null, true);
+      if (!origin) return callback(null, true);
+      const localOrigins = getLocalOrigins();
+      const allAllowed = [...allowedOrigins, ...localOrigins];
+      if (allAllowed.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -180,11 +194,11 @@ app.get('/api/health', (req, res) => {
   res.json({
     success: true,
     status: 'LIVE',
-    service: 'ServeLoop Restaurant SaaS API',
+    service: 'Pravora Restaurant SaaS API',
     uptime: `${Math.round(process.uptime())}s`,
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'production',
-    author: 'ServeLoop Operations',
+    author: 'Pravora Operations',
   });
 });
 
@@ -221,7 +235,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log('');
   console.log('╔══════════════════════════════════════════╗');
-  console.log('║   🍽️   ServeLoop Backend API              ║');
+  console.log('║   🍽️   Pravora Backend API              ║');
   console.log(`║   🚀  Running on port ${PORT}               ║`);
   console.log(`║   🌍  Mode: ${(process.env.NODE_ENV || 'development').padEnd(28)}║`);
   console.log('╚══════════════════════════════════════════╝');

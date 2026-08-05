@@ -108,7 +108,7 @@ export default function RestaurantTypePage() {
           <p className="text-sm text-slate-400">
             <span className="text-slate-200 font-medium">Selected: </span>
             {types.find(t => t.id === selected)?.label} — 
-            ServeLoop will recommend the best onboarding path for this type.
+            Pravora will recommend the best onboarding path for this type.
           </p>
         </div>
       )}

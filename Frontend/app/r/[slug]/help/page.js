@@ -182,7 +182,7 @@ export default function GuestHelpPage({ params }) {
       </main>
 
       <footer className="text-center py-6 text-xs text-slate-600 border-t border-slate-900">
-        ServeLoop Customer Care Engine
+        Pravora Customer Care Engine
       </footer>
     </div>
   );

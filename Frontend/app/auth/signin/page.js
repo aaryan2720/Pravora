@@ -77,9 +77,9 @@ export default function SignInPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <Link href="/" className="flex items-center justify-center gap-2 mb-10 group">
-          <img src="/favicon.svg" alt="ServeLoop" className="w-9 h-9 object-contain" />
+          <img src="/favicon.svg" alt="Pravora" className="w-9 h-9 object-contain" />
           <span className="font-bold text-xl text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            <span className="text-amber-500">Serve</span><span className="text-amber-400">Loop</span>
+            <span className="text-amber-500">Pra</span><span className="text-amber-400">vora</span>
           </span>
         </Link>
 
@@ -156,7 +156,7 @@ export default function SignInPage() {
           </form>
 
           <p className="text-sm text-slate-500 mt-6 text-center">
-            New to ServeLoop?{' '}
+            New to Pravora?{' '}
             <Link href="/auth/signup" className="text-amber-400 hover:text-amber-300 font-medium">Create account</Link>
           </p>
         </div>

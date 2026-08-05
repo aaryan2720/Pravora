@@ -194,7 +194,7 @@ export default function GuestReservePage({ params }) {
       </main>
 
       <footer className="text-center py-6 text-xs text-slate-600 border-t border-slate-900">
-        ServeLoop booking engine
+        Pravora booking engine
       </footer>
     </div>
   );

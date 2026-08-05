@@ -60,7 +60,7 @@ const stats = [
 ];
 
 const testimonials = [
-  { name: 'Ravi Shankar', role: 'Owner, Spice Garden', avatar: 'RS', rating: 5, text: 'ServeLoop changed how we operate. Staff coordination went from chaotic to seamless. Our kitchen wait times dropped by 40%.' },
+  { name: 'Ravi Shankar', role: 'Owner, Spice Garden', avatar: 'RS', rating: 5, text: 'Pravora changed how we operate. Staff coordination went from chaotic to seamless. Our kitchen wait times dropped by 40%.' },
   { name: 'Priya Nair', role: 'Manager, Saffron House', avatar: 'PN', rating: 5, text: 'The pulse dashboard gives me a view of the entire floor without walking around. Best decision we made this year.' },
   { name: 'Arjun Mehta', role: 'Owner, Bamboo Bowl', avatar: 'AM', rating: 5, text: "The QR ordering system is loved by our guests. No app, no friction. Just scan and order. Revenue went up immediately." },
 ];
@@ -321,12 +321,12 @@ export default function LandingPage() {
         <footer className="border-t border-slate-900 bg-slate-950 py-12 px-4 text-center">
           <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-sm text-slate-500">
             <div className="flex items-center gap-2">
-              <img src="/favicon.svg" alt="ServeLoop" className="w-6 h-6 object-contain" />
+              <img src="/favicon.svg" alt="Pravora" className="w-6 h-6 object-contain" />
               <span className="font-bold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                <span className="text-brand-orange text-xs">Serve</span><span className="text-brand-yellow text-xs">Loop</span>
+                <span className="text-brand-orange text-xs">Pra</span><span className="text-brand-yellow text-xs">vora</span>
               </span>
             </div>
-            <p className="text-xs">© 2025 ServeLoop. Serving partner cafes all over the world.</p>
+            <p className="text-xs">© 2025 Pravora. Serving partner cafes all over the world.</p>
             <div className="flex gap-4">
               <Link href="/about" className="hover:text-slate-300">About</Link>
               <Link href="/discover" className="hover:text-slate-300">Explore</Link>
@@ -406,7 +406,7 @@ export default function LandingPage() {
               <div className="w-3 h-3 rounded-full bg-emerald-500" />
               <div className="flex-1 flex justify-center">
                 <div className="px-4 py-1 rounded-lg bg-slate-700/50 text-xs text-slate-400">
-                  app.serveloop.in/dashboard
+                  app.pravora.in/dashboard
                 </div>
               </div>
             </div>
@@ -533,7 +533,7 @@ export default function LandingPage() {
           <div className="text-center mb-16">
             <Badge variant="violet" className="mb-4">Testimonials</Badge>
             <h2 className="text-4xl font-black text-white">
-              Restaurants love ServeLoop.
+              Restaurants love Pravora.
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -574,7 +574,7 @@ export default function LandingPage() {
               <span className="gradient-text-amber">restaurant operations?</span>
             </h2>
             <p className="text-slate-400 text-lg mb-8 relative z-10">
-              Join hundreds of restaurants already using ServeLoop to run smarter.
+              Join hundreds of restaurants already using Pravora to run smarter.
             </p>
             <div className="flex flex-wrap justify-center gap-4 relative z-10">
               <Link href="/auth/signup">
@@ -600,12 +600,12 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2.5">
-              <img src="/favicon.svg" alt="ServeLoop" className="w-7 h-7 object-contain" />
+              <img src="/favicon.svg" alt="Pravora" className="w-7 h-7 object-contain" />
               <span className="font-bold text-base text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                <span className="text-brand-orange">Serve</span><span className="text-brand-yellow">Loop</span>
+                <span className="text-brand-orange">Pra</span><span className="text-brand-yellow">vora</span>
               </span>
             </div>
-            <p className="text-sm text-slate-600">© 2025 ServeLoop. Smart restaurant operations platform.</p>
+            <p className="text-sm text-slate-600">© 2025 Pravora. Smart restaurant operations platform.</p>
             <div className="flex gap-6 text-sm text-slate-500">
               <Link href="/about" className="hover:text-slate-300 transition-colors">About</Link>
               <Link href="/pricing" className="hover:text-slate-300 transition-colors">Pricing</Link>

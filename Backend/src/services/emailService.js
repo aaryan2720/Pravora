@@ -25,7 +25,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
   }
   try {
     await t.sendMail({
-      from: process.env.EMAIL_FROM || 'ServeLoop <noreply@serveloop.in>',
+      from: process.env.EMAIL_FROM || 'Pravora <noreply@pravora.in>',
       to,
       subject,
       html,
@@ -42,19 +42,19 @@ const sendEmail = async ({ to, subject, html, text }) => {
 const sendWelcomeEmail = async (user) => {
   await sendEmail({
     to: user.email,
-    subject: 'Welcome to ServeLoop! 🍽️',
+    subject: 'Welcome to Pravora! 🍽️',
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #f59e0b;">Welcome to ServeLoop, ${user.name}!</h2>
+        <h2 style="color: #f59e0b;">Welcome to Pravora, ${user.name}!</h2>
         <p>Your restaurant account has been created. Start by completing your onboarding setup to go live.</p>
         <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/onboarding" 
            style="display:inline-block;background:#f59e0b;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">
           Complete Setup
         </a>
-        <p style="color:#888;margin-top:24px;font-size:12px;">ServeLoop — Smart Restaurant Operations</p>
+        <p style="color:#888;margin-top:24px;font-size:12px;">Pravora — Smart Restaurant Operations</p>
       </div>
     `,
-    text: `Welcome to ServeLoop, ${user.name}! Complete your setup at ${process.env.FRONTEND_URL || 'http://localhost:3000'}/onboarding`,
+    text: `Welcome to Pravora, ${user.name}! Complete your setup at ${process.env.FRONTEND_URL || 'http://localhost:3000'}/onboarding`,
   });
 };
 
@@ -103,7 +103,7 @@ const sendGuestWelcomeEmail = async (guest) => {
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #f1f5f9; border-radius: 16px; padding: 24px; background-color: #fafafa;">
         <div style="text-align: center; margin-bottom: 20px;">
-          <h2 style="color: #fd6d23; font-weight: 900; margin: 0;">ServeLoop</h2>
+          <h2 style="color: #fd6d23; font-weight: 900; margin: 0;">Pravora</h2>
           <p style="color: #64748b; font-size: 14px; margin: 4px 0 0 0;">Smart Dining & Loyalty Rewards</p>
         </div>
         <div style="background-color: #ffffff; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0;">
@@ -122,11 +122,11 @@ const sendGuestWelcomeEmail = async (guest) => {
           </div>
         </div>
         <div style="text-align: center; margin-top: 24px;">
-          <p style="color:#94a3b8; font-size:11px; margin: 0;">Served by ServeLoop — Smart Restaurant Operations</p>
+          <p style="color:#94a3b8; font-size:11px; margin: 0;">Served by Pravora — Smart Restaurant Operations</p>
         </div>
       </div>
     `,
-    text: `Welcome to ServeLoop, ${guest.name}! Start exploring restaurants at ${process.env.FRONTEND_URL || 'http://localhost:3000'}/discover`,
+    text: `Welcome to Pravora, ${guest.name}! Start exploring restaurants at ${process.env.FRONTEND_URL || 'http://localhost:3000'}/discover`,
   });
 };
 
@@ -233,7 +233,7 @@ const sendReceiptEmail = async ({ guestEmail, guestName, bill }) => {
         <div style="background-color: #fafafa; border-top: 1px solid #f1f5f9; padding: 20px; text-align: center;">
           <p style="color: #475569; font-size: 12px; margin: 0 0 4px 0;">Thank you for dining with us!</p>
           <p style="color: #94a3b8; font-size: 11px; margin: 0;">
-            Served by <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}" style="color: #fd6d23; text-decoration: none; font-weight: bold;">ServeLoop</a> — Smart Restaurant Operations
+            Served by <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}" style="color: #fd6d23; text-decoration: none; font-weight: bold;">Pravora</a> — Smart Restaurant Operations
           </p>
         </div>
       </div>

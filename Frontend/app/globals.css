@@ -1,45 +1,48 @@
 @import "tailwindcss";
 
 :root {
-  /* Brand Colors from favicon.svg */
-  --color-brand-orange: #FD6D23;
-  --color-brand-yellow: #FDBE13;
+  /* Brand Colors from Pravora Logo */
+  --color-brand-orange: #E96A0A;
+  --color-brand-yellow: #F58A1F;
+  --color-brand-light-orange: #FFE7D1;
+  --color-brand-cream: #FFFDF9;
 
   /* Basic slate colors mapped for light mode */
   --color-slate-950: #ffffff; /* White background */
-  --color-slate-900: #f8fafc; /* Slate 50 - Card background */
-  --color-slate-800: #f1f5f9; /* Slate 100 - Table/Elevated hover */
-  --color-slate-700: #e2e8f0; /* Slate 200 - Borders */
-  --color-slate-600: #cbd5e1; /* Slate 300 - Disabled state */
-  --color-slate-500: #94a3b8; /* Slate 400 - Light text */
-  --color-slate-400: #64748b; /* Slate 500 - Muted text */
-  --color-slate-300: #475569; /* Slate 600 - Secondary text */
-  --color-slate-200: #334155; /* Slate 700 - Body text */
-  --color-slate-100: #1e293b; /* Slate 800 - Header text */
-  --color-slate-50:  #0f172a; /* Slate 900 - High contrast text */
+  --color-slate-900: #FFF8F2; /* Surface background */
+  --color-slate-800: #FFFDF9; /* Warm Cream background */
+  --color-slate-700: #ECECEC; /* Border */
+  --color-slate-600: #e2e8f0; /* Disabled/Subtle state */
+  --color-slate-500: #94a3b8; /* Light text */
+  --color-slate-400: #666666; /* Secondary Text */
+  --color-slate-300: #475569; /* Secondary text */
+  --color-slate-200: #1F1F1F; /* Primary Text */
+  --color-slate-100: #1F1F1F; /* Primary Text */
+  --color-slate-5:   #FFE7D1; /* Light Orange bg */
+  --color-slate-50:  #1F1F1F; /* High contrast text */
 
   /* Re-assigning semantic variables */
   --bg-base:       #ffffff;
-  --bg-surface:    #f8fafc;
-  --bg-elevated:   #f1f5f9;
-  --bg-muted:      #cbd5e1;
+  --bg-surface:    #FFF8F2;
+  --bg-elevated:   #FFFDF9;
+  --bg-muted:      #FFE7D1;
 
-  --text-primary:  #0f172a; /* Slate 900 */
-  --text-secondary: #334155; /* Slate 700 */
-  --text-muted:    #64748b; /* Slate 500 */
+  --text-primary:  #1F1F1F;
+  --text-secondary: #666666;
+  --text-muted:    #94a3b8;
 
-  --border-base:   #e2e8f0; /* Slate 200 */
-  --border-subtle: #cbd5e1; /* Slate 300 */
+  --border-base:   #ECECEC;
+  --border-subtle: #e2e8f0;
 
   --accent-primary: var(--color-brand-orange);
   --accent-success: #10b981;
   --accent-danger:  #ef4444;
   --accent-info:    #3b82f6;
-  --accent-purple:  var(--color-brand-yellow); /* Avoid actual purple, map to yellow */
+  --accent-purple:  var(--color-brand-yellow);
 
   /* Glassmorphism for Light Mode */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(15, 23, 42, 0.06);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(31, 31, 31, 0.05);
   --glass-blur: blur(15px);
 
   /* Overwrite other colors to avoid purple */
@@ -50,8 +53,8 @@
 
   --color-amber-500:  var(--color-brand-orange);
   --color-amber-400:  var(--color-brand-yellow);
-  --color-amber-300:  #ffedd5; /* Light orange-100 */
-  --color-amber-600:  #ea580c; /* Orange-600 */
+  --color-amber-300:  #FFE7D1; /* Light orange */
+  --color-amber-600:  #d55f09; /* Darker orange */
 }
 
 /* Base */
@@ -385,7 +388,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Gradient text */
 .gradient-text-amber {
-  background: linear-gradient(135deg, #FD6D23, #FDBE13);
+  background: linear-gradient(135deg, #E96A0A, #F58A1F);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -398,12 +401,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Brand Utility Classes */
-.text-brand-orange { color: #FD6D23; }
-.text-brand-yellow { color: #FDBE13; }
-.bg-brand-orange { background-color: #FD6D23; }
-.bg-brand-yellow { background-color: #FDBE13; }
-.border-brand-orange { border-color: #FD6D23; }
-.border-brand-yellow { border-color: #FDBE13; }
+.text-brand-orange { color: #E96A0A; }
+.text-brand-yellow { color: #F58A1F; }
+.bg-brand-orange { background-color: #E96A0A; }
+.bg-brand-yellow { background-color: #F58A1F; }
+.border-brand-orange { border-color: #E96A0A; }
+.border-brand-yellow { border-color: #F58A1F; }
 
 /* Kanban column headers */
 .kanban-pending { border-bottom: 2px solid rgba(253,109,35,0.35); }
@@ -428,16 +431,16 @@ h1, h2, h3, h4, h5, h6 {
 .text-slate-100,
 .text-slate-200,
 .text-slate-300 {
-  color: #0f172a !important; /* Slate-900 */
+  color: #1F1F1F !important;
 }
 
 .text-slate-400,
 .text-slate-500 {
-  color: #475569 !important; /* Slate-600 */
+  color: #666666 !important;
 }
 
 .text-slate-600 {
-  color: #64748b !important; /* Slate-500 */
+  color: #94a3b8 !important;
 }
 
 /* Restore white text for specific brand actions/buttons/badges/alerts */

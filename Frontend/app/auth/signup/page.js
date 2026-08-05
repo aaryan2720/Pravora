@@ -84,9 +84,9 @@ export default function SignUpPage() {
       <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 py-12 max-w-xl mx-auto w-full">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 mb-10 group">
-          <img src="/favicon.svg" alt="ServeLoop" className="w-8 h-8 object-contain" />
+          <img src="/favicon.svg" alt="Pravora" className="w-8 h-8 object-contain" />
           <span className="font-bold text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            <span className="text-amber-500">Serve</span><span className="text-amber-400">Loop</span>
+            <span className="text-amber-500">Pra</span><span className="text-amber-400">vora</span>
           </span>
         </Link>
 
@@ -210,7 +210,7 @@ export default function SignUpPage() {
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="text-center">
             <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto mb-6">
-              <img src="/favicon.svg" alt="ServeLoop" className="w-10 h-10 object-contain" />
+              <img src="/favicon.svg" alt="Pravora" className="w-10 h-10 object-contain" />
             </div>
             <h2 className="text-3xl font-black text-white mb-4" style={{ fontFamily: 'Outfit, sans-serif' }}>
               Your restaurant,<br />

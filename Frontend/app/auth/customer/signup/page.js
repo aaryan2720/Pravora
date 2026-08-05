@@ -58,9 +58,9 @@ function SignUpForm() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <Link href="/" className="flex items-center justify-center gap-2 mb-10 group">
-          <img src="/favicon.svg" alt="ServeLoop" className="w-9 h-9 object-contain" />
+          <img src="/favicon.svg" alt="Pravora" className="w-9 h-9 object-contain" />
           <span className="font-bold text-xl text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            <span className="text-amber-500">Serve</span><span className="text-amber-400">Loop</span>
+            <span className="text-amber-500">Pra</span><span className="text-amber-400">vora</span>
           </span>
         </Link>
 
