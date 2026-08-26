@@ -42,7 +42,7 @@ const restaurantSchema = new mongoose.Schema(
     cuisine: [{ type: String, trim: true }],
 
     // ─── Branding ─────────────────────────────────
-    brandColor: { type: String, default: '#f59e0b' },
+    brandColor: { type: String, default: '#E96A0A' },
     logo: { type: String, default: null },
     coverImage: { type: String, default: null },
     images: [{ type: String }],
