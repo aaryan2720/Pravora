@@ -147,6 +147,8 @@ const getLocalOrigins = () => {
 
 const allowedOrigins = [
   'https://pravora-20.vercel.app',
+  'https://www.pravora.food',
+  'https://pravora.food',
   'http://localhost:3000',
   'http://localhost:3001',
   'http://127.0.0.1:3000',
