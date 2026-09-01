@@ -8,16 +8,27 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit', weight: ['400','500','600','700','800','900'] });
 
 export const metadata = {
-  title: 'Pravora — The Intelligent Operating System for Modern Restaurants',
-  description: 'Connect guests, staff, kitchen, and management in real time. Live ordering, QR sessions, analytics, and AI-powered insights for modern restaurants.',
-  keywords: 'restaurant management, POS, QR ordering, restaurant SaaS, table management',
+  metadataBase: new URL('https://www.pravora.food'),
+  title: {
+    default: 'Pravora | Restaurant Operating System',
+    template: '%s | Pravora',
+  },
+  description: 'Real-time operating system for modern restaurants. Live QR ordering, kitchen management, table sessions, and AI-powered insights.',
+  keywords: 'restaurant management, POS, QR ordering, restaurant SaaS, table management, live kitchen',
   icons: {
     icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
+  alternates: {
+    canonical: '/',
   },
   openGraph: {
-    title: 'Pravora — The Intelligent Operating System for Modern Restaurants',
-    description: 'The live restaurant control center that connects everyone.',
+    title: 'Pravora | Intelligent Restaurant Operating System',
+    description: 'The live restaurant control center that connects dining rooms, kitchens, and management.',
     type: 'website',
+    url: 'https://www.pravora.food',
+    siteName: 'Pravora',
   },
 };
 

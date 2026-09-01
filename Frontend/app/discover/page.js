@@ -26,7 +26,7 @@ function RestaurantCard({ r }) {
         {/* Cover Banner */}
         <div className="h-36 bg-slate-800 relative overflow-hidden flex items-center justify-center">
           {r.coverImage ? (
-            <img src={r.coverImage} alt={r.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src={r.coverImage} alt={r.name} width="400" height="200" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
           ) : (
             <div className="text-5xl opacity-10 group-hover:scale-110 transition-transform duration-500">🍽️</div>
           )}
@@ -51,7 +51,7 @@ function RestaurantCard({ r }) {
           {/* Overlapping Logo */}
           <div className="absolute -bottom-6 left-4 z-10 w-14 h-14 rounded-xl overflow-hidden border-[3px] border-slate-900 bg-slate-800 shadow-lg flex items-center justify-center">
             {r.logo ? (
-              <img src={r.logo} alt={r.name} className="w-full h-full object-contain" />
+              <img src={r.logo} alt={r.name} width="56" height="56" className="w-full h-full object-contain" />
             ) : (
               <span className="text-lg font-black text-amber-500" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 {r.name?.charAt(0).toUpperCase() || 'R'}

@@ -31,7 +31,6 @@ export default function ReservationsPage() {
   });
 
   const fetchReservations = async (showLoad = false) => {
-    if (!activeRestaurant?._id) return;
     if (showLoad) setLoading(true);
     try {
       const res = await api.reservations.list();
@@ -52,7 +51,7 @@ export default function ReservationsPage() {
       fetchReservations(false);
     }, 3000);
     return () => clearInterval(interval);
-  }, [activeRestaurant]);
+  }, []);
 
   const updateStatus = async (id, status) => {
     try {

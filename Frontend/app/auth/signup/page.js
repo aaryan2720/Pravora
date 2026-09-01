@@ -84,7 +84,7 @@ export default function SignUpPage() {
       <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 py-12 max-w-xl mx-auto w-full">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 mb-10 group">
-          <img src="/favicon.svg" alt="Pravora" className="w-8 h-8 object-contain" />
+          <img src="/favicon.svg" alt="Pravora" width="32" height="32" className="w-8 h-8 object-contain" />
           <span className="font-bold text-lg text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
             <span className="text-amber-500">Pra</span><span className="text-amber-400">vora</span>
           </span>

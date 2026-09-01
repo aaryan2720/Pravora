@@ -126,7 +126,7 @@ export default function GuestHelpPage({ params }) {
           <div className="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mx-auto mb-2 text-amber-400">
             <LifeBuoy size={22} className="animate-spin" style={{ animationDuration: '3s' }} />
           </div>
-          <h2 className="text-xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>Need Assistance?</h2>
+          <h1 className="text-xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>Need Assistance?</h1>
           <p className="text-xs text-slate-500">Report service, cleanliness or food issues directly to staff</p>
         </div>
 

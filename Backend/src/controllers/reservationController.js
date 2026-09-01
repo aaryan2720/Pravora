@@ -7,13 +7,19 @@ const { successResponse, paginate, getTodayDateString } = require('../utils/help
 const getReservations = async (req, res) => {
   const { date, status } = req.query;
   const { limit, skip } = paginate(req.query);
-  const filter = { restaurantId: req.restaurantId };
+
+  let restaurantId = req.restaurantId;
+  if (req.user?.role === 'admin' && !restaurantId) {
+    restaurantId = req.query.restaurantId || req.headers['x-restaurant-id'] || null;
+  }
+
+  const filter = {};
+  if (restaurantId) filter.restaurantId = restaurantId;
   if (date) filter.date = date;
-  else filter.date = { $gte: getTodayDateString() }; // Return today's and all future reservations by default
-  if (status) filter.status = status;
+  if (status && status !== 'all') filter.status = status;
 
   const [reservations, total] = await Promise.all([
-    Reservation.find(filter).sort('time').limit(limit).skip(skip).lean(),
+    Reservation.find(filter).sort({ date: -1, time: 1, createdAt: -1 }).limit(limit).skip(skip).lean(),
     Reservation.countDocuments(filter),
   ]);
   return successResponse(res, { reservations, total }, 'Reservations retrieved');
@@ -23,34 +29,51 @@ const getReservations = async (req, res) => {
 const createReservation = async (req, res) => {
   const { guestName, guestPhone, guestEmail, partySize, date, time, notes } = req.body;
 
-  // Determine restaurantId — either from auth or body (public endpoint)
-  const restaurantId = req.restaurantId || req.body.restaurantId;
+  // Determine restaurantId — either from auth, body ID, or body slug
+  let restaurantId = req.restaurantId || req.body.restaurantId || req.user?.restaurantId;
+  if (!restaurantId && req.body.slug) {
+    const Restaurant = require('../models/Restaurant');
+    const rest = await Restaurant.findOne({ slug: req.body.slug }).select('_id').lean();
+    if (rest) restaurantId = rest._id;
+  }
+
+  if (!restaurantId) {
+    // If only one restaurant exists, default to it
+    const Restaurant = require('../models/Restaurant');
+    const firstRest = await Restaurant.findOne().select('_id').lean();
+    if (firstRest) restaurantId = firstRest._id;
+  }
+
   if (!restaurantId) return res.status(400).json({ success: false, message: 'restaurantId is required.' });
 
   const reservation = await Reservation.create({
     restaurantId,
-    guestName,
-    guestPhone,
-    guestEmail: guestEmail || null,
+    guestName: guestName?.trim(),
+    guestPhone: guestPhone?.trim(),
+    guestEmail: guestEmail?.trim() || null,
     guestId: req.guest?._id || null,
-    partySize,
-    date,
-    time,
-    notes: notes || '',
+    partySize: Number(partySize) || 2,
+    date: date?.trim(),
+    time: time?.trim(),
+    notes: notes?.trim() || '',
   });
 
   // Send confirmation email if email provided (non-blocking)
   if (guestEmail) {
-    const Restaurant = require('../models/Restaurant');
-    const restaurant = await Restaurant.findById(restaurantId).select('name').lean();
-    sendReservationConfirmation({
-      guestEmail,
-      guestName,
-      restaurantName: restaurant?.name || 'Pravora Restaurant',
-      date,
-      time,
-      partySize,
-    }).catch(() => {});
+    try {
+      const Restaurant = require('../models/Restaurant');
+      const restaurant = await Restaurant.findById(restaurantId).select('name').lean();
+      sendReservationConfirmation({
+        guestEmail,
+        guestName,
+        restaurantName: restaurant?.name || 'Pravora Restaurant',
+        date,
+        time,
+        partySize: Number(partySize) || 2,
+      }).catch((err) => console.warn('Email confirmation notice:', err.message));
+    } catch (e) {
+      console.warn('Restaurant name fetch failed for email:', e.message);
+    }
   }
 
   return successResponse(res, { reservation }, 'Reservation created', 201);

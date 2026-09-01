@@ -127,8 +127,8 @@ export default function GuestReservePage({ params }) {
           <div className="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mx-auto mb-2 text-amber-400">
             <CalendarDays size={22} />
           </div>
-          <h2 className="text-xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>Make a Reservation</h2>
-          <p className="text-xs text-slate-500">{restaurant.name} · {restaurant.location.city}</p>
+          <h1 className="text-xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>Make a Reservation</h1>
+          <p className="text-xs text-slate-500">{restaurant.name} · {restaurant.location?.city || restaurant.location?.address || 'Dining Room'}</p>
         </div>
 
         <Card className="p-5 border-slate-800 bg-slate-900">
