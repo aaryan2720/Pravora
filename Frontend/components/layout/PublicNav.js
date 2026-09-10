@@ -78,7 +78,7 @@ export default function PublicNav() {
                           {user.name.charAt(0).toUpperCase()}
                         </div>
                       )}
-                      <span className="text-slate-700 hover:text-slate-900 font-bold text-sm hidden sm:inline-block">
+                      <span className="text-zinc-800 hover:text-zinc-950 font-bold text-sm hidden sm:inline-block">
                         Hi, {user.name.split(' ')[0]}
                       </span>
                     </Link>
@@ -91,7 +91,7 @@ export default function PublicNav() {
                 <Link href="/auth/customer/signin">
                   <button
                     type="button"
-                    className="px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 bg-white/90 border border-slate-300 hover:border-brand-orange hover:text-brand-orange hover:bg-brand-light-orange/25 rounded-xl shadow-xs transition-all focus-visible:outline-brand-orange cursor-pointer"
+                    className="px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-zinc-900 bg-white border border-zinc-300/90 hover:border-brand-orange hover:text-brand-orange hover:bg-brand-light-orange/20 rounded-xl shadow-xs transition-all duration-200 active:scale-[0.98] focus-visible:outline-brand-orange cursor-pointer"
                   >
                     Diner Login
                   </button>
@@ -99,7 +99,7 @@ export default function PublicNav() {
                 <Link href="/auth/signin">
                   <button
                     type="button"
-                    className="px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 bg-white/90 border border-slate-300 hover:border-brand-orange hover:text-brand-orange hover:bg-brand-light-orange/25 rounded-xl shadow-xs transition-all focus-visible:outline-brand-orange cursor-pointer"
+                    className="px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-zinc-900 bg-white border border-zinc-300/90 hover:border-brand-orange hover:text-brand-orange hover:bg-brand-light-orange/20 rounded-xl shadow-xs transition-all duration-200 active:scale-[0.98] focus-visible:outline-brand-orange cursor-pointer"
                   >
                     Restaurant Login
                   </button>
