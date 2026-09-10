@@ -21,9 +21,9 @@ function MetricCard({ label, value, sub, icon: Icon, color = 'amber', trend, hre
         <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${c.bg}`, border: `1px solid ${c.border}` }}>
           <Icon size={18} style={{ color: c.text }} />
         </div>
-        {trend !== undefined && <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${trend > 0 ? 'bg-emerald-500/15 text-emerald-600' : 'bg-rose-500/15 text-rose-500'}`}>{trend > 0 ? '+' : ''}{trend}%</span>}
+        {trend !== undefined && <span className={`text-xs font-medium px-2 py-0.5 rounded-full tabular-nums ${trend > 0 ? 'bg-emerald-500/15 text-emerald-600' : 'bg-rose-500/15 text-rose-500'}`}>{trend > 0 ? '+' : ''}{trend}%</span>}
       </div>
-      <p className="text-2xl font-black text-slate-100 mb-0.5" style={{ fontFamily: 'Outfit, sans-serif' }}>{value}</p>
+      <p className="text-2xl font-black text-slate-100 mb-0.5 tabular-nums" style={{ fontFamily: 'Outfit, sans-serif' }}>{value}</p>
       <p className="text-sm text-slate-400 font-medium">{label}</p>
       {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
     </div>
@@ -48,14 +48,14 @@ function OrderCard({ order }) {
           <span className="font-bold text-sm text-slate-100">{order.tableLabel}</span>
           <span className={`text-xs font-semibold ${s.color}`}>{s.label}</span>
         </div>
-        <div className="flex items-center gap-1 text-xs text-slate-500">
+        <div className="flex items-center gap-1 text-xs text-slate-500 tabular-nums">
           <Clock size={11} />
           {mins >= 0 ? `${mins}m` : '0m'}
         </div>
       </div>
       <div className="text-xs text-slate-500 space-y-0.5">
         {order.items.slice(0, 2).map((item, i) => (
-          <p key={i}>{item.qty}× {item.name}</p>
+          <p key={i}><span className="tabular-nums font-medium">{item.qty}×</span> {item.name}</p>
         ))}
         {order.items.length > 2 && <p>+{order.items.length - 2} more items</p>}
       </div>
@@ -75,20 +75,30 @@ export default function PulseDashboard() {
   const loadPulseData = async (showLoading = false) => {
     if (showLoading) setLoading(true);
     try {
-      // Run concurrent fetches for fast mount loading
-      const [pulseRes, ordersRes, tablesRes, weekRes, todayRes] = await Promise.all([
+      // Fetch operational pulse, active orders and table states
+      const [pulseRes, ordersRes, tablesRes] = await Promise.all([
         api.analytics.getPulse(),
         api.orders.list('limit=10'),
         api.tables.list(),
-        api.analytics.getWeek(),
-        api.analytics.getToday()
       ]);
 
       if (pulseRes.success) setPulse(pulseRes.pulse);
-      if (ordersRes.success) setOrders(ordersRes.orders);
-      if (tablesRes.success) setTables(tablesRes.tables);
+      if (ordersRes.success) setOrders(ordersRes.orders || []);
+      if (tablesRes.success) setTables(tablesRes.tables || []);
+    } catch (err) {
+      console.error('Failed to load pulse metrics:', err);
+    } finally {
+      if (showLoading) setLoading(false);
+    }
+  };
+
+  const loadAnalyticsCharts = async () => {
+    try {
+      const [weekRes, todayRes] = await Promise.all([
+        api.analytics.getWeek(),
+        api.analytics.getToday()
+      ]);
       if (todayRes.success) setTodayStats(todayRes.today);
-      
       if (weekRes.success && weekRes.week) {
         const formatted = weekRes.week.labels.map((label, i) => ({
           label,
@@ -97,18 +107,61 @@ export default function PulseDashboard() {
         setWeekChart(formatted);
       }
     } catch (err) {
-      console.error('Failed to load pulse metrics:', err);
-    } finally {
-      if (showLoading) setLoading(false);
+      console.error('Failed to load analytics summaries:', err);
     }
   };
 
   useEffect(() => {
     loadPulseData(true);
-    const interval = setInterval(() => {
-      loadPulseData(false);
-    }, 3000);
-    return () => clearInterval(interval);
+    loadAnalyticsCharts();
+
+    let pulseInterval = null;
+    let chartInterval = null;
+
+    const startPolling = () => {
+      if (!pulseInterval) {
+        pulseInterval = setInterval(() => {
+          if (typeof document !== 'undefined' && !document.hidden) {
+            loadPulseData(false);
+          }
+        }, 3000);
+      }
+      if (!chartInterval) {
+        chartInterval = setInterval(() => {
+          if (typeof document !== 'undefined' && !document.hidden) {
+            loadAnalyticsCharts();
+          }
+        }, 60000); // Refresh slow-changing analytics charts once a minute
+      }
+    };
+
+    const stopPolling = () => {
+      if (pulseInterval) {
+        clearInterval(pulseInterval);
+        pulseInterval = null;
+      }
+      if (chartInterval) {
+        clearInterval(chartInterval);
+        chartInterval = null;
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        loadPulseData(false);
+        startPolling();
+      }
+    };
+
+    startPolling();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      stopPolling();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   if (loading) {

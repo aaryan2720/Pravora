@@ -89,10 +89,20 @@ export default function PublicNav() {
             ) : (
               <>
                 <Link href="/auth/customer/signin">
-                  <Button variant="glass" size="sm" className="text-slate-300 hover:text-brand-orange hover:border-brand-orange font-semibold shadow-sm transition-all">Diner Login</Button>
+                  <button
+                    type="button"
+                    className="px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 bg-white/90 border border-slate-300 hover:border-brand-orange hover:text-brand-orange hover:bg-brand-light-orange/25 rounded-xl shadow-xs transition-all focus-visible:outline-brand-orange cursor-pointer"
+                  >
+                    Diner Login
+                  </button>
                 </Link>
                 <Link href="/auth/signin">
-                  <Button variant="glass" size="sm" className="text-slate-300 hover:text-brand-orange hover:border-brand-orange font-semibold shadow-sm transition-all">Restaurant Login</Button>
+                  <button
+                    type="button"
+                    className="px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 bg-white/90 border border-slate-300 hover:border-brand-orange hover:text-brand-orange hover:bg-brand-light-orange/25 rounded-xl shadow-xs transition-all focus-visible:outline-brand-orange cursor-pointer"
+                  >
+                    Restaurant Login
+                  </button>
                 </Link>
                 <Link href="/auth/signup">
                   <Button variant="primary" size="sm">
@@ -105,15 +115,22 @@ export default function PublicNav() {
           </div>
 
           {/* Mobile menu button */}
-          <button onClick={() => setOpen(!open)} className="md:hidden p-2 text-slate-300 hover:text-brand-orange transition-colors">
-            {open ? <X size={20} /> : <Menu size={20} />}
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            aria-label={open ? 'Close main navigation menu' : 'Open main navigation menu'}
+            aria-expanded={open}
+            aria-controls="public-mobile-menu"
+            className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center p-2.5 text-slate-700 hover:text-brand-orange transition-colors focus-visible:outline-brand-orange cursor-pointer rounded-xl"
+          >
+            {open ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-slate-200 bg-white/95 backdrop-blur-xl">
+        <div id="public-mobile-menu" className="md:hidden border-t border-slate-200 bg-white/95 backdrop-blur-xl">
           <div className="px-4 py-4 flex flex-col gap-3">
             {user && !user.role ? (
               [

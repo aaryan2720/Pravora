@@ -91,10 +91,13 @@ function SignInForm() {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-slate-300">Email or Mobile Number</label>
+              <label htmlFor="customer-email" className="text-sm font-medium text-slate-300">Email or Mobile Number</label>
               <div className="relative">
                 <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
+                  id="customer-email"
+                  name="email"
+                  autoComplete="username"
                   className="input-base pl-10 text-sm"
                   placeholder="you@email.com or phone"
                   value={form.email}
@@ -105,10 +108,13 @@ function SignInForm() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-slate-300">Password</label>
+              <label htmlFor="customer-password" className="text-sm font-medium text-slate-300">Password</label>
               <div className="relative">
                 <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
+                  id="customer-password"
+                  name="password"
+                  autoComplete="current-password"
                   className="input-base pl-10 pr-10 text-sm"
                   type={showPass ? 'text' : 'password'}
                   placeholder="Enter your password"
@@ -116,8 +122,12 @@ function SignInForm() {
                   onChange={e => setForm({ ...form, password: e.target.value })}
                   required
                 />
-                <button type="button" onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                <button 
+                  type="button" 
+                  aria-label={showPass ? 'Hide password' : 'Show password'}
+                  onClick={() => setShowPass(!showPass)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                >
                   {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>

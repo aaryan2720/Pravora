@@ -74,28 +74,40 @@ export function Card({ children, className = '', hover = false, glass = false, o
 }
 
 // Input Component
-export function Input({ label, error, className = '', icon, ...props }) {
+export function Input({ label, error, className = '', icon, id, name, ...props }) {
+  const inputId = id || (name ? `input-${name}` : (label ? `input-${label.toLowerCase().replace(/[^a-z0-9]/g, '-')}` : undefined));
+  const errorId = error && inputId ? `${inputId}-error` : undefined;
   return (
     <div className="flex flex-col gap-1.5">
-      {label && <label className="text-sm font-medium text-[var(--text-secondary)]">{label}</label>}
+      {label && <label htmlFor={inputId} className="text-sm font-medium text-[var(--text-secondary)]">{label}</label>}
       <div className="relative">
         {icon && <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">{icon}</span>}
         <input
+          id={inputId}
+          name={name}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={errorId}
           className={`input-base ${icon ? 'pl-10' : ''} ${error ? 'border-rose-500/50 focus:border-rose-500 focus:shadow-[0_0_0_3px_rgba(244,63,94,0.15)]' : ''} ${className}`}
           {...props}
         />
       </div>
-      {error && <span className="text-xs text-rose-500">{error}</span>}
+      {error && <span id={errorId} className="text-xs text-rose-500">{error}</span>}
     </div>
   );
 }
 
 // Select Component
-export function Select({ label, options = [], error, className = '', ...props }) {
+export function Select({ label, options = [], error, className = '', id, name, ...props }) {
+  const selectId = id || (name ? `select-${name}` : (label ? `select-${label.toLowerCase().replace(/[^a-z0-9]/g, '-')}` : undefined));
+  const errorId = error && selectId ? `${selectId}-error` : undefined;
   return (
     <div className="flex flex-col gap-1.5">
-      {label && <label className="text-sm font-medium text-[var(--text-secondary)]">{label}</label>}
+      {label && <label htmlFor={selectId} className="text-sm font-medium text-[var(--text-secondary)]">{label}</label>}
       <select
+        id={selectId}
+        name={name}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={errorId}
         className={`input-base ${error ? 'border-rose-500/50' : ''} ${className}`}
         style={{ appearance: 'none', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
         {...props}
@@ -104,21 +116,27 @@ export function Select({ label, options = [], error, className = '', ...props })
           <option key={opt.value} value={opt.value}>{opt.label}</option>
         ))}
       </select>
-      {error && <span className="text-xs text-rose-500">{error}</span>}
+      {error && <span id={errorId} className="text-xs text-rose-500">{error}</span>}
     </div>
   );
 }
 
 // Textarea Component
-export function Textarea({ label, error, className = '', ...props }) {
+export function Textarea({ label, error, className = '', id, name, ...props }) {
+  const textareaId = id || (name ? `textarea-${name}` : (label ? `textarea-${label.toLowerCase().replace(/[^a-z0-9]/g, '-')}` : undefined));
+  const errorId = error && textareaId ? `${textareaId}-error` : undefined;
   return (
     <div className="flex flex-col gap-1.5">
-      {label && <label className="text-sm font-medium text-[var(--text-secondary)]">{label}</label>}
+      {label && <label htmlFor={textareaId} className="text-sm font-medium text-[var(--text-secondary)]">{label}</label>}
       <textarea
+        id={textareaId}
+        name={name}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={errorId}
         className={`input-base resize-none ${error ? 'border-rose-500/50' : ''} ${className}`}
         {...props}
       />
-      {error && <span className="text-xs text-rose-500">{error}</span>}
+      {error && <span id={errorId} className="text-xs text-rose-500">{error}</span>}
     </div>
   );
 }
@@ -163,20 +181,44 @@ export function Avatar({ name, size = 36, src, className = '' }) {
 }
 
 // Toggle Component
-export function Toggle({ checked, onChange, label, description }) {
+export function Toggle({ checked, onChange, label, description, disabled = false, id, className = '' }) {
+  const switchId = id || (label ? `toggle-${label.toLowerCase().replace(/\s+/g, '-')}` : undefined);
   return (
-    <label className="flex items-center gap-3 cursor-pointer group">
-      <div className="relative flex-shrink-0" onClick={(e) => { e.preventDefault(); onChange(!checked); }}>
-        <div className={`w-11 h-6 rounded-full transition-colors duration-200 ${checked ? 'bg-[#E96A0A]' : 'bg-slate-200'}`} />
-        <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${checked ? 'translate-x-5' : 'translate-x-0'}`} />
-      </div>
+    <div className={`flex items-center gap-3 ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}>
+      <button
+        type="button"
+        role="switch"
+        id={switchId}
+        aria-checked={checked}
+        aria-label={label || 'Toggle switch'}
+        disabled={disabled}
+        onClick={() => !disabled && onChange?.(!checked)}
+        onKeyDown={(e) => {
+          if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            if (!disabled) onChange?.(!checked);
+          }
+        }}
+        className={`relative inline-flex flex-shrink-0 w-11 h-6 rounded-full transition-colors duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-brand-orange focus-visible:outline-offset-2 ${
+          checked ? 'bg-brand-orange' : 'bg-slate-700'
+        }`}
+      >
+        <span
+          className={`pointer-events-none inline-block w-5 h-5 top-0.5 left-0.5 relative bg-white rounded-full shadow transition-transform duration-200 ${
+            checked ? 'translate-x-5' : 'translate-x-0'
+          }`}
+        />
+      </button>
       {(label || description) && (
-        <div>
-          {label && <p className="text-sm font-medium text-[var(--text-primary)] group-hover:text-[var(--color-brand-orange)] transition-colors">{label}</p>}
-          {description && <p className="text-xs text-[var(--text-secondary)]">{description}</p>}
+        <div
+          onClick={() => !disabled && onChange?.(!checked)}
+          className={!disabled ? 'cursor-pointer select-none' : 'select-none'}
+        >
+          {label && <p className="text-sm font-medium text-slate-200 group-hover:text-brand-orange transition-colors">{label}</p>}
+          {description && <p className="text-xs text-slate-500">{description}</p>}
         </div>
       )}
-    </label>
+    </div>
   );
 }
 

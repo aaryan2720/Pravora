@@ -105,10 +105,13 @@ export default function SignInPage() {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-slate-300">Email</label>
+              <label htmlFor="signin-email" className="text-sm font-medium text-slate-300">Email</label>
               <div className="relative">
                 <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
+                  id="signin-email"
+                  name="email"
+                  autoComplete="email"
                   className="input-base pl-10"
                   placeholder="you@restaurant.com"
                   type="email"
@@ -121,11 +124,14 @@ export default function SignInPage() {
 
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-slate-300">Password</label>
+                <label htmlFor="signin-password" className="text-sm font-medium text-slate-300">Password</label>
               </div>
               <div className="relative">
                 <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
+                  id="signin-password"
+                  name="password"
+                  autoComplete="current-password"
                   className="input-base pl-10 pr-10"
                   placeholder="Your password"
                   type={showPass ? 'text' : 'password'}
@@ -133,8 +139,12 @@ export default function SignInPage() {
                   onChange={e => setForm({ ...form, password: e.target.value })}
                   required
                 />
-                <button type="button" onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                <button 
+                  type="button" 
+                  aria-label={showPass ? 'Hide password' : 'Show password'}
+                  onClick={() => setShowPass(!showPass)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                >
                   {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>

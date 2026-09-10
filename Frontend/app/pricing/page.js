@@ -79,15 +79,27 @@ export default function PricingPage() {
           </p>
 
           {/* Toggle switcher */}
-          <div className="inline-flex bg-slate-900 border border-slate-800 p-1.5 rounded-2xl mx-auto gap-1">
-            <button onClick={() => setBilling('monthly')}
-              className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all ${billing === 'monthly' ? 'bg-amber-500 text-slate-900' : 'text-slate-500 hover:text-slate-300'}`}>
+          <div role="group" aria-label="Billing frequency" className="inline-flex bg-slate-900 border border-slate-700/80 p-1.5 rounded-2xl mx-auto gap-1 shadow-xs">
+            <button
+              type="button"
+              onClick={() => setBilling('monthly')}
+              aria-pressed={billing === 'monthly'}
+              className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all cursor-pointer focus-visible:outline-brand-orange ${
+                billing === 'monthly' ? 'bg-brand-orange text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
               Monthly
             </button>
-            <button onClick={() => setBilling('annual')}
-              className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all flex items-center gap-1.5 ${billing === 'annual' ? 'bg-amber-500 text-slate-900' : 'text-slate-500 hover:text-slate-300'}`}>
+            <button
+              type="button"
+              onClick={() => setBilling('annual')}
+              aria-pressed={billing === 'annual'}
+              className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer focus-visible:outline-brand-orange ${
+                billing === 'annual' ? 'bg-brand-orange text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
               Annual
-              <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${billing === 'annual' ? 'bg-slate-950 text-amber-400' : 'bg-amber-500/20 text-amber-400'}`}>SAVE 20%</span>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${billing === 'annual' ? 'bg-white/20 text-white' : 'bg-brand-light-orange text-brand-orange'}`}>SAVE 20%</span>
             </button>
           </div>
         </div>

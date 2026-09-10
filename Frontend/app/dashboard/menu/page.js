@@ -23,9 +23,9 @@ function MenuItemCard({ item, onAvailabilityChange, onEdit, onDelete }) {
           <div className="flex items-center gap-2 flex-wrap mb-0.5">
             <h4 className="text-sm font-bold text-white truncate">{item.name}</h4>
             {item.isVeg ? (
-              <span className="text-emerald-400 flex-shrink-0" title="Vegetarian"><Leaf size={12} /></span>
+              <span className="text-emerald-400 flex-shrink-0" title="Vegetarian" aria-label="Vegetarian"><Leaf size={12} /></span>
             ) : (
-              <span className="w-3 h-3 rounded-sm border-2 border-rose-400 flex items-center justify-center flex-shrink-0">
+              <span className="w-3 h-3 rounded-sm border-2 border-rose-400 flex items-center justify-center flex-shrink-0" title="Non-Vegetarian" aria-label="Non-Vegetarian">
                 <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
               </span>
             )}
@@ -39,8 +39,10 @@ function MenuItemCard({ item, onAvailabilityChange, onEdit, onDelete }) {
       </div>
       <div className="flex items-center justify-between flex-wrap gap-2 pt-2 border-t border-slate-800/60">
         <button
+          type="button"
           onClick={() => onAvailabilityChange(itemId, av.next)}
-          className="cursor-pointer hover:opacity-80 transition-opacity"
+          aria-label={`Change availability for ${item.name}. Currently ${av.label}`}
+          className="cursor-pointer hover:opacity-80 transition-opacity focus-visible:outline-brand-orange"
         >
           <span className={`badge ${av.variant === 'available' ? 'badge-available' : av.variant === 'unavailable' ? 'badge-unavailable' : 'badge-soon'}`}>
             {av.label}
@@ -48,10 +50,20 @@ function MenuItemCard({ item, onAvailabilityChange, onEdit, onDelete }) {
         </button>
         <div className="flex items-center gap-1.5">
           <span className="text-[10px] text-slate-500">{item.prepTime || 15}m prep</span>
-          <button onClick={() => onEdit(item)} className="p-1.5 rounded-lg text-slate-500 hover:text-amber-400 hover:bg-amber-500/10 transition-all cursor-pointer">
+          <button
+            type="button"
+            onClick={() => onEdit(item)}
+            aria-label={`Edit ${item.name}`}
+            className="p-1.5 rounded-lg text-slate-500 hover:text-amber-400 hover:bg-amber-500/10 transition-all cursor-pointer focus-visible:outline-brand-orange"
+          >
             <Edit3 size={13} />
           </button>
-          <button onClick={() => onDelete(itemId)} className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer">
+          <button
+            type="button"
+            onClick={() => onDelete(itemId)}
+            aria-label={`Delete ${item.name}`}
+            className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer focus-visible:outline-brand-orange"
+          >
             <Trash2 size={13} />
           </button>
         </div>
@@ -67,41 +79,75 @@ function QuickEditModal({ item, onClose, onSave }) {
     isSpecial: item?.isSpecial || false,
     description: item?.description || ''
   });
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   if (!item) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fadeIn" onClick={onClose}>
       <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" />
-      <div className="relative bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-sm" onClick={e => e.stopPropagation()}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quick-edit-title"
+        className="relative bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-sm"
+        onClick={e => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-bold text-white text-base truncate">{item.name}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-slate-500 hover:text-slate-350 transition-colors cursor-pointer"><X size={16} /></button>
+          <h3 id="quick-edit-title" className="font-bold text-white text-base truncate">{item.name}</h3>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close edit modal"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 transition-colors cursor-pointer focus-visible:outline-brand-orange"
+          >
+            <X size={16} />
+          </button>
         </div>
         <div className="space-y-4">
           <div>
-            <label className="text-xs font-semibold text-slate-400 mb-1.5 block">Price (₹)</label>
-            <input className="input-base" type="number" value={form.price} onChange={e => setForm({...form, price: +e.target.value})} />
+            <label htmlFor="quick-edit-price" className="text-xs font-semibold text-slate-400 mb-1.5 block">Price (₹)</label>
+            <input id="quick-edit-price" className="input-base" type="number" value={form.price} onChange={e => setForm({...form, price: +e.target.value})} />
           </div>
           <div>
-            <label className="text-xs font-semibold text-slate-400 mb-1.5 block">Description</label>
-            <textarea className="input-base text-xs resize-none" rows={2} value={form.description} onChange={e => setForm({...form, description: e.target.value})} />
+            <label htmlFor="quick-edit-desc" className="text-xs font-semibold text-slate-400 mb-1.5 block">Description</label>
+            <textarea id="quick-edit-desc" className="input-base text-xs resize-none" rows={2} value={form.description} onChange={e => setForm({...form, description: e.target.value})} />
           </div>
           <div>
-            <label className="text-xs font-semibold text-slate-400 mb-2 block">Availability State</label>
+            <span className="text-xs font-semibold text-slate-400 mb-2 block">Availability State</span>
             <div className="flex gap-2">
               {['available', 'unavailable', 'soon'].map(a => (
-                <button key={a} onClick={() => setForm({...form, availability: a})}
-                  className={`flex-1 py-2 rounded-xl text-xs font-semibold capitalize border transition-all cursor-pointer ${form.availability === a ? 'bg-amber-500/20 border-amber-500/40 text-amber-400' : 'border-slate-800 text-slate-500 hover:border-slate-700'}`}>
+                <button
+                  key={a}
+                  type="button"
+                  onClick={() => setForm({...form, availability: a})}
+                  className={`flex-1 py-2 rounded-xl text-xs font-semibold capitalize border transition-all cursor-pointer ${form.availability === a ? 'bg-amber-500/20 border-amber-500/40 text-amber-400' : 'border-slate-800 text-slate-500 hover:border-slate-700'}`}
+                >
                   {a === 'soon' ? 'Soon' : a}
                 </button>
               ))}
             </div>
           </div>
-          <div className="flex items-center gap-3 py-1 cursor-pointer" onClick={() => setForm({...form, isSpecial: !form.isSpecial})}>
-            <div className={`relative w-10 h-5 rounded-full transition-colors flex-shrink-0 ${form.isSpecial ? 'bg-amber-500' : 'bg-slate-700'}`}>
-              <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${form.isSpecial ? 'translate-x-5 left-0' : 'left-0.5'}`} />
-            </div>
-            <span className="text-xs font-medium text-slate-300">Feature as Today's Special</span>
+          <div className="flex items-center gap-3 py-1">
+            <button
+              type="button"
+              role="switch"
+              id="quick-edit-special"
+              aria-checked={form.isSpecial}
+              aria-label="Feature as Today's Special"
+              onClick={() => setForm({...form, isSpecial: !form.isSpecial})}
+              className={`relative inline-flex flex-shrink-0 w-10 h-5 rounded-full transition-colors cursor-pointer focus-visible:outline-brand-orange ${form.isSpecial ? 'bg-amber-500' : 'bg-slate-700'}`}
+            >
+              <span className={`pointer-events-none inline-block w-4 h-4 top-0.5 relative bg-white rounded-full shadow transition-transform ${form.isSpecial ? 'translate-x-5 left-0' : 'left-0.5'}`} />
+            </button>
+            <label htmlFor="quick-edit-special" className="text-xs font-medium text-slate-300 cursor-pointer">Feature as Today's Special</label>
           </div>
         </div>
         <div className="flex gap-2 mt-5">
@@ -512,15 +558,29 @@ export default function MenuManagementPage() {
       {showAddCat && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fadeIn" onClick={() => setShowAddCat(false)}>
           <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" />
-          <form onSubmit={handleAddCategory} className="relative bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-sm" onClick={e => e.stopPropagation()}>
+          <form
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="add-cat-title"
+            onSubmit={handleAddCategory}
+            className="relative bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-sm shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-white text-base">Add Menu Category</h3>
-              <button type="button" onClick={() => setShowAddCat(false)} className="p-1.5 rounded-lg text-slate-500 hover:text-white transition-colors cursor-pointer"><X size={16} /></button>
+              <h3 id="add-cat-title" className="font-bold text-white text-base">Add Menu Category</h3>
+              <button
+                type="button"
+                onClick={() => setShowAddCat(false)}
+                aria-label="Close add category dialog"
+                className="p-1.5 rounded-lg text-slate-500 hover:text-white transition-colors cursor-pointer focus-visible:outline-brand-orange"
+              >
+                <X size={16} />
+              </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-slate-400 mb-1.5 block">Category Name</label>
-                <input className="input-base" required value={newCatName} onChange={e => setNewCatName(e.target.value)} placeholder="e.g. Desserts, Soups" />
+                <label htmlFor="new-cat-name-input" className="text-xs font-semibold text-slate-400 mb-1.5 block">Category Name</label>
+                <input id="new-cat-name-input" className="input-base" required value={newCatName} onChange={e => setNewCatName(e.target.value)} placeholder="e.g. Desserts, Soups" />
               </div>
             </div>
             <div className="flex gap-2 mt-5">
@@ -535,29 +595,43 @@ export default function MenuManagementPage() {
       {showAddItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fadeIn" onClick={() => setShowAddItem(false)}>
           <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" />
-          <form onSubmit={handleAddItemSubmit} className="relative bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+          <form
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="add-item-title"
+            onSubmit={handleAddItemSubmit}
+            className="relative bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-white text-base">Add Menu Item</h3>
-              <button type="button" onClick={() => setShowAddItem(false)} className="p-1.5 rounded-lg text-slate-500 hover:text-white transition-colors cursor-pointer"><X size={16} /></button>
+              <h3 id="add-item-title" className="font-bold text-white text-base">Add Menu Item</h3>
+              <button
+                type="button"
+                onClick={() => setShowAddItem(false)}
+                aria-label="Close add item dialog"
+                className="p-1.5 rounded-lg text-slate-500 hover:text-white transition-colors cursor-pointer focus-visible:outline-brand-orange"
+              >
+                <X size={16} />
+              </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-slate-400 mb-1.5 block">Item Name *</label>
-                <input className="input-base" required value={itemForm.name} onChange={e => setItemForm({...itemForm, name: e.target.value})} placeholder="e.g. Butter Chicken" />
+                <label htmlFor="new-item-name" className="text-xs font-semibold text-slate-400 mb-1.5 block">Item Name *</label>
+                <input id="new-item-name" className="input-base" required value={itemForm.name} onChange={e => setItemForm({...itemForm, name: e.target.value})} placeholder="e.g. Butter Chicken" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-semibold text-slate-400 mb-1.5 block">Price (₹) *</label>
-                  <input className="input-base" type="number" min={0} required value={itemForm.price} onChange={e => setItemForm({...itemForm, price: e.target.value})} />
+                  <label htmlFor="new-item-price" className="text-xs font-semibold text-slate-400 mb-1.5 block">Price (₹) *</label>
+                  <input id="new-item-price" className="input-base" type="number" min={0} required value={itemForm.price} onChange={e => setItemForm({...itemForm, price: e.target.value})} />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-slate-400 mb-1.5 block">Prep Time (min)</label>
-                  <input className="input-base" type="number" min={1} value={itemForm.prepTime} onChange={e => setItemForm({...itemForm, prepTime: e.target.value})} />
+                  <label htmlFor="new-item-preptime" className="text-xs font-semibold text-slate-400 mb-1.5 block">Prep Time (min)</label>
+                  <input id="new-item-preptime" className="input-base" type="number" min={1} value={itemForm.prepTime} onChange={e => setItemForm({...itemForm, prepTime: e.target.value})} />
                 </div>
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-400 mb-1.5 block">Category *</label>
-                <select className="input-base" required value={itemForm.categoryId} onChange={e => setItemForm({...itemForm, categoryId: e.target.value})}>
+                <label htmlFor="new-item-category" className="text-xs font-semibold text-slate-400 mb-1.5 block">Category *</label>
+                <select id="new-item-category" className="input-base" required value={itemForm.categoryId} onChange={e => setItemForm({...itemForm, categoryId: e.target.value})}>
                   <option value="">Select a Category</option>
                   {categories.map(c => (
                     <option key={c.id} value={c.id}>{c.name}</option>
@@ -565,21 +639,37 @@ export default function MenuManagementPage() {
                 </select>
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-400 mb-1.5 block">Description</label>
-                <textarea className="input-base resize-none text-xs" rows={2} value={itemForm.description} onChange={e => setItemForm({...itemForm, description: e.target.value})} placeholder="Short description of ingredients..." />
+                <label htmlFor="new-item-desc" className="text-xs font-semibold text-slate-400 mb-1.5 block">Description</label>
+                <textarea id="new-item-desc" className="input-base resize-none text-xs" rows={2} value={itemForm.description} onChange={e => setItemForm({...itemForm, description: e.target.value})} placeholder="Short description of ingredients..." />
               </div>
               <div className="grid grid-cols-2 gap-4 pt-1">
-                <div className="flex items-center gap-3 cursor-pointer" onClick={() => setItemForm({...itemForm, isVeg: !itemForm.isVeg})}>
-                  <div className={`relative w-10 h-5 rounded-full transition-colors flex-shrink-0 ${itemForm.isVeg ? 'bg-amber-500' : 'bg-slate-700'}`}>
-                    <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${itemForm.isVeg ? 'translate-x-5 left-0' : 'left-0.5'}`} />
-                  </div>
-                  <span className="text-xs font-medium text-slate-350">Vegetarian Item</span>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    role="switch"
+                    id="new-item-isveg"
+                    aria-checked={itemForm.isVeg}
+                    aria-label="Vegetarian Item"
+                    onClick={() => setItemForm({...itemForm, isVeg: !itemForm.isVeg})}
+                    className={`relative inline-flex flex-shrink-0 w-10 h-5 rounded-full transition-colors cursor-pointer focus-visible:outline-brand-orange ${itemForm.isVeg ? 'bg-amber-500' : 'bg-slate-700'}`}
+                  >
+                    <span className={`pointer-events-none inline-block w-4 h-4 top-0.5 relative bg-white rounded-full shadow transition-transform ${itemForm.isVeg ? 'translate-x-5 left-0' : 'left-0.5'}`} />
+                  </button>
+                  <label htmlFor="new-item-isveg" className="text-xs font-medium text-slate-350 cursor-pointer">Vegetarian Item</label>
                 </div>
-                <div className="flex items-center gap-3 cursor-pointer" onClick={() => setItemForm({...itemForm, isSpecial: !itemForm.isSpecial})}>
-                  <div className={`relative w-10 h-5 rounded-full transition-colors flex-shrink-0 ${itemForm.isSpecial ? 'bg-amber-500' : 'bg-slate-700'}`}>
-                    <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${itemForm.isSpecial ? 'translate-x-5 left-0' : 'left-0.5'}`} />
-                  </div>
-                  <span className="text-xs font-medium text-slate-355">Today's Special</span>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    role="switch"
+                    id="new-item-isspecial"
+                    aria-checked={itemForm.isSpecial}
+                    aria-label="Today's Special"
+                    onClick={() => setItemForm({...itemForm, isSpecial: !itemForm.isSpecial})}
+                    className={`relative inline-flex flex-shrink-0 w-10 h-5 rounded-full transition-colors cursor-pointer focus-visible:outline-brand-orange ${itemForm.isSpecial ? 'bg-amber-500' : 'bg-slate-700'}`}
+                  >
+                    <span className={`pointer-events-none inline-block w-4 h-4 top-0.5 relative bg-white rounded-full shadow transition-transform ${itemForm.isSpecial ? 'translate-x-5 left-0' : 'left-0.5'}`} />
+                  </button>
+                  <label htmlFor="new-item-isspecial" className="text-xs font-medium text-slate-355 cursor-pointer">Today's Special</label>
                 </div>
               </div>
             </div>

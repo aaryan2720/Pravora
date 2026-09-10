@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react';
 import { api } from '@/lib/api';
 
 const AppContext = createContext(null);
@@ -62,8 +62,8 @@ export function AppProvider({ children }) {
 
   const clearCart = useCallback(() => setCart([]), []);
 
-  const cartCount = cart.reduce((sum, c) => sum + c.qty, 0);
-  const cartTotal = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
+  const cartCount = useMemo(() => cart.reduce((sum, c) => sum + c.qty, 0), [cart]);
+  const cartTotal = useMemo(() => cart.reduce((sum, c) => sum + c.price * c.qty, 0), [cart]);
 
   const signOut = useCallback(() => {
     api.auth.logout();
@@ -122,15 +122,24 @@ export function AppProvider({ children }) {
     }
   }, []);
 
+  const value = useMemo(() => ({
+    user, setUser, signIn, signOut,
+    activeRestaurant, setActiveRestaurant: saveActiveRestaurant,
+    cart, addToCart, updateCartQty, clearCart, cartCount, cartTotal,
+    activeSession, setActiveSession: saveActiveSession,
+    sidebarOpen, setSidebarOpen,
+    loading,
+  }), [
+    user, signIn, signOut,
+    activeRestaurant, saveActiveRestaurant,
+    cart, addToCart, updateCartQty, clearCart, cartCount, cartTotal,
+    activeSession, saveActiveSession,
+    sidebarOpen,
+    loading,
+  ]);
+
   return (
-    <AppContext.Provider value={{
-      user, setUser, signIn, signOut,
-      activeRestaurant, setActiveRestaurant: saveActiveRestaurant,
-      cart, addToCart, updateCartQty, clearCart, cartCount, cartTotal,
-      activeSession, setActiveSession: saveActiveSession,
-      sidebarOpen, setSidebarOpen,
-      loading,
-    }}>
+    <AppContext.Provider value={value}>
       {children}
     </AppContext.Provider>
   );

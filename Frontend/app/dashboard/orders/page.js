@@ -30,9 +30,9 @@ function KanbanCard({ order, onMove, nextStatus }) {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-sm font-black text-white">{order.tableLabel}</span>
-          <span className="text-xs font-medium text-slate-500">#{orderId.slice(-4)}</span>
+          <span className="text-xs font-medium text-slate-500 font-mono">#{orderId.slice(-4)}</span>
         </div>
-        <div className={`flex items-center gap-1 text-xs font-medium ${isDelayed ? 'text-rose-400' : 'text-slate-500'}`}>
+        <div className={`flex items-center gap-1 text-xs font-medium tabular-nums ${isDelayed ? 'text-rose-400' : 'text-slate-500'}`}>
           <Clock size={11} />
           {mins >= 0 ? `${mins}m` : '0m'}
         </div>
@@ -40,8 +40,8 @@ function KanbanCard({ order, onMove, nextStatus }) {
       <div className="space-y-1 mb-3">
         {order.items.map((item, i) => (
           <div key={i} className="flex items-center justify-between text-xs">
-            <span className="text-slate-400">{item.qty}× {item.name}</span>
-            <span className="text-slate-600">₹{item.price * item.qty}</span>
+            <span className="text-slate-400"><span className="tabular-nums font-semibold">{item.qty}×</span> {item.name}</span>
+            <span className="text-slate-600 tabular-nums font-medium">₹{item.price * item.qty}</span>
           </div>
         ))}
       </div>
@@ -51,7 +51,7 @@ function KanbanCard({ order, onMove, nextStatus }) {
         </p>
       )}
       <div className="flex items-center justify-between">
-        <span className="text-sm font-bold text-white">₹{subtotalVal.toLocaleString()}</span>
+        <span className="text-sm font-bold text-white tabular-nums">₹{subtotalVal.toLocaleString()}</span>
         {nextStatus && (
           <button onClick={() => onMove(orderId, nextStatus)}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-xs font-medium text-slate-300 hover:text-white transition-all cursor-pointer">
@@ -86,10 +86,41 @@ export default function OrdersBoardPage() {
 
   useEffect(() => {
     fetchOrders(true);
-    const interval = setInterval(() => {
-      fetchOrders(false);
-    }, 3000);
-    return () => clearInterval(interval);
+
+    let interval = null;
+    const startPolling = () => {
+      if (!interval) {
+        interval = setInterval(() => {
+          if (typeof document !== 'undefined' && !document.hidden) {
+            fetchOrders(false);
+          }
+        }, 3000);
+      }
+    };
+
+    const stopPolling = () => {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        fetchOrders(false);
+        startPolling();
+      }
+    };
+
+    startPolling();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      stopPolling();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const moveOrder = async (id, newStatus) => {

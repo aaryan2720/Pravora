@@ -128,11 +128,13 @@ export default function ScanPage() {
           {mode === 'scanning' && (
             <div className="text-center animate-fadeIn relative">
               <button 
+                type="button"
+                aria-label="Cancel scan"
                 onClick={() => setMode('ready')}
-                className="absolute -top-12 right-2 p-2 rounded-full bg-slate-900 border border-slate-800 text-slate-500 hover:text-slate-200 cursor-pointer"
+                className="absolute -top-12 right-2 min-w-[44px] min-h-[44px] rounded-full bg-slate-900 border border-slate-800 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer transition-colors"
                 title="Cancel Scan"
               >
-                <X size={16} />
+                <X size={18} />
               </button>
               
               <div className="relative w-64 h-64 mx-auto mb-6">
@@ -141,7 +143,7 @@ export default function ScanPage() {
                   <div id="qr-reader" className="w-full h-full object-cover" />
                   
                   {/* Scan overlay guide line */}
-                  <div className="absolute left-4 right-4 h-0.5 bg-brand-orange/60 animate-bounce top-1/2 z-10 pointer-events-none" style={{ boxShadow: '0 0 8px rgba(253,109,35,0.6)' }} />
+                  <div className="absolute left-3 right-3 h-0.5 bg-gradient-to-r from-transparent via-brand-orange to-transparent animate-laserScan top-2 z-10 pointer-events-none" style={{ boxShadow: '0 0 12px rgba(233,106,10,0.85)' }} />
                 </div>
                 
                 {/* Corner markers */}

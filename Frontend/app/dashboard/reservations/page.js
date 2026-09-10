@@ -47,10 +47,41 @@ export default function ReservationsPage() {
 
   useEffect(() => {
     fetchReservations(true);
-    const interval = setInterval(() => {
-      fetchReservations(false);
-    }, 3000);
-    return () => clearInterval(interval);
+
+    let interval = null;
+    const startPolling = () => {
+      if (!interval) {
+        interval = setInterval(() => {
+          if (typeof document !== 'undefined' && !document.hidden) {
+            fetchReservations(false);
+          }
+        }, 5000); // 5s interval for reservations
+      }
+    };
+
+    const stopPolling = () => {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        fetchReservations(false);
+        startPolling();
+      }
+    };
+
+    startPolling();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      stopPolling();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const updateStatus = async (id, status) => {

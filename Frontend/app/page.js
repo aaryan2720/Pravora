@@ -79,7 +79,7 @@ const colorMap = {
   rose: { bg: 'rgba(244,63,94,0.06)', border: 'rgba(244,63,94,0.15)', text: '#ef4444' },
 };
 
-function AnimatedCounter({ target, suffix = '' }) {
+function AnimatedCounter({ target, suffix = '', className = '' }) {
   const [count, setCount] = useState(0);
   useEffect(() => {
     const num = parseFloat(target);
@@ -95,7 +95,7 @@ function AnimatedCounter({ target, suffix = '' }) {
     }, dur / steps);
     return () => clearInterval(timer);
   }, [target]);
-  return <>{isNaN(parseFloat(target)) ? target : `${count}${suffix}`}</>;
+  return <span className={`tabular-nums ${className}`}>{isNaN(parseFloat(target)) ? target : `${count}${suffix}`}</span>;
 }
 
 export default function LandingPage() {
@@ -422,7 +422,7 @@ export default function LandingPage() {
                 ].map(m => (
                   <div key={m.label} className="bg-slate-800/80 rounded-xl p-4 border border-slate-700/50">
                     <p className="text-xs text-slate-500 mb-1">{m.label}</p>
-                    <p className={`text-xl font-bold ${m.color}`}>{m.value}</p>
+                    <p className={`text-xl font-bold tabular-nums ${m.color}`}>{m.value}</p>
                     <p className="text-xs text-slate-600 mt-0.5">{m.sub}</p>
                   </div>
                 ))}
@@ -463,7 +463,7 @@ export default function LandingPage() {
           {stats.map((s, i) => (
             <div key={i} className="text-center">
               <s.icon size={24} className="text-amber-400 mx-auto mb-3" />
-              <p className="text-3xl font-black text-white mb-1">{s.value}</p>
+              <p className="text-3xl font-black text-white mb-1 tabular-nums">{s.value}</p>
               <p className="text-sm text-slate-500">{s.label}</p>
             </div>
           ))}

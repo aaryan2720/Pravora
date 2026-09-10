@@ -99,10 +99,24 @@ export default function CartReviewPage({ params }) {
                     <p className="text-sm font-bold text-slate-200 truncate">{item.name}</p>
                     <p className="text-xs text-slate-500">₹{item.price} each</p>
                   </div>
-                  <div className="flex items-center gap-2.5 flex-shrink-0">
-                    <button onClick={() => updateCartQty(item.itemId, item.qty - 1)} className="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-white font-bold flex items-center justify-center transition-all cursor-pointer">−</button>
-                    <span className="text-sm font-bold text-amber-400 w-4 text-center">{item.qty}</span>
-                    <button onClick={() => updateCartQty(item.itemId, item.qty + 1)} className="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-white font-bold flex items-center justify-center transition-all cursor-pointer">+</button>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button 
+                      type="button"
+                      aria-label={`Decrease quantity of ${item.name}`}
+                      onClick={() => updateCartQty(item.itemId, item.qty - 1)} 
+                      className="w-8 h-8 min-w-[36px] min-h-[36px] rounded-full bg-slate-800 border border-slate-700 text-slate-300 hover:text-white font-bold flex items-center justify-center transition-all cursor-pointer"
+                    >
+                      −
+                    </button>
+                    <span className="text-sm font-bold text-amber-400 w-5 text-center">{item.qty}</span>
+                    <button 
+                      type="button"
+                      aria-label={`Increase quantity of ${item.name}`}
+                      onClick={() => updateCartQty(item.itemId, item.qty + 1)} 
+                      className="w-8 h-8 min-w-[36px] min-h-[36px] rounded-full bg-slate-800 border border-slate-700 text-slate-300 hover:text-white font-bold flex items-center justify-center transition-all cursor-pointer"
+                    >
+                      +
+                    </button>
                   </div>
                   <span className="text-sm font-bold text-white w-14 text-right">₹{item.price * item.qty}</span>
                 </div>

@@ -54,6 +54,14 @@ function TableCard({ table, onClick }) {
 function TableModal({ table, activeRestaurant, onClose, onStatusChange, onReset }) {
   if (!table) return null;
   const s = statusConfig[table.status] || statusConfig.free;
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
   
   const actions = {
     free: [{ label: 'Mark as Occupied', next: 'occupied', color: 'amber' }],
@@ -94,15 +102,25 @@ function TableModal({ table, activeRestaurant, onClose, onStatusChange, onReset 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fadeIn" onClick={onClose}>
       <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" />
-      <div className="relative bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="table-modal-title"
+        className="relative bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl"
+        onClick={e => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h2 className="text-xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>Table {table.label}</h2>
+            <h2 id="table-modal-title" className="text-xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>Table {table.label}</h2>
             <span className={`text-sm font-semibold ${s.text}`}>{s.label}</span>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-all cursor-pointer">
+          <button
+            onClick={onClose}
+            aria-label="Close table modal"
+            className="p-2 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-all cursor-pointer focus-visible:outline-brand-orange"
+          >
             <X size={16} />
           </button>
         </div>
@@ -175,10 +193,41 @@ export default function TablesBoardPage() {
 
   useEffect(() => {
     fetchTables(true);
-    const interval = setInterval(() => {
-      fetchTables(false);
-    }, 3000);
-    return () => clearInterval(interval);
+
+    let interval = null;
+    const startPolling = () => {
+      if (!interval) {
+        interval = setInterval(() => {
+          if (typeof document !== 'undefined' && !document.hidden) {
+            fetchTables(false);
+          }
+        }, 3000);
+      }
+    };
+
+    const stopPolling = () => {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        fetchTables(false);
+        startPolling();
+      }
+    };
+
+    startPolling();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      stopPolling();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const handleStatusChange = async (id, status) => {

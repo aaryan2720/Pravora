@@ -147,17 +147,28 @@ export default function MenuSetupPage() {
   };
 
   const Toggle = ({ label, desc, k }) => (
-    <label className="flex items-center justify-between py-3 border-b border-slate-800 cursor-pointer group">
+    <div className="flex items-center justify-between py-3 border-b border-slate-800 last:border-b-0 group">
       <div>
         <p className="text-sm font-medium text-slate-200 group-hover:text-white transition-colors">{label}</p>
-        <p className="text-xs text-slate-600">{desc}</p>
+        <p className="text-xs text-slate-500">{desc}</p>
       </div>
-      <div onClick={() => setSettings(s => ({...s, [k]: !s[k]}))}>
-        <div className={`relative w-11 h-6 rounded-full transition-colors ${settings[k] ? 'bg-amber-500' : 'bg-slate-700'}`}>
-          <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${settings[k] ? 'translate-x-5' : ''}`} />
-        </div>
-      </div>
-    </label>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={settings[k]}
+        aria-label={label}
+        onClick={() => setSettings(s => ({ ...s, [k]: !s[k] }))}
+        className={`relative inline-flex flex-shrink-0 w-11 h-6 rounded-full transition-colors duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-brand-orange focus-visible:outline-offset-2 ${
+          settings[k] ? 'bg-amber-500' : 'bg-slate-700'
+        }`}
+      >
+        <span
+          className={`pointer-events-none inline-block w-5 h-5 top-0.5 left-0.5 relative bg-white rounded-full shadow transition-transform duration-200 ${
+            settings[k] ? 'translate-x-5' : 'translate-x-0'
+          }`}
+        />
+      </button>
+    </div>
   );
 
   return (

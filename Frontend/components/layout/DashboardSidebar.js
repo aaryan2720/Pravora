@@ -110,12 +110,12 @@ export default function DashboardSidebar() {
                   <item.icon size={18} className="flex-shrink-0" />
                   {sidebarOpen && <span className="flex-1">{item.label}</span>}
                   {sidebarOpen && item.badge && (
-                    <span className="bg-amber-500 text-slate-900 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    <span className="bg-brand-orange text-white text-[11px] font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-xs">
                       {item.badge}
                     </span>
                   )}
                   {!sidebarOpen && item.badge && (
-                    <span className="absolute top-1 right-1 bg-amber-500 text-slate-900 text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                    <span className="absolute top-1 right-1 bg-brand-orange text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center shadow-xs">
                       {item.badge}
                     </span>
                   )}
@@ -135,7 +135,13 @@ export default function DashboardSidebar() {
               <p className="text-sm font-medium text-slate-200 truncate">{user?.name}</p>
               <p className="text-xs text-slate-500 truncate capitalize">{user?.role}</p>
             </div>
-            <button onClick={signOut} className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-rose-400 transition-colors" title="Sign out">
+            <button
+              type="button"
+              onClick={signOut}
+              className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-rose-400 transition-colors focus-visible:outline-brand-orange"
+              aria-label="Sign out of account"
+              title="Sign out"
+            >
               <LogOut size={15} />
             </button>
           </div>
@@ -148,8 +154,11 @@ export default function DashboardSidebar() {
 
       {/* Collapse toggle */}
       <button
+        type="button"
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition-all z-10"
+        aria-label={sidebarOpen ? 'Collapse dashboard sidebar' : 'Expand dashboard sidebar'}
+        aria-expanded={sidebarOpen}
+        className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition-all z-10 focus-visible:outline-brand-orange"
       >
         {sidebarOpen ? <ChevronLeft size={12} /> : <ChevronRight size={12} />}
       </button>

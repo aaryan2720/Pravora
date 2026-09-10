@@ -10,11 +10,14 @@ export default function DashboardHeader({ title = 'Dashboard', subtitle }) {
     <header className="h-16 border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm flex items-center px-4 sm:px-6 gap-3 sm:gap-4 flex-shrink-0">
       {/* Mobile Hamburger toggle */}
       <button 
+        type="button"
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="md:hidden p-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-slate-200 hover:bg-slate-750 transition-all cursor-pointer flex-shrink-0"
+        aria-label={sidebarOpen ? 'Close sidebar navigation' : 'Open sidebar navigation'}
+        aria-expanded={sidebarOpen}
+        className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-slate-200 hover:bg-slate-750 transition-all cursor-pointer flex-shrink-0 focus-visible:outline-brand-orange"
         title="Toggle Menu"
       >
-        <Menu size={18} />
+        <Menu size={20} />
       </button>
 
       {/* Title */}
@@ -42,9 +45,13 @@ export default function DashboardHeader({ title = 'Dashboard', subtitle }) {
       </div>
 
       {/* Notifications */}
-      <button className="relative w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition-all">
-        <Bell size={16} />
-        <span className="absolute top-1 right-1 w-2 h-2 bg-amber-500 rounded-full" />
+      <button
+        type="button"
+        aria-label="Notifications"
+        className="relative min-w-[44px] min-h-[44px] w-11 h-11 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-slate-700 transition-all focus-visible:outline-brand-orange cursor-pointer"
+      >
+        <Bell size={18} />
+        <span className="absolute top-2 right-2 w-2 h-2 bg-brand-orange rounded-full shadow-xs" />
       </button>
 
       {/* User */}

@@ -164,11 +164,13 @@ export default function RequestBillPage({ params }) {
             {[0, 50, 100, 200].map(val => (
               <button
                 key={val}
+                type="button"
+                aria-label={val === 0 ? 'No Tip' : `Tip ₹${val}`}
                 onClick={() => setTip(val)}
-                className={`py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                className={`min-h-[44px] px-2 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center justify-center ${
                   tip === val
-                    ? 'bg-amber-500 text-slate-900 border-amber-500'
-                    : 'bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700'
+                    ? 'bg-brand-orange text-white border-brand-orange shadow-sm'
+                    : 'bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700 hover:text-white'
                 }`}
               >
                 {val === 0 ? 'No Tip' : `₹${val}`}

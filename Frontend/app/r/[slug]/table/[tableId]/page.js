@@ -102,7 +102,7 @@ export default function TableEntryPage({ params }) {
       <header className="px-6 py-4 flex items-center justify-between border-b border-slate-900 bg-slate-900/40 backdrop-blur-sm sticky top-0 z-30">
         <div className="flex items-center gap-2">
           <img src="/favicon.svg" alt="Pravora" className="w-8 h-8 object-contain" />
-          <span className="font-bold text-slate-900 text-sm" style={{ fontFamily: 'Outfit, sans-serif' }}>
+          <span className="font-bold text-slate-100 text-sm" style={{ fontFamily: 'Outfit, sans-serif' }}>
             <span className="text-brand-orange">Pra</span><span className="text-brand-yellow">vora</span>
           </span>
         </div>
@@ -139,16 +139,17 @@ export default function TableEntryPage({ params }) {
 
               <div>
                 <label className="text-sm font-semibold text-slate-300 block mb-2">Number of Guests</label>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5 flex-wrap">
                   {[1, 2, 3, 4, 5, 6].map(num => (
                     <button
                       key={num}
                       type="button"
+                      aria-label={`${num} guest${num > 1 ? 's' : ''}`}
                       onClick={() => setGuests(num)}
-                      className={`w-10 h-10 rounded-xl text-sm font-bold border transition-all cursor-pointer ${
+                      className={`min-w-[44px] min-h-[44px] rounded-xl text-sm font-bold border transition-all cursor-pointer flex items-center justify-center ${
                         guests === num
-                          ? 'bg-amber-500 text-slate-900 border-amber-500'
-                          : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-slate-600'
+                          ? 'bg-brand-orange text-white border-brand-orange shadow-md shadow-brand-orange/20'
+                          : 'bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-600 hover:text-white'
                       }`}
                     >
                       {num}

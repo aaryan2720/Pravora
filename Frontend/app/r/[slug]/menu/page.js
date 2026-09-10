@@ -27,7 +27,13 @@ function MenuItemCard({ item }) {
     <div className={`flex items-start gap-4 p-4 rounded-xl border transition-all ${item.availability !== 'available' ? 'opacity-50 border-slate-800' : 'border-slate-800 bg-slate-900 hover:border-slate-700'} w-full`}>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
-          {item.isVeg ? <Leaf size={12} className="text-emerald-400 flex-shrink-0" /> : <span className="w-3 h-3 rounded-sm border-2 border-rose-400 flex-shrink-0" />}
+          {item.isVeg ? (
+            <span className="text-emerald-400 flex-shrink-0" title="Vegetarian" aria-label="Vegetarian"><Leaf size={12} /></span>
+          ) : (
+            <span className="w-3 h-3 rounded-sm border-2 border-rose-400 flex items-center justify-center flex-shrink-0" title="Non-Vegetarian" aria-label="Non-Vegetarian">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+            </span>
+          )}
           <h4 className="text-sm font-bold text-white truncate">{item.name}</h4>
           {item.isSpecial && <Badge variant="amber">Special</Badge>}
         </div>
@@ -40,13 +46,32 @@ function MenuItemCard({ item }) {
       <div className="flex flex-col items-center gap-2 flex-shrink-0">
         {inCart ? (
           <div className="flex items-center gap-2">
-            <button onClick={handleMinus} className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 font-bold text-lg flex items-center justify-center transition-all cursor-pointer">−</button>
-            <span className="text-sm font-bold text-amber-400 min-w-[16px] text-center">{inCart.qty}</span>
-            <button onClick={handleAdd} className="w-8 h-8 rounded-full bg-amber-500 text-slate-900 hover:bg-amber-400 font-bold text-lg flex items-center justify-center transition-all cursor-pointer">+</button>
+            <button
+              type="button"
+              onClick={handleMinus}
+              aria-label={`Decrease quantity of ${item.name}`}
+              className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 font-bold text-lg flex items-center justify-center transition-all cursor-pointer focus-visible:outline-brand-orange"
+            >
+              −
+            </button>
+            <span className="text-sm font-bold text-amber-400 min-w-[16px] text-center" aria-live="polite">{inCart.qty}</span>
+            <button
+              type="button"
+              onClick={handleAdd}
+              aria-label={`Increase quantity of ${item.name}`}
+              className="w-8 h-8 rounded-full bg-amber-500 text-slate-900 hover:bg-amber-400 font-bold text-lg flex items-center justify-center transition-all cursor-pointer focus-visible:outline-brand-orange"
+            >
+              +
+            </button>
           </div>
         ) : (
-          <button onClick={handleAdd} disabled={item.availability !== 'available'}
-            className="px-3 py-1.5 rounded-xl bg-amber-500 text-slate-900 text-xs font-bold hover:bg-amber-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+          <button
+            type="button"
+            onClick={handleAdd}
+            disabled={item.availability !== 'available'}
+            aria-label={`Add ${item.name} to order`}
+            className="px-3 py-1.5 rounded-xl bg-amber-500 text-slate-900 text-xs font-bold hover:bg-amber-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer focus-visible:outline-brand-orange"
+          >
             {item.availability === 'available' ? 'Add' : item.availability === 'soon' ? 'Soon' : 'N/A'}
           </button>
         )}

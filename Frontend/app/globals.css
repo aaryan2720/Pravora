@@ -294,8 +294,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 .input-base:focus {
   outline: none;
-  border-color: var(--color-amber-500);
-  box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
+  border-color: var(--color-brand-orange);
+  box-shadow: 0 0 0 3px rgba(233, 106, 10, 0.15);
 }
 .input-base::placeholder { color: var(--text-muted); }
 
@@ -354,6 +354,12 @@ h1, h2, h3, h4, h5, h6 {
   to { transform: rotate(360deg); }
 }
 
+@keyframes laserScan {
+  0% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(220px); opacity: 1; }
+  100% { transform: translateY(0); opacity: 0.6; }
+}
+
 .animate-float { animation: float 3s ease-in-out infinite; }
 .animate-fadeInUp { animation: fadeInUp 0.5s ease forwards; }
 .animate-fadeIn { animation: fadeIn 0.3s ease forwards; }
@@ -361,6 +367,26 @@ h1, h2, h3, h4, h5, h6 {
 .animate-slideInLeft { animation: slideInLeft 0.4s ease forwards; }
 .animate-slideInRight { animation: slideInRight 0.4s ease forwards; }
 .animate-spin-slow { animation: spin-slow 8s linear infinite; }
+.animate-laserScan { animation: laserScan 2.4s ease-in-out infinite; }
+
+/* Accessible motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-float,
+  .animate-spin-slow,
+  .animate-laserScan,
+  .status-dot.live,
+  .status-dot.busy,
+  .status-dot.error,
+  .skeleton {
+    animation: none !important;
+  }
+}
 
 /* Delay utilities */
 .delay-100 { animation-delay: 0.1s; }

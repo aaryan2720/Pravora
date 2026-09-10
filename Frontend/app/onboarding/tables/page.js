@@ -242,18 +242,30 @@ export default function TablesSetupPage() {
 
       {/* Selected Table Preview Modal */}
       {selectedTable && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
-          <div className="w-full max-w-sm rounded-3xl bg-slate-900 border border-slate-800 p-6 relative">
+        <div
+          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => setSelectedTable(null)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setSelectedTable(null); }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="onboarding-table-qr-title"
+            className="w-full max-w-sm rounded-3xl bg-slate-900 border border-slate-800 p-6 relative shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
             <button
+              type="button"
               onClick={() => setSelectedTable(null)}
-              className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors cursor-pointer"
+              aria-label="Close table QR preview"
+              className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors cursor-pointer focus-visible:outline-brand-orange"
             >
               <X size={20} />
             </button>
 
             <div className="text-center space-y-4">
               <div>
-                <h3 className="text-lg font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                <h3 id="onboarding-table-qr-title" className="text-lg font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
                   Table {selectedTable.label} QR Code
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">Scan to access table ordering flow</p>
